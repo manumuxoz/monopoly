@@ -363,6 +363,8 @@ public class Casilla {
      */
     public String casEnVenta() {
         // Solo mostrar si el dueño es la banca (está en venta)
+
+        // holA
         if (duenho != null && duenho.getNombre().equals("Banca")) {
             if (this.getTipo().equals("Solar"))
                 return "{" +
