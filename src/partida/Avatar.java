@@ -61,7 +61,7 @@ public class Avatar {
         float posicionActual = casillaActual.getPosicion();
         float nuevaPosicion = (posicionActual + valorTirada) % 40;
         Casilla nuevaCasilla = null;
-        // Encontrar nueva casilla
+        // Encontrar la casilla a la que se tiran los dados
         for (ArrayList<Casilla> lado : casillas) {
             for (Casilla casilla : lado) {
                 if (casilla.getPosicion() == nuevaPosicion) {

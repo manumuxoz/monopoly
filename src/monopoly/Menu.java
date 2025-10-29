@@ -215,24 +215,11 @@ public class Menu {
             lanzamientos = -1; // Resetear contador si no son dobles
         }
 
-        // Obtener casilla actual y nueva posición
-        Casilla casillaActual = avatarActual.getLugar();
-        float posicionActual = casillaActual.getPosicion();
-        float nuevaPosicion = (posicionActual + valorTirada) % 40;
+        ArrayList<ArrayList<Casilla>> casillas = tablero.getPosiciones();  //conseguimos el doble arraylist de casillas
+        avatarActual.moverAvatar(casillas,valorTirada); //movemos el avatar
 
-        // Encontrar nueva casilla
-        Casilla nuevaCasilla = tablero.encontrarCasillaPorPosicion(nuevaPosicion);
 
-        // Mostrar movimiento básico
-        System.out.println("El avatar " + avatarActual.getId() + " avanza " + valorTirada +
-                " posiciones, desde " + casillaActual.getNombre() + " hasta " +
-                nuevaCasilla.getNombre() + ".");
-
-        // Mover avatar
-        casillaActual.eliminarAvatar(avatarActual);
-        avatarActual.setLugar(nuevaCasilla);
-        nuevaCasilla.anhadirAvatar(avatarActual);
-
+        Casilla nuevaCasilla = avatarActual.getLugar();
         // USAR evaluarCasilla para TODAS las casillas
         boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
 
