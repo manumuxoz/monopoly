@@ -25,7 +25,6 @@ public class Tablero {
         return posiciones;
     }
 
-    
     //Método para crear todas las casillas del tablero. Formado a su vez por cuatro métodos (1/lado).
     private void generarCasillas() {
         insertarLadoSur();
@@ -33,129 +32,87 @@ public class Tablero {
         insertarLadoNorte();
         insertarLadoEste();
     }
-    
+
     //Método para insertar las casillas del lado norte.
     private void insertarLadoNorte() {
         ArrayList<Casilla> casillasNorte = new ArrayList<>(); //Creamos un arraylist de casillas
-        Casilla parking = new Casilla("Parking", "Especiales", 20, banca); //Vamos creando casillas con los diferentes constructores para cada tipo
-        casillasNorte.add(0, parking); //Añadimos al arraylist
+
+        //Vamos creando casillas con los diferentes constructores para cada tipo y añadimos al arraylist
+        casillasNorte.add(0, new Casilla("Parking", "Especiales", 20, banca)); //Añadimos al arraylist
         Casilla solar12 = new Casilla("Solar12", "Solar", 21, 2200000, banca, 180000, 1100000);
         casillasNorte.add(1, solar12);
-        Casilla suerte2 = new Casilla("Suerte", "Suerte", 22, banca);
-        casillasNorte.add(2, suerte2);
+        casillasNorte.add(2, new Casilla("Suerte", "Suerte", 22, banca));
         Casilla solar13 = new Casilla("Solar13", "Solar", 23, 2200000, banca, 180000, 1100000);
         casillasNorte.add(3, solar13);
         Casilla solar14 = new Casilla("Solar14", "Solar", 24, 2400000, banca, 200000, 1200000);
         casillasNorte.add(4, solar14);
-        Casilla trans3 = new Casilla("Trans3", "Transporte", 25, 500000, banca, 250000, 0);
-        casillasNorte.add(5, trans3);
+        casillasNorte.add(5, new Casilla("Trans3", "Transporte", 25, 500000, banca, 250000, 0));
         Casilla solar15 = new Casilla("Solar15", "Solar", 26, 2600000, banca, 220000, 1300000);
         casillasNorte.add(6, solar15);
         Casilla solar16 = new Casilla("Solar16", "Solar", 27, 2600000, banca, 220000, 1300000);
         casillasNorte.add(7, solar16);
-        Casilla serv2 = new Casilla("Serv2", "Servicios", 28, 500000, banca, 50000, 0);
-        casillasNorte.add(8, serv2);
+        casillasNorte.add(8, new Casilla("Serv2", "Servicios", 28, 500000, banca, 50000, 0));
         Casilla solar17 = new Casilla("Solar17", "Solar", 29, 2800000, banca, 240000, 14000000);
         casillasNorte.add(9, solar17);
-        this.posiciones.add(2, casillasNorte); //Añadimos al arraylist de arraylist de casillas del tablero
 
-        Grupo grupoRed = new Grupo(solar12, solar13, solar14, "Red"); //Creamos los grupos de este lado e insertamos en el hashmap
-        grupos.put("Red", grupoRed);
-        Grupo grupoYellow = new Grupo(solar15, solar16, solar17, "Yellow");
-        grupos.put("Yellow", grupoYellow);
+        posiciones.add(2, casillasNorte); //Añadimos al arraylist de arraylist de casillas del tablero
+
+        grupos.put("Rojo", new Grupo(solar12, solar13, solar14, "Rojo")); //Creamos grupos
+        grupos.put("Amarillo", new Grupo(solar15, solar16, solar17, "Amarillo"));
     }
 
     //Método para insertar las casillas del lado sur.
     private void insertarLadoSur() { //Repetimos proceso de insertarLadoNorte()
         ArrayList<Casilla> casillasSur = new ArrayList<>();
-        Casilla salida = new Casilla("Salida", "Especiales", 0, banca);
-        casillasSur.add(0,salida);
-        Casilla solar1 = new Casilla("Solar1", "Solar", 1, 600000, banca, 20000, 300000);
-        casillasSur.add(1, solar1);
-        Casilla caja1 = new Casilla("Caja", "Caja", 2, banca);
-        casillasSur.add(2, caja1);
-        Casilla solar2 = new Casilla("Solar2", "Solar", 3, 600000, banca, 40000, 300000);
-        casillasSur.add(3, solar2);
-        Casilla imp1 = new Casilla("Imp1", 4, 2000000, banca);
-        casillasSur.add(4, imp1);
-        Casilla trans1 = new Casilla("Trans1", "Transporte", 5, 500000, banca, 250000, 0);
-        casillasSur.add(5, trans1);
-        Casilla solar3 = new Casilla("Solar3", "Solar", 6, 1000000, banca, 60000, 500000);
-        casillasSur.add(6, solar3);
-        Casilla suerte1 = new Casilla("Suerte", "Suerte", 7, banca);
-        casillasSur.add(7, suerte1);
-        Casilla solar4 = new Casilla("Solar4", "Solar", 8, 1000000, banca, 60000, 500000);
-        casillasSur.add(8, solar4);
-        Casilla solar5 = new Casilla("Solar5", "Solar", 9, 1200000, banca, 80000, 600000);
-        casillasSur.add(9, solar5);
-        posiciones.add(0,casillasSur);
 
-        Grupo grupoBlack = new Grupo(solar1, solar2, "Black");
-        grupos.put("Black", grupoBlack);
-        Grupo grupoBlue = new Grupo(solar3, solar4, solar5, "Blue");
-        grupos.put("Blue", grupoBlue);
+        casillasSur.add(0, new Casilla("Salida", "Especiales", 0, banca));
+        casillasSur.add(1, new Casilla("Solar1", "Solar", 1, 600000, banca, 20000, 300000));
+        casillasSur.add(2, new Casilla("Caja", "Caja", 2, banca));
+        casillasSur.add(3, new Casilla("Solar2", "Solar", 3, 600000, banca, 40000, 300000));
+        casillasSur.add(4, new Casilla("Imp1", 4, 2000000, banca));
+        casillasSur.add(5, new Casilla("Trans1", "Transporte", 5, 500000, banca, 250000, 0));
+        casillasSur.add(6, new Casilla("Solar3", "Solar", 6, 1000000, banca, 60000, 500000));
+        casillasSur.add(7, new Casilla("Suerte", "Suerte", 7, banca));
+        casillasSur.add(8, new Casilla("Solar4", "Solar", 8, 1000000, banca, 60000, 500000));
+        casillasSur.add(9, new Casilla("Solar5", "Solar", 9, 1200000, banca, 80000, 600000));
+
+        posiciones.add(0,casillasSur);
     }
 
     //Método que inserta casillas del lado oeste.
     private void insertarLadoOeste() { //Mismo proceso que para insertarLadoNorte()
         ArrayList<Casilla> casillasOeste = new ArrayList<>();
-        Casilla carcel = new Casilla("Carcel", "Especiales", 10, banca);
-        casillasOeste.add(0, carcel);
-        Casilla solar6 = new Casilla("Solar6", "Solar", 11, 1400000, banca, 100000, 700000);
-        casillasOeste.add(1, solar6);
-        Casilla serv1 = new Casilla("Serv1", "Servicios", 12, 500000, banca, 50000, 0);
-        casillasOeste.add(2, serv1);
-        Casilla solar7 = new Casilla("Solar7", "Solar", 13, 1400000, banca, 100000, 700000);
-        casillasOeste.add(3, solar7);
-        Casilla solar8 = new Casilla("Solar8", "Solar", 14, 1600000, banca, 120000, 800000);
-        casillasOeste.add(4, solar8);
-        Casilla trans2 = new Casilla("Trans2", "Transporte", 15, 500000, banca, 250000, 0);
-        casillasOeste.add(5, trans2);
-        Casilla solar9 = new Casilla("Solar9", "Solar", 16, 1800000, banca, 140000, 900000);
-        casillasOeste.add(6, solar9);
-        Casilla caja2 = new Casilla("Caja", "Caja", 17, banca);
-        casillasOeste.add(7, caja2);
-        Casilla solar10 = new Casilla("Solar10", "Solar", 18, 1800000, banca, 140000, 900000);
-        casillasOeste.add(8, solar10);
-        Casilla solar11 = new Casilla("Solar11", "Solar", 19, 2200000, banca, 160000, 1100000);
-        casillasOeste.add(9, solar11);
-        this.posiciones.add(1, casillasOeste);
 
-        Grupo grupoPurple = new Grupo(solar6, solar7, solar8, "Purple");
-        grupos.put("Purple", grupoPurple);
-        Grupo grupoWhite = new Grupo(solar9, solar10, solar11, "White");
-        grupos.put("White", grupoWhite);
+        casillasOeste.add(0, new Casilla("Carcel", "Especiales", 10, banca));
+        casillasOeste.add(1, new Casilla("Solar6", "Solar", 11, 1400000, banca, 100000, 700000));
+        casillasOeste.add(2, new Casilla("Serv1", "Servicios", 12, 500000, banca, 50000, 0));
+        casillasOeste.add(3, new Casilla("Solar7", "Solar", 13, 1400000, banca, 100000, 700000));
+        casillasOeste.add(4, new Casilla("Solar8", "Solar", 14, 1600000, banca, 120000, 800000));
+        casillasOeste.add(5, new Casilla("Trans2", "Transporte", 15, 500000, banca, 250000, 0));
+        casillasOeste.add(6, new Casilla("Solar9", "Solar", 16, 1800000, banca, 140000, 900000));
+        casillasOeste.add(7, new Casilla("Caja", "Caja", 17, banca));
+        casillasOeste.add(8, new Casilla("Solar10", "Solar", 18, 1800000, banca, 140000, 900000));
+        casillasOeste.add(9, new Casilla("Solar11", "Solar", 19, 2200000, banca, 160000, 1100000));
+
+        posiciones.add(1, casillasOeste);
     }
 
     //Método que inserta las casillas del lado este.
     private void insertarLadoEste() { //Mismo proceso que para insertarLadoNorte()
         ArrayList<Casilla> casillasOeste = new ArrayList<>();
-        Casilla irCarcel =  new Casilla("IrCarcel", "Especiales", 30, banca);
-        casillasOeste.add(0, irCarcel);
-        Casilla solar18 = new Casilla("Solar18", "Solar", 31, 3000000, banca, 260000, 1500000);
-        casillasOeste.add(1, solar18);
-        Casilla solar19 = new Casilla("Solar19", "Solar", 32, 3000000, banca, 260000, 1500000);
-        casillasOeste.add(2, solar19);
-        Casilla caja3 = new Casilla("Caja", "Caja", 33, banca);
-        casillasOeste.add(3, caja3);
-        Casilla solar20 = new Casilla("Solar20", "Solar", 34, 3200000, banca, 280000, 1600000);
-        casillasOeste.add(4, solar20);
-        Casilla trans4 = new Casilla("Trans4", "Transporte", 35, 500000, banca, 250000, 0);
-        casillasOeste.add(5, trans4);
-        Casilla suerte3 = new Casilla("Suerte", "Suerte", 36, banca);
-        casillasOeste.add(6, suerte3);
-        Casilla solar21 = new Casilla("Solar21", "Solar", 37, 3500000, banca, 350000, 1750000);
-        casillasOeste.add(7, solar21);
-        Casilla imp2 = new Casilla("Imp2", 38, 2000000, banca);
-        casillasOeste.add(8, imp2);
-        Casilla solar22 = new Casilla("Solar22", "Solar", 39, 4000000, banca, 500000, 2000000);
-        casillasOeste.add(9, solar22);
-        this.posiciones.add(3, casillasOeste);
 
-        Grupo grupoGreen = new Grupo(solar18, solar19, solar20, "Green");
-        grupos.put("Green", grupoGreen);
-        Grupo grupoCyan = new Grupo(solar21, solar22, "Cyan");
-        grupos.put("Cyan", grupoCyan);
+        casillasOeste.add(0, new Casilla("IrCarcel", "Especiales", 30, banca));
+        casillasOeste.add(1, new Casilla("Solar18", "Solar", 31, 3000000, banca, 260000, 1500000));
+        casillasOeste.add(2, new Casilla("Solar19", "Solar", 32, 3000000, banca, 260000, 1500000));
+        casillasOeste.add(3, new Casilla("Caja", "Caja", 33, banca));
+        casillasOeste.add(4, new Casilla("Solar20", "Solar", 34, 3200000, banca, 280000, 1600000));
+        casillasOeste.add(5, new Casilla("Trans4", "Transporte", 35, 500000, banca, 250000, 0));
+        casillasOeste.add(6, new Casilla("Suerte", "Suerte", 36, banca));
+        casillasOeste.add(7, new Casilla("Solar21", "Solar", 37, 3500000, banca, 350000, 1750000));
+        casillasOeste.add(8, new Casilla("Imp2", 38, 2000000, banca));
+        casillasOeste.add(9, new Casilla("Solar22", "Solar", 39, 4000000, banca, 500000, 2000000));
+
+        posiciones.add(3, casillasOeste);
     }
 
     //Para imprimir el tablero, modificamos el método toString().
@@ -224,6 +181,29 @@ public class Tablero {
     }
 
     // Nuevos métodos:
+
+    private inicializarGrupos(ArrayList<ArrayList<Casilla>> posiciones) {
+        //Creamos los grupos de este lado e insertamos en el hashmap
+
+
+
+
+
+
+
+        Grupo grupoBlack = new Grupo(solar1, solar2, "Black");
+        grupos.put("Black", grupoBlack);
+        Grupo grupoBlue = new Grupo(solar3, solar4, solar5, "Blue");
+        grupos.put("Blue", grupoBlue);
+        Grupo grupoPurple = new Grupo(solar6, solar7, solar8, "Purple");
+        grupos.put("Purple", grupoPurple);
+        Grupo grupoWhite = new Grupo(solar9, solar10, solar11, "White");
+        grupos.put("White", grupoWhite);
+        Grupo grupoGreen = new Grupo(solar18, solar19, solar20, "Green");
+        grupos.put("Green", grupoGreen);
+        Grupo grupoCyan = new Grupo(solar21, solar22, "Cyan");
+        grupos.put("Cyan", grupoCyan);
+    }
 
     // Método para formatear cada casilla del tablero para su impresión.
     private String formatearCasilla(Casilla casilla) {
