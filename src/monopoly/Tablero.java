@@ -84,7 +84,7 @@ public class Tablero {
         posiciones.addFirst(casillasSur);
 
         grupos.put("Negro", new Grupo(solar1, solar2, BLACK));
-        grupos.put("Azul", new Grupo(solar3, solar4, solar5, BLUE));
+        grupos.put("Cian", new Grupo(solar3, solar4, solar5, CYAN));
     }
 
     //Método que inserta casillas del lado oeste.
@@ -137,7 +137,7 @@ public class Tablero {
         posiciones.add(3, casillasOeste);
 
         grupos.put("Verde", new Grupo(solar18, solar19, solar20, GREEN));
-        grupos.put("Cian", new Grupo(solar21, solar22, CYAN));
+        grupos.put("Azul", new Grupo(solar21, solar22, BLUE));
     }
 
     //Para imprimir el tablero, modificamos el método toString().
@@ -164,9 +164,9 @@ public class Tablero {
             Casilla casillaOeste = ladoOeste.get(9 - i); //Solar11 -> Solar6 (de arriba a abajo)
             tableroStr.append("|").append(formatearCasilla(casillaOeste)).append("|");
 
-            String blank = " ";
+            String blank = "";
             for (int j = 0; j < 9; j++) {
-                tableroStr.append(String.format("%-14s", blank));
+                tableroStr.append(String.format("%-13s", blank));
             }
 
             Casilla casillaEste = ladoEste.get(i + 1); //Solar18 -> Solar22 (de arriba a abajo)
@@ -179,7 +179,7 @@ public class Tablero {
             tableroStr.append(formatearCasilla(ladoSur.get(i)));
             if (i > 0) tableroStr.append("|");
         }
-        tableroStr.append("|\n");
+        tableroStr.append("|\n").append(RESET);
 
         return tableroStr.toString();
     }
@@ -202,12 +202,12 @@ public class Tablero {
         String color = RESET;
         if (casilla.getTipo().equals("Solar")) color = casilla.getGrupo().getColorGrupo();
 
-        return color + String.format("%-10s", casilla.getNombre()) + formatearAvatares(casilla) + RESET;
+        return color + String.format("%-8s" + RESET + "%5s", casilla.getNombre(), formatearAvatares(casilla));
     }
 
     //Método para formatear avatares de una casilla pasada por argumento.
     private String formatearAvatares(Casilla casilla) {
-        if (casilla.getAvatares().isEmpty()) return "  ";
+        if (casilla.getAvatares().isEmpty()) return " ";
 
         StringBuilder avataresStr = new StringBuilder();
 
