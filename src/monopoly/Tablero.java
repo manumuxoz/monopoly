@@ -153,21 +153,22 @@ public class Tablero {
 
         //NORTE:
         tableroStr.append("|");
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) { //Bucle para imprimir las casillas del lado norte (Parking -> Solar17)
             Casilla casilla = ladoNorte.get(i);
             tableroStr.append(formatearCasilla(casilla)).append("|");
         }
+
+        //Antes del retorno de carro, imprimimos la primera casilla del lado este (Carcel)
         tableroStr.append(formatearCasilla(ladoEste.getFirst())).append("|\n");
 
         //ESTE / OESTE / ESPACIO VACÍO:
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; i++) { //Blucle para imprimir las casillas de ambos laterales más el vacío del interior
             Casilla casillaOeste = ladoOeste.get(9 - i); //Solar11 -> Solar6 (de arriba a abajo)
             tableroStr.append("|").append(formatearCasilla(casillaOeste)).append("|");
 
-            String blank = "";
-            for (int j = 0; j < 9; j++) {
-                tableroStr.append(String.format("%-13s", blank));
-            }
+            String vacio = ""; //Rellenamos el interior en blanco
+            tableroStr.repeat(String.format("%20s", vacio), 8); //Bucle para 8 iteraciones
+            tableroStr.append(String.format("%19s", vacio)); //Ultima casilla vacía con un caracter menos para cuadrar
 
             Casilla casillaEste = ladoEste.get(i + 1); //Solar18 -> Solar22 (de arriba a abajo)
             tableroStr.append("|").append(formatearCasilla(casillaEste)).append("|\n");
@@ -212,7 +213,7 @@ public class Tablero {
         StringBuilder avataresStr = new StringBuilder();
 
         for (Avatar avatar : casilla.getAvatares())
-            avataresStr.append("&").append(avatar.getId());
+            avataresStr.append(" &").append(avatar.getId());
 
         return avataresStr.toString();
     }

@@ -18,7 +18,6 @@ public class Menu {
     private Tablero tablero; //Tablero en el que se juega.
     private Dado dado1; //Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
-    private Dado dado3;
     private Jugador banca; //El jugador banca.
     private boolean tirado; //Booleano para comprobar si el jugador que tiene el turno ha tirado o no.
     private boolean solvente; //Booleano para comprobar si el jugador que tiene el turno es solvente, es decir, si ha pagado sus deudas.
@@ -31,7 +30,6 @@ public class Menu {
         tablero = new Tablero(banca);
         dado1 = new Dado();
         dado2 = new Dado();
-        dado3 = new Dado();
 
         while (true) {
             Scanner sc = new Scanner(System.in);
@@ -179,12 +177,11 @@ public class Menu {
         int valorTirada;
         int dado1Valor = dado1.hacerTirada();
         int dado2Valor = dado2.hacerTirada();
-        int dado3Valor = dado3.hacerTirada();
 
         if (tirada1 == -1 && tirada2 == -2) {
             // Tirada aleatoria
-            valorTirada = dado1Valor + dado2Valor + dado3Valor;
-            System.out.println("Tirada: " + dado1Valor + " + " + dado2Valor + "+" + dado3Valor + " = " + valorTirada);
+            valorTirada = dado1Valor + dado2Valor;
+            System.out.println("Tirada: " + dado1Valor + " + " + dado2Valor + " = " + valorTirada);
         } else {
             // Tirada manual
             valorTirada = tirada1 + tirada2;
