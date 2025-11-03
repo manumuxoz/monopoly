@@ -152,30 +152,34 @@ public class Tablero {
         ArrayList<Casilla> ladoEste = posiciones.get(3);
 
         //NORTE:
+        tableroStr.append("|");
         for (int i = 0; i < 10; i++) {
             Casilla casilla = ladoNorte.get(i);
-
+            tableroStr.append(formatearCasilla(casilla)).append("|");
         }
+        tableroStr.append(formatearCasilla(ladoEste.getFirst())).append("|\n");
 
         //ESTE / OESTE / ESPACIO VACÍO:
         for (int i = 0; i < 9; i++) {
+            Casilla casillaOeste = ladoOeste.get(9 - i); //Solar11 -> Solar6 (de arriba a abajo)
+            tableroStr.append("|").append(formatearCasilla(casillaOeste)).append("|");
 
-            Casilla casillaOeste = ladoOeste.get(i); //Solar11 -> Solar6 (de arriba a abajo)
-            tableroStr.append("| ").append(formatearCasilla(casillaOeste)).append(" |");
+            String blank = " ";
+            for (int j = 0; j < 9; j++) {
+                tableroStr.append(String.format("%-14s", blank));
+            }
 
-            tableroStr.repeat(" ", 106);
-
-            Casilla casillaEste = ladoEste.get(i); //Solar18 -> Solar22 (de arriba a abajo)
-            tableroStr.append("| ").append(formatearCasilla(casillaEste)).append(" |\n");
+            Casilla casillaEste = ladoEste.get(i + 1); //Solar18 -> Solar22 (de arriba a abajo)
+            tableroStr.append("|").append(formatearCasilla(casillaEste)).append("|\n");
         }
 
         //SUR:
-        tableroStr.append("| ");
+        tableroStr.append("|").append(formatearCasilla(ladoOeste.getFirst())).append("|");
         for (int i = 9; i >= 0; i--) {
             tableroStr.append(formatearCasilla(ladoSur.get(i)));
             if (i > 0) tableroStr.append("|");
         }
-        tableroStr.append(" |\n");
+        tableroStr.append("|\n");
 
         return tableroStr.toString();
     }
@@ -195,13 +199,11 @@ public class Tablero {
 
     // Método para formatear cada casilla del tablero para su impresión.
     private String formatearCasilla(Casilla casilla) {
-        String nombre = casilla.getNombre();
         String avatares = formatearAvatares(casilla);
         String color = RESET;
-        if (casilla.getTipo().equals("Solar"))
-            color = casilla.getGrupo().getColorGrupo();
+        if (casilla.getTipo().equals("Solar")) color = casilla.getGrupo().getColorGrupo();
 
-        return color + String.format("%-15s", casilla.getNombre()) + avatares + RESET;
+        return color + String.format("%-10s", casilla.getNombre()) + avatares + RESET;
     }
 
     //Método para formatear avatares de una casilla pasada por argumento.
@@ -210,9 +212,8 @@ public class Tablero {
 
         StringBuilder avataresStr = new StringBuilder();
 
-        for (Avatar avatar : casilla.getAvatares()) {
+        for (Avatar avatar : casilla.getAvatares())
             avataresStr.append("&").append(avatar.getId());
-        }
 
         return avataresStr.toString();
     }
