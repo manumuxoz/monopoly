@@ -116,6 +116,8 @@ public class Menu {
             else if (partes.length == 2 && partes[0].equals("comprar")) comprar(partes[1]);
 
             else if (partes.length == 2 && partes[0].equals("salir") && partes[1].equals("carcel")) salirCarcel();
+
+            else if (partes.length == 2 && partes[0].equals("edificar")) edificar(partes[1]);
         }
     }
 
@@ -346,6 +348,10 @@ public class Menu {
         Casilla casilla = tablero.encontrar_casilla(nombre); //Buscamos casilla en el tablero
         if (casilla != null) //Si no devuelve null imprimimos la información
             System.out.println(casilla.infoCasilla());
+    }
+
+    private void edificar(String edificio){
+
     }
 
 }

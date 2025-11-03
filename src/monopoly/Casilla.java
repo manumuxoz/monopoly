@@ -27,6 +27,7 @@ public class Casilla {
     private boolean enVenta;
     private float alquilerPiscina;
     private float alquilerPistaDeporte;
+    private String edificioConstruido;
 
 
     //Constructores:
@@ -36,7 +37,7 @@ public class Casilla {
     /*Constructor para casillas tipo Solar, Servicios o Transporte:
      * Parámetros: nombre casilla, tipo (debe ser solar, serv. o transporte), posición en el tablero, valor y dueño.
      */
-    public Casilla(String nombre, String tipo, int posicion, float valor, Jugador duenho, float alquiler, float hipoteca) {
+    public Casilla(String nombre, String tipo, int posicion, float valor, Jugador duenho, float alquiler, float hipoteca, float alquilerCasa, float alquilerHotel, float alquilerPiscina, float alquilerPistaDeporte, float valorCasa, float valorHotel, float valorPiscina, float valorPistaDeporte) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.valor = valor;
@@ -45,10 +46,14 @@ public class Casilla {
         this.impuesto = alquiler;
         this.hipoteca = hipoteca;
         avatares = new ArrayList<>();
-        alquilerCasa = 0;
-        alquilerHotel = 0;
-        alquilerPiscina = 0;
-        alquilerPistaDeporte = 0;
+        this.alquilerCasa = alquilerCasa;
+        this.alquilerHotel = alquilerHotel;
+        this.alquilerPiscina = alquilerPiscina;
+        this.alquilerPistaDeporte = alquilerPistaDeporte;
+        this.valorCasa = valorCasa;
+        this.valorHotel = valorHotel;
+        this.valorPiscina = valorPiscina;
+        this.valorPistaDeporte = valorPistaDeporte;
     }
 
     /*Constructor utilizado para inicializar las casillas de tipo IMPUESTOS.
@@ -380,5 +385,20 @@ public class Casilla {
                         "\n}";
         }
         return "";
+    }
+
+    public void construirEdificio(Jugador solicitante){
+        if(!duenho.equals(solicitante)){
+            System.out.println("Esta casilla tiene otro dueño: " + duenho.getNombre());
+            return;
+        }
+        if (edificioConstruido.equals("nada") && solicitante.getFortuna() >= valorCasa && getGrupo().esDuenhoGrupo(solicitante)){
+            solicitante.sumarGastos(valorCasa);
+            solicitante.sumarFortuna(-valorCasa);
+            valor =
+
+
+        }
+
     }
 }
