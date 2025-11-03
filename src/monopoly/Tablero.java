@@ -57,8 +57,8 @@ public class Tablero {
 
         posiciones.add(2, casillasNorte); //Añadimos al arraylist de arraylist de casillas del tablero
 
-        grupos.put("Rojo", new Grupo(solar12, solar13, solar14, "Rojo")); //Creamos grupos
-        grupos.put("Amarillo", new Grupo(solar15, solar16, solar17, "Amarillo"));
+        grupos.put("Rojo", new Grupo(solar12, solar13, solar14, RED)); //Creamos grupos
+        grupos.put("Amarillo", new Grupo(solar15, solar16, solar17, YELLOW));
     }
 
     //Método para insertar las casillas del lado sur.
@@ -83,8 +83,8 @@ public class Tablero {
 
         posiciones.addFirst(casillasSur);
 
-        grupos.put("Negro", new Grupo(solar1, solar2, "Negro"));
-        grupos.put("Blue", new Grupo(solar3, solar4, solar5, "Blue"));
+        grupos.put("Negro", new Grupo(solar1, solar2, BLACK));
+        grupos.put("Azul", new Grupo(solar3, solar4, solar5, BLUE));
     }
 
     //Método que inserta casillas del lado oeste.
@@ -110,8 +110,8 @@ public class Tablero {
 
         posiciones.add(1, casillasOeste);
 
-        grupos.put("Morado", new Grupo(solar6, solar7, solar8, "Morado"));
-        grupos.put("Blanco", new Grupo(solar9, solar10, solar11, "Blanco"));
+        grupos.put("Morado", new Grupo(solar6, solar7, solar8, PURPLE));
+        grupos.put("Blanco", new Grupo(solar9, solar10, solar11, WHITE));
     }
 
     //Método que inserta las casillas del lado este.
@@ -136,8 +136,8 @@ public class Tablero {
 
         posiciones.add(3, casillasOeste);
 
-        grupos.put("Verde", new Grupo(solar18, solar19, solar20, "Verde"));
-        grupos.put("Cian", new Grupo(solar21, solar22, "Cian"));
+        grupos.put("Verde", new Grupo(solar18, solar19, solar20, GREEN));
+        grupos.put("Cian", new Grupo(solar21, solar22, CYAN));
     }
 
     //Para imprimir el tablero, modificamos el método toString().
@@ -145,49 +145,35 @@ public class Tablero {
     public String toString() {
         StringBuilder tableroStr = new StringBuilder();
 
-        // Crear HashMap con todas las casillas por posición
-        HashMap<Integer, Casilla> todasCasillas = new HashMap<>();
-        for (ArrayList<Casilla> lado : posiciones) {
-            for (Casilla casilla : lado) {
-                int posicion = (int) casilla.getPosicion();
-                todasCasillas.put(posicion, casilla);
-            }
+        //Obtenemos los lados que contienen las casillas
+        ArrayList<Casilla> ladoSur = posiciones.get(0);
+        ArrayList<Casilla> ladoOeste = posiciones.get(1);
+        ArrayList<Casilla> ladoNorte = posiciones.get(2);
+        ArrayList<Casilla> ladoEste = posiciones.get(3);
+
+        //NORTE:
+        for (int i = 0; i < 10; i++) {
+            Casilla casilla = ladoNorte.get(i);
+
         }
 
-        // LÍNEA 1: POSICIONES 20-30 (Norte: Parking -> IrCarcel)
-        tableroStr.append("| ");
-        for (int pos = 20; pos <= 30; pos++) {
-            Casilla casilla = todasCasillas.get(pos);
-            tableroStr.append(formatearCasilla(casilla));
-            if (pos < 30) tableroStr.append("|");
-        }
-        tableroStr.append(" |\n");
-
-        // LÍNEAS 2-10: LADOS OESTE Y ESTE - ESTE INVERTIDO
+        //ESTE / OESTE / ESPACIO VACÍO:
         for (int i = 0; i < 9; i++) {
-            int posOeste = 19 - i; // Solar11 -> Solar6 (de arriba a abajo)
-            int posEste = 31 + i;  // Solar18 -> Solar22 (de arriba a abajo) - NORMAL
 
-            // Casilla OESTE
-            Casilla casillaOeste = todasCasillas.get(posOeste);
-            String oesteFormateado = formatearCasilla(casillaOeste);
-            tableroStr.append("| ").append(oesteFormateado).append(" |");
+            Casilla casillaOeste = ladoOeste.get(i); //Solar11 -> Solar6 (de arriba a abajo)
+            tableroStr.append("| ").append(formatearCasilla(casillaOeste)).append(" |");
 
-            // ESPACIO CENTRAL VACÍO (45 espacios)
-            for (int j = 0; j < 106; j++) tableroStr.append(" ");
+            tableroStr.repeat(" ", 106);
 
-            // Casilla ESTE - orden normal: Solar18, Solar19, Caja, Solar20, Trans4, Suerte, Solar21, Imp2, Solar22
-            Casilla casillaEste = todasCasillas.get(posEste);
-            String esteFormateado = formatearCasilla(casillaEste);
-            tableroStr.append("| ").append(esteFormateado).append(" |\n");
+            Casilla casillaEste = ladoEste.get(i); //Solar18 -> Solar22 (de arriba a abajo)
+            tableroStr.append("| ").append(formatearCasilla(casillaEste)).append(" |\n");
         }
 
-        // LÍNEA 11: POSICIONES 0-10 (Sur: Carcel -> Salida) - INVERTIDA
+        //SUR:
         tableroStr.append("| ");
-        for (int pos = 10; pos >= 0; pos--) {
-            Casilla casilla = todasCasillas.get(pos);
-            tableroStr.append(formatearCasilla(casilla));
-            if (pos > 0) tableroStr.append("|");
+        for (int i = 9; i >= 0; i--) {
+            tableroStr.append(formatearCasilla(ladoSur.get(i)));
+            if (i > 0) tableroStr.append("|");
         }
         tableroStr.append(" |\n");
 
@@ -210,84 +196,25 @@ public class Tablero {
     // Método para formatear cada casilla del tablero para su impresión.
     private String formatearCasilla(Casilla casilla) {
         String nombre = casilla.getNombre();
-        String avatares = obtenerAvatares(casilla);
-        String color = obtenerColor(casilla);
-        String nombreFormateado = formatearNombre(nombre);
-        return color + nombreFormateado + avatares + RESET;
+        String avatares = formatearAvatares(casilla);
+        String color = RESET;
+        if (casilla.getTipo().equals("Solar"))
+            color = casilla.getGrupo().getColorGrupo();
+
+        return color + String.format("%-15s", casilla.getNombre()) + avatares + RESET;
     }
 
-    // Método para formatear avatares de una casilla pasada por argumento.
-    private String obtenerAvatares(Casilla casilla) {
+    //Método para formatear avatares de una casilla pasada por argumento.
+    private String formatearAvatares(Casilla casilla) {
         if (casilla.getAvatares().isEmpty()) return "  ";
+
         StringBuilder avataresStr = new StringBuilder();
+
         for (Avatar avatar : casilla.getAvatares()) {
             avataresStr.append("&").append(avatar.getId());
         }
-        if (avataresStr.length() == 2) return avataresStr.toString();
-        else if (avataresStr.length() == 1) return avataresStr.toString() + " ";
-        else return avataresStr.substring(0, 2);
-    }
 
-    // Método para formatear el nombre de cada casilla.
-    private String formatearNombre(String nombre) {
-        switch (nombre) {
-            case "Parking": return "Parking  ";
-            case "IrCarcel": return "IrCarcel ";
-            case "Carcel": return "Carcel   ";
-            case "Salida": return "Salida   ";
-            case "Suerte": return "Suerte   ";
-            case "Caja": return "Caja     ";
-            case "Solar1": return "Solar1   ";
-            case "Solar2": return "Solar2   ";
-            case "Solar3": return "Solar3   ";
-            case "Solar4": return "Solar4   ";
-            case "Solar5": return "Solar5   ";
-            case "Solar6": return "Solar6   ";
-            case "Solar7": return "Solar7   ";
-            case "Solar8": return "Solar8   ";
-            case "Solar9": return "Solar9   ";
-            case "Solar10": return "Solar10  ";
-            case "Solar11": return "Solar11  ";
-            case "Solar12": return "Solar12  ";
-            case "Solar13": return "Solar13  ";
-            case "Solar14": return "Solar14  ";
-            case "Solar15": return "Solar15  ";
-            case "Solar16": return "Solar16  ";
-            case "Solar17": return "Solar17  ";
-            case "Solar18": return "Solar18  ";
-            case "Solar19": return "Solar19  ";
-            case "Solar20": return "Solar20  ";
-            case "Solar21": return "Solar21  ";
-            case "Solar22": return "Solar22  ";
-            case "Trans1": return "Trans1   ";
-            case "Trans2": return "Trans2   ";
-            case "Trans3": return "Trans3   ";
-            case "Trans4": return "Trans4   ";
-            case "Serv1": return "Serv1    ";
-            case "Serv2": return "Serv2    ";
-            case "Imp1": return "Imp1     ";
-            case "Imp2": return "Imp2     ";
-            default: return String.format("%-8s", nombre);
-        }
-    }
-
-    // Método para obtener el color con el que queremos imprimir cada casilla del tablero.
-    private String obtenerColor(Casilla casilla) {
-        if (casilla.getGrupo() != null && casilla.getTipo().equals("Solar")) {
-            String colorGrupo = casilla.getGrupo().getColorGrupo();
-            switch (colorGrupo.toLowerCase()) {
-                case "black": return BLACK;
-                case "blue": return BLUE;
-                case "purple": return PURPLE;
-                case "white": return WHITE;
-                case "red": return RED;
-                case "yellow": return YELLOW;
-                case "green": return GREEN;
-                case "cyan": return CYAN;
-            }
-        }
-
-        return RESET;
+        return avataresStr.toString();
     }
 
     //Método usado para buscar la cosilla en la posicion pasada por argumento:
