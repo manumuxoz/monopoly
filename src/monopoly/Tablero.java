@@ -57,8 +57,8 @@ public class Tablero {
 
         posiciones.add(2, casillasNorte); //Añadimos al arraylist de arraylist de casillas del tablero
 
-        grupos.put("Rojo", new Grupo(solar12, solar13, solar14, "Rojo")); //Creamos grupos
-        grupos.put("Amarillo", new Grupo(solar15, solar16, solar17, "Amarillo"));
+        grupos.put("Rojo", new Grupo(solar12, solar13, solar14, RED)); //Creamos grupos
+        grupos.put("Amarillo", new Grupo(solar15, solar16, solar17, YELLOW));
     }
 
     //Método para insertar las casillas del lado sur.
@@ -66,17 +66,25 @@ public class Tablero {
         ArrayList<Casilla> casillasSur = new ArrayList<>();
 
         casillasSur.add(0, new Casilla("Salida", "Especiales", 0, banca));
-        casillasSur.add(1, new Casilla("Solar1", "Solar", 1, 600000, banca, 20000, 300000));
+        Casilla solar1 = new Casilla("Solar1", "Solar", 1, 600000, banca, 20000, 300000);
+        casillasSur.add(1, solar1);
         casillasSur.add(2, new Casilla("Caja", "Caja", 2, banca));
-        casillasSur.add(3, new Casilla("Solar2", "Solar", 3, 600000, banca, 40000, 300000));
+        Casilla solar2 = new Casilla("Solar2", "Solar", 3, 600000, banca, 40000, 300000);
+        casillasSur.add(3, solar2);
         casillasSur.add(4, new Casilla("Imp1", 4, 2000000, banca));
         casillasSur.add(5, new Casilla("Trans1", "Transporte", 5, 500000, banca, 250000, 0));
-        casillasSur.add(6, new Casilla("Solar3", "Solar", 6, 1000000, banca, 60000, 500000));
+        Casilla solar3 = new Casilla("Solar3", "Solar", 6, 1000000, banca, 60000, 500000);
+        casillasSur.add(6, solar3);
         casillasSur.add(7, new Casilla("Suerte", "Suerte", 7, banca));
-        casillasSur.add(8, new Casilla("Solar4", "Solar", 8, 1000000, banca, 60000, 500000));
-        casillasSur.add(9, new Casilla("Solar5", "Solar", 9, 1200000, banca, 80000, 600000));
+        Casilla solar4 = new Casilla("Solar4", "Solar", 8, 1000000, banca, 60000, 500000);
+        casillasSur.add(8, solar4);
+        Casilla solar5 = new Casilla("Solar5", "Solar", 9, 1200000, banca, 80000, 600000);
+        casillasSur.add(9, solar5);
 
-        posiciones.add(0,casillasSur);
+        posiciones.addFirst(casillasSur);
+
+        grupos.put("Negro", new Grupo(solar1, solar2, BLACK));
+        grupos.put("Cian", new Grupo(solar3, solar4, solar5, CYAN));
     }
 
     //Método que inserta casillas del lado oeste.
@@ -84,17 +92,26 @@ public class Tablero {
         ArrayList<Casilla> casillasOeste = new ArrayList<>();
 
         casillasOeste.add(0, new Casilla("Carcel", "Especiales", 10, banca));
-        casillasOeste.add(1, new Casilla("Solar6", "Solar", 11, 1400000, banca, 100000, 700000));
+        Casilla solar6 = new Casilla("Solar6", "Solar", 11, 1400000, banca, 100000, 700000);
+        casillasOeste.add(1, solar6);
         casillasOeste.add(2, new Casilla("Serv1", "Servicios", 12, 500000, banca, 50000, 0));
-        casillasOeste.add(3, new Casilla("Solar7", "Solar", 13, 1400000, banca, 100000, 700000));
-        casillasOeste.add(4, new Casilla("Solar8", "Solar", 14, 1600000, banca, 120000, 800000));
+        Casilla solar7 = new Casilla("Solar7", "Solar", 13, 1400000, banca, 100000, 700000);
+        casillasOeste.add(3, solar7);
+        Casilla solar8 = new Casilla("Solar8", "Solar", 14, 1600000, banca, 120000, 800000);
+        casillasOeste.add(4, solar8);
         casillasOeste.add(5, new Casilla("Trans2", "Transporte", 15, 500000, banca, 250000, 0));
-        casillasOeste.add(6, new Casilla("Solar9", "Solar", 16, 1800000, banca, 140000, 900000));
+        Casilla solar9 = new Casilla("Solar9", "Solar", 16, 1800000, banca, 140000, 900000);
+        casillasOeste.add(6, solar9);
         casillasOeste.add(7, new Casilla("Caja", "Caja", 17, banca));
-        casillasOeste.add(8, new Casilla("Solar10", "Solar", 18, 1800000, banca, 140000, 900000));
-        casillasOeste.add(9, new Casilla("Solar11", "Solar", 19, 2200000, banca, 160000, 1100000));
+        Casilla solar10 = new Casilla("Solar10", "Solar", 18, 1800000, banca, 140000, 900000);
+        casillasOeste.add(8, solar10);
+        Casilla solar11 = new Casilla("Solar11", "Solar", 19, 2200000, banca, 160000, 1100000);
+        casillasOeste.add(9, solar11);
 
         posiciones.add(1, casillasOeste);
+
+        grupos.put("Morado", new Grupo(solar6, solar7, solar8, PURPLE));
+        grupos.put("Blanco", new Grupo(solar9, solar10, solar11, WHITE));
     }
 
     //Método que inserta las casillas del lado este.
@@ -102,17 +119,25 @@ public class Tablero {
         ArrayList<Casilla> casillasOeste = new ArrayList<>();
 
         casillasOeste.add(0, new Casilla("IrCarcel", "Especiales", 30, banca));
-        casillasOeste.add(1, new Casilla("Solar18", "Solar", 31, 3000000, banca, 260000, 1500000));
-        casillasOeste.add(2, new Casilla("Solar19", "Solar", 32, 3000000, banca, 260000, 1500000));
+        Casilla solar18 = new Casilla("Solar18", "Solar", 31, 3000000, banca, 260000, 1500000);
+        casillasOeste.add(1, solar18);
+        Casilla solar19 = new Casilla("Solar19", "Solar", 32, 3000000, banca, 260000, 1500000);
+        casillasOeste.add(2, solar19);
         casillasOeste.add(3, new Casilla("Caja", "Caja", 33, banca));
-        casillasOeste.add(4, new Casilla("Solar20", "Solar", 34, 3200000, banca, 280000, 1600000));
+        Casilla solar20 = new Casilla("Solar20", "Solar", 34, 3200000, banca, 280000, 1600000);
+        casillasOeste.add(4, solar20);
         casillasOeste.add(5, new Casilla("Trans4", "Transporte", 35, 500000, banca, 250000, 0));
         casillasOeste.add(6, new Casilla("Suerte", "Suerte", 36, banca));
-        casillasOeste.add(7, new Casilla("Solar21", "Solar", 37, 3500000, banca, 350000, 1750000));
+        Casilla solar21 = new Casilla("Solar21", "Solar", 37, 3500000, banca, 350000, 1750000);
+        casillasOeste.add(7, solar21);
         casillasOeste.add(8, new Casilla("Imp2", 38, 2000000, banca));
-        casillasOeste.add(9, new Casilla("Solar22", "Solar", 39, 4000000, banca, 500000, 2000000));
+        Casilla solar22 = new Casilla("Solar22", "Solar", 39, 4000000, banca, 500000, 2000000);
+        casillasOeste.add(9, solar22);
 
         posiciones.add(3, casillasOeste);
+
+        grupos.put("Verde", new Grupo(solar18, solar19, solar20, GREEN));
+        grupos.put("Azul", new Grupo(solar21, solar22, BLUE));
     }
 
     //Para imprimir el tablero, modificamos el método toString().
@@ -120,51 +145,41 @@ public class Tablero {
     public String toString() {
         StringBuilder tableroStr = new StringBuilder();
 
-        // Crear HashMap con todas las casillas por posición
-        HashMap<Integer, Casilla> todasCasillas = new HashMap<>();
-        for (ArrayList<Casilla> lado : posiciones) {
-            for (Casilla casilla : lado) {
-                int posicion = (int) casilla.getPosicion();
-                todasCasillas.put(posicion, casilla);
-            }
-        }
+        //Obtenemos los lados que contienen las casillas
+        ArrayList<Casilla> ladoSur = posiciones.get(0);
+        ArrayList<Casilla> ladoOeste = posiciones.get(1);
+        ArrayList<Casilla> ladoNorte = posiciones.get(2);
+        ArrayList<Casilla> ladoEste = posiciones.get(3);
 
-        // LÍNEA 1: POSICIONES 20-30 (Norte: Parking -> IrCarcel)
-        tableroStr.append("| ");
-        for (int pos = 20; pos <= 30; pos++) {
-            Casilla casilla = todasCasillas.get(pos);
-            tableroStr.append(formatearCasilla(casilla));
-            if (pos < 30) tableroStr.append("|");
+        //NORTE:
+        tableroStr.append("|");
+        for (int i = 0; i < 10; i++) {
+            Casilla casilla = ladoNorte.get(i);
+            tableroStr.append(formatearCasilla(casilla)).append("|");
         }
-        tableroStr.append(" |\n");
+        tableroStr.append(formatearCasilla(ladoEste.getFirst())).append("|\n");
 
-        // LÍNEAS 2-10: LADOS OESTE Y ESTE - ESTE INVERTIDO
+        //ESTE / OESTE / ESPACIO VACÍO:
         for (int i = 0; i < 9; i++) {
-            int posOeste = 19 - i; // Solar11 -> Solar6 (de arriba a abajo)
-            int posEste = 31 + i;  // Solar18 -> Solar22 (de arriba a abajo) - NORMAL
+            Casilla casillaOeste = ladoOeste.get(9 - i); //Solar11 -> Solar6 (de arriba a abajo)
+            tableroStr.append("|").append(formatearCasilla(casillaOeste)).append("|");
 
-            // Casilla OESTE
-            Casilla casillaOeste = todasCasillas.get(posOeste);
-            String oesteFormateado = formatearCasilla(casillaOeste);
-            tableroStr.append("| ").append(oesteFormateado).append(" |");
+            String blank = "";
+            for (int j = 0; j < 9; j++) {
+                tableroStr.append(String.format("%-13s", blank));
+            }
 
-            // ESPACIO CENTRAL VACÍO (45 espacios)
-            for (int j = 0; j < 106; j++) tableroStr.append(" ");
-
-            // Casilla ESTE - orden normal: Solar18, Solar19, Caja, Solar20, Trans4, Suerte, Solar21, Imp2, Solar22
-            Casilla casillaEste = todasCasillas.get(posEste);
-            String esteFormateado = formatearCasilla(casillaEste);
-            tableroStr.append("| ").append(esteFormateado).append(" |\n");
+            Casilla casillaEste = ladoEste.get(i + 1); //Solar18 -> Solar22 (de arriba a abajo)
+            tableroStr.append("|").append(formatearCasilla(casillaEste)).append("|\n");
         }
 
-        // LÍNEA 11: POSICIONES 0-10 (Sur: Carcel -> Salida) - INVERTIDA
-        tableroStr.append("| ");
-        for (int pos = 10; pos >= 0; pos--) {
-            Casilla casilla = todasCasillas.get(pos);
-            tableroStr.append(formatearCasilla(casilla));
-            if (pos > 0) tableroStr.append("|");
+        //SUR:
+        tableroStr.append("|").append(formatearCasilla(ladoOeste.getFirst())).append("|");
+        for (int i = 9; i >= 0; i--) {
+            tableroStr.append(formatearCasilla(ladoSur.get(i)));
+            if (i > 0) tableroStr.append("|");
         }
-        tableroStr.append(" |\n");
+        tableroStr.append("|\n").append(RESET);
 
         return tableroStr.toString();
     }
@@ -182,110 +197,24 @@ public class Tablero {
 
     // Nuevos métodos:
 
-    private inicializarGrupos(ArrayList<ArrayList<Casilla>> posiciones) {
-        //Creamos los grupos de este lado e insertamos en el hashmap
-
-
-
-
-
-
-
-        Grupo grupoBlack = new Grupo(solar1, solar2, "Black");
-        grupos.put("Black", grupoBlack);
-        Grupo grupoBlue = new Grupo(solar3, solar4, solar5, "Blue");
-        grupos.put("Blue", grupoBlue);
-        Grupo grupoPurple = new Grupo(solar6, solar7, solar8, "Purple");
-        grupos.put("Purple", grupoPurple);
-        Grupo grupoWhite = new Grupo(solar9, solar10, solar11, "White");
-        grupos.put("White", grupoWhite);
-        Grupo grupoGreen = new Grupo(solar18, solar19, solar20, "Green");
-        grupos.put("Green", grupoGreen);
-        Grupo grupoCyan = new Grupo(solar21, solar22, "Cyan");
-        grupos.put("Cyan", grupoCyan);
-    }
-
     // Método para formatear cada casilla del tablero para su impresión.
     private String formatearCasilla(Casilla casilla) {
-        String nombre = casilla.getNombre();
-        String avatares = obtenerAvatares(casilla);
-        String color = obtenerColor(casilla);
-        String nombreFormateado = formatearNombre(nombre);
-        return color + nombreFormateado + avatares + RESET;
+        String color = RESET;
+        if (casilla.getTipo().equals("Solar")) color = casilla.getGrupo().getColorGrupo();
+
+        return color + String.format("%-8s" + RESET + "%11s", casilla.getNombre(), formatearAvatares(casilla));
     }
 
-    // Método para formatear avatares de una casilla pasada por argumento.
-    private String obtenerAvatares(Casilla casilla) {
-        if (casilla.getAvatares().isEmpty()) return "  ";
+    //Método para formatear avatares de una casilla pasada por argumento.
+    private String formatearAvatares(Casilla casilla) {
+        if (casilla.getAvatares().isEmpty()) return " ";
+
         StringBuilder avataresStr = new StringBuilder();
-        for (Avatar avatar : casilla.getAvatares()) {
+
+        for (Avatar avatar : casilla.getAvatares())
             avataresStr.append("&").append(avatar.getId());
-        }
-        if (avataresStr.length() == 2) return avataresStr.toString();
-        else if (avataresStr.length() == 1) return avataresStr.toString() + " ";
-        else return avataresStr.substring(0, 2);
-    }
 
-    // Método para formatear el nombre de cada casilla.
-    private String formatearNombre(String nombre) {
-        switch (nombre) {
-            case "Parking": return "Parking  ";
-            case "IrCarcel": return "IrCarcel ";
-            case "Carcel": return "Carcel   ";
-            case "Salida": return "Salida   ";
-            case "Suerte": return "Suerte   ";
-            case "Caja": return "Caja     ";
-            case "Solar1": return "Solar1   ";
-            case "Solar2": return "Solar2   ";
-            case "Solar3": return "Solar3   ";
-            case "Solar4": return "Solar4   ";
-            case "Solar5": return "Solar5   ";
-            case "Solar6": return "Solar6   ";
-            case "Solar7": return "Solar7   ";
-            case "Solar8": return "Solar8   ";
-            case "Solar9": return "Solar9   ";
-            case "Solar10": return "Solar10  ";
-            case "Solar11": return "Solar11  ";
-            case "Solar12": return "Solar12  ";
-            case "Solar13": return "Solar13  ";
-            case "Solar14": return "Solar14  ";
-            case "Solar15": return "Solar15  ";
-            case "Solar16": return "Solar16  ";
-            case "Solar17": return "Solar17  ";
-            case "Solar18": return "Solar18  ";
-            case "Solar19": return "Solar19  ";
-            case "Solar20": return "Solar20  ";
-            case "Solar21": return "Solar21  ";
-            case "Solar22": return "Solar22  ";
-            case "Trans1": return "Trans1   ";
-            case "Trans2": return "Trans2   ";
-            case "Trans3": return "Trans3   ";
-            case "Trans4": return "Trans4   ";
-            case "Serv1": return "Serv1    ";
-            case "Serv2": return "Serv2    ";
-            case "Imp1": return "Imp1     ";
-            case "Imp2": return "Imp2     ";
-            default: return String.format("%-8s", nombre);
-        }
-    }
-
-    // Método para obtener el color con el que queremos imprimir cada casilla del tablero.
-    private String obtenerColor(Casilla casilla) {
-        if (casilla.getGrupo() != null && casilla.getTipo().equals("Solar")) {
-            String colorGrupo = casilla.getGrupo().getColorGrupo();
-            switch (colorGrupo.toLowerCase()) {
-                case "black": return BLACK;
-                case "blue": return BLUE;
-                case "purple": return PURPLE;
-                case "white": return WHITE;
-                case "red": return RED;
-                case "yellow": return YELLOW;
-                case "green": return GREEN;
-                case "cyan": return CYAN;
-            }
-        }
-
-        return RESET;
+        return avataresStr.toString();
     }
 
     //Método usado para buscar la cosilla en la posicion pasada por argumento:

@@ -26,6 +26,7 @@ public class Avatar {
         this.tipo = tipo;
         this.jugador = jugador;
         this.lugar = lugar;
+        lugar.getAvatares().add(this); //Introducimos el avatar en la casilla
         avCreados.add(this);
     }
 
