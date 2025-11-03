@@ -202,7 +202,7 @@ public class Tablero {
         String color = RESET;
         if (casilla.getTipo().equals("Solar")) color = casilla.getGrupo().getColorGrupo();
 
-        return color + String.format("%-8s" + RESET + "%5s", casilla.getNombre(), formatearAvatares(casilla));
+        return color + String.format("%-8s" + RESET + "%11s", casilla.getNombre(), formatearAvatares(casilla));
     }
 
     //Método para formatear avatares de una casilla pasada por argumento.

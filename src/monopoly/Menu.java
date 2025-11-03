@@ -84,7 +84,7 @@ public class Menu {
                 return;
             }
 
-            Jugador nuevoJugador = new Jugador(nombre, tipoAvatar, this.tablero.encontrar_casilla("Salida"), avatares);
+            Jugador nuevoJugador = new Jugador(nombre, tipoAvatar, tablero.encontrar_casilla("Salida"), avatares);
             if (nuevoJugador.getNombre() != null && jugadores.size() < 5 ) {
                 jugadores.add(nuevoJugador);
                 System.out.println("{\n\tnombre: " + nuevoJugador.getNombre() + ",\n\tavatar: " + nuevoJugador.getAvatar().getId() + "\n}");
