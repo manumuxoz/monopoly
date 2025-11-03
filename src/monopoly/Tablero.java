@@ -199,11 +199,10 @@ public class Tablero {
 
     // Método para formatear cada casilla del tablero para su impresión.
     private String formatearCasilla(Casilla casilla) {
-        String avatares = formatearAvatares(casilla);
         String color = RESET;
         if (casilla.getTipo().equals("Solar")) color = casilla.getGrupo().getColorGrupo();
 
-        return color + String.format("%-10s", casilla.getNombre()) + avatares + RESET;
+        return color + String.format("%-10s", casilla.getNombre()) + formatearAvatares(casilla) + RESET;
     }
 
     //Método para formatear avatares de una casilla pasada por argumento.
