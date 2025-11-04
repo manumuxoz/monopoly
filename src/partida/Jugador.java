@@ -20,7 +20,7 @@ public class Jugador {
 
 
     //nuevos atributos
-    private ArrayList<Casilla> propiedadesConEdificios;
+    private ArrayList<String> edificios;
 
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
@@ -65,49 +65,27 @@ public class Jugador {
     public int getTiradasCarcel(){
         return tiradasCarcel;
     }
-    public int getVueltas(){
-        return vueltas;
-    }
     public ArrayList<Casilla> getPropiedades() {
         return propiedades;
     }
-    public ArrayList<Casilla> getPropiedadesConEdificios() {return  propiedadesConEdificios;}
+
+    //Getters nuevos atributos:
+    public ArrayList<String> getEdificios() {
+        return edificios;
+    }
 
     //Setters:
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    public void setAvatar(Avatar avatar) {
-        this.avatar = avatar;
-    }
     public void setFortuna(float fortuna) {
         this.fortuna = fortuna;
-    }
-    public void setGastos(float gastos) {
-        this.gastos = gastos;
     }
     public void setenCarcel(boolean carcel) {
         this.enCarcel = carcel;
     }
     public void setTiradasCarcel(int tiradasCarcel) {
         this.tiradasCarcel = tiradasCarcel;
-    }
-    public void setVueltas(int vueltas) {
-        this.vueltas = vueltas;
-    }
-    public void setPropiedades(ArrayList<Casilla> propiedades) {
-        this.propiedades = propiedades;
-    }
-
-    //Otros métodos:
-    //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
-    public void anhadirPropiedad(Casilla casilla) {
-        if (!propiedades.contains(casilla))
-            propiedades.add(casilla);
-    }
-    public void anhadirPropiedadConEdificios(Casilla casilla){
-        if (!this.propiedadesConEdificios.contains(casilla))
-            this.propiedadesConEdificios.add(casilla);
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
