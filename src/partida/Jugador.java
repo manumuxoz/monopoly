@@ -43,6 +43,7 @@ public class Jugador {
             tiradasCarcel = 0;
             vueltas = 0;
             propiedades = new ArrayList<>();
+            edificios = new ArrayList<>();
         }
     }
 

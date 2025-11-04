@@ -466,7 +466,35 @@ public class Casilla {
                 "se reduce en " + valorCasa + "$.");
     }
 
-    public void edificarHotel(Jugador solicitante, ArrayList<String> edificiosCreados) {}
+    public void edificarHotel(Jugador solicitante, ArrayList<String> edificiosCreados) {
+        if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
+            System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
+            return;
+        }
+        if (!grupo.esDuenhoGrupo(solicitante)){ //Para comprar tiene que ser dueño de todas las propiedades del grupo
+            System.out.println(solicitante.getNombre() + " no posee todas las propiedades del grupo: " + color(grupo.getColorGrupo()) + ".");
+            return;
+        }
+        if (numCasas < 4) { //Si hay 4 casas ya construídas no puede construir más
+            System.out.println("No se puede edificar un hotel en esta casilla. Número de casas: " + numCasas);
+            return;
+        }
+        if (hotel) { //Si hay un hotel no puede construir casas
+            System.out.println("No se puede edificar un hotel, ya que ya se dispone de uno.");
+            return;
+        }
+
+        solicitante.sumarGastos(valorHotel); //Sumamos gastos y restamos fortuna
+        solicitante.sumarFortuna(-valorHotel);
+        numCasas = 0; //Reseteamos el contador
+        solicitante.getEdificios(); //Eliminamos las casas (por hcer)
+        hotel = true;
+        incrementarAlquiler(); //Incrementamos alquiler
+        solicitante.getEdificios().add(generarIDEdificio(edificiosCreados, "hotel")); //Añadimos el edificio al jugador
+
+        System.out.println("Se ha edificado un hotel en " + nombre + ".La fortuna de " + solicitante.getNombre() +
+                "se reduce en " + valorHotel + "$.");
+    }
 
     public void edificarPiscina(Jugador solicitante, ArrayList<String> edificiosCreados) {}
 
