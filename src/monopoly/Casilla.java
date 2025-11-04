@@ -32,8 +32,6 @@ public class Casilla {
     private boolean piscina;
     private boolean pistaDeporte;
 
-
-
     //Constructores:
     public Casilla() {
     }//Parámetros vacíos
@@ -426,6 +424,20 @@ public class Casilla {
         if (numCasas > 0) impuesto = alquilerCasa * numCasas;
     }
 
+    //Método para generar un ID a cada nuevo edificio
+    private String generarIDEdificio(ArrayList<String> edificiosCreados, String edificio) {
+        int count = 1;
+        for (String ID : edificiosCreados) {
+            String[] partes = ID.split("-");
+            if (partes[0].equals(edificio))
+                count++;
+        }
+        String nuevoID = String.format(edificio + "-" + count);
+        edificiosCreados.add(nuevoID);
+
+        return nuevoID;
+    }
+
     private void edificarCasa(Jugador solicitante) {
         if (!duenho.equals(solicitante)) {
             System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
@@ -435,8 +447,15 @@ public class Casilla {
             System.out.println(solicitante.getNombre() + " no posee todas las propiedades del grupo: " + color(grupo.getColorGrupo()) + ".");
             return;
         }
-        if (numCasas = 4)
-            System.out.println();
+        if (numCasas == 4) {
+            System.out.println("No se puede edificar ningún edificio más en esta casilla.");
+            return;
+        }
+        if (hotel) {
+            System.out.println("No se puede edificar ninguna casa, ya que ya se dispone de un hotel.");
+            return;
+        }
+
 
     }
 }

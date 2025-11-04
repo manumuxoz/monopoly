@@ -20,6 +20,8 @@ public class Menu {
     private Dado dado2;
     private Jugador banca; //El jugador banca.
 
+    //Atributos nuevos:
+    private ArrayList<String> edificiosCreados;
 
     // Constructor
     public Menu() {
@@ -28,6 +30,7 @@ public class Menu {
         tablero = new Tablero(banca);
         dado1 = new Dado();
         dado2 = new Dado();
+        edificiosCreados = new ArrayList<>();
 
         while (true) {
             Scanner sc = new Scanner(System.in);
@@ -358,13 +361,13 @@ public class Menu {
         Jugador jugadorActual =  jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
         if (edificio.equals("casa")) {
-            casillaActual.edificarCasa(jugadorActual);
+            casillaActual.edificarCasa(jugadorActual, edificiosCreados);
         } else if (edificio.equals("hotel")) {
-            casillaActual.edificarHotel(jugadorActual);
+            casillaActual.edificarHotel(jugadorActual, edificiosCreados);
         } else if (edificio.equals("piscina")) {
-            casillaActual.edificarPiscina(jugadorActual);
+            casillaActual.edificarPiscina(jugadorActual, edificiosCreados);
         } else if (edificio.equals("pista")) {
-            casillaActual.edificarPista(jugadorActual);
+            casillaActual.edificarPista(jugadorActual, edificiosCreados);
         } else
             System.out.println("Error: Nombre de edificación inválido. Usa: casa, hotel, piscina o pista");
     }
