@@ -19,8 +19,7 @@ public class Menu {
     private Dado dado1; //Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
     private Jugador banca; //El jugador banca.
-    private boolean solvente; //Booleano para comprobar si el jugador que tiene el turno es solvente, es decir, si ha pagado sus deudas.
-    private boolean ultimoDoble = true;//booleano que indica si en la ultima tirada fueron dobles
+
 
     // Constructor
     public Menu() {
@@ -288,7 +287,7 @@ public class Menu {
         jugador.setTiradasCarcel(jugador.getTiradasCarcel() + 1);
         lanzamientos = -1;
 
-        if (jugador.getTiradasCarcel() >= 3 || ultimoDoble) {
+        if (jugador.getTiradasCarcel() >= 3) {
             jugador.setenCarcel(false);
             jugador.setTiradasCarcel(0);
             System.out.println(jugador.getNombre() + " sale de la cárcel.");
@@ -296,15 +295,6 @@ public class Menu {
             System.out.println(jugador.getNombre() + " está en la cárcel. Turno " +
                     jugador.getTiradasCarcel() + "/3. Use 'salir carcel' para pagar fianza.");
         }
-    }
-
-
-    private void descCasillaActual(String nombre) {
-        Casilla casilla = tablero.encontrar_casilla(nombre); //Buscamos casilla en el tablero
-        if (casilla != null) //Si no devuelve null imprimimos la información
-            System.out.println(casilla.infoCasilla());
-        else
-            System.out.println("Error: La casilla " + nombre + " no existe.");
     }
 
     //Método para saber si un jugador puede tirar
