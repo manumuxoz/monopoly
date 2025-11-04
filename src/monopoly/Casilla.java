@@ -2,6 +2,7 @@ package monopoly;
 
 import partida.*;
 import java.util.ArrayList;
+import static monopoly.Valor.*;
 
 
 public class Casilla {
@@ -326,7 +327,7 @@ public class Casilla {
             case "Solar":
                 return "{" +
                         "\n\ttipo: " + tipo +
-                        ",\n\tgrupo: " + grupo.getColorGrupo() +
+                        ",\n\tgrupo: " + color(grupo.getColorGrupo()) +
                         ",\n\tpropietario: " + duenho.getNombre() +
                         ",\n\tvalor: " + valor +
                         ",\n\talquiler: " + impuesto +
@@ -387,7 +388,7 @@ public class Casilla {
                 return "{" +
                         "\n\tnombre: " + nombre +
                         "\n\ttipo: " + tipo +
-                        ",\n\tgrupo: " + (grupo != null ? grupo.getColorGrupo() : "null") +
+                        ",\n\tgrupo: " + color(grupo.getColorGrupo()) +
                         ",\n\tvalor: " + valor +
                         "\n}";
             if (this.getTipo().equals("Transporte") || this.getTipo().equals("Servicios"))
@@ -398,5 +399,21 @@ public class Casilla {
                         "\n}";
         }
         return "";
+    }
+
+    //Métodos nueos:
+
+    private String color(String colorGrupo) {
+        return switch (colorGrupo) {
+            case BLACK -> "Negro";
+            case CYAN -> "Cian";
+            case PURPLE -> "Morado";
+            case WHITE -> "Blanco";
+            case RED -> "Rojo";
+            case YELLOW -> "Amarillo";
+            case GREEN -> "Verde";
+            case BLUE -> "Azul";
+            default -> "";
+        };
     }
 }
