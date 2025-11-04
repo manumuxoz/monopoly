@@ -333,6 +333,9 @@ public class Menu {
 
         Casilla nuevaCasilla = avatarActual.getLugar();
 
+        //Sumamos bote al parking en caso de caer en una casilla de tipo 'Impuesto'
+        if (nuevaCasilla.getTipo().equals("Impuesto")) tablero.encontrar_casilla("Parking").sumarValor(nuevaCasilla.getImpuesto());
+
         // USAR evaluarCasilla para TODAS las casillas
         boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
 
