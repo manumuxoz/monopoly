@@ -28,6 +28,7 @@ public class Casilla {
     private float alquilerPistaDeporte;
 
 
+
     //Constructores:
     public Casilla() {
     }//Parámetros vacíos

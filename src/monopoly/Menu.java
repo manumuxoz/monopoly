@@ -67,25 +67,22 @@ public class Menu {
 
         //Funcionalidades que se pueden realizar con un número de jugadores menor a 2
         if (partes.length == 4 && partes[0].equals("crear") && partes[1].equals("jugador")) { //Dar de alta jugador
-            String tipoAvatar = partes[3];
-            String nombre = partes[2];
-
-            // Validar tipo de avatar ANTES de crear el jugador
-            if (!tipoAvatar.equals("sombrero") && !tipoAvatar.equals("esfinge") &&
-                    !tipoAvatar.equals("pelota") && !tipoAvatar.equals("coche")) {
-                System.out.println("Tipo de avatar incorrecto. Usa: sombrero, esfinge, pelota o coche");
+            if (!partes[3].equals("sombrero") && !partes[3].equals("esfinge") &&
+                    !partes[3].equals("pelota") && !partes[3].equals("coche")) {
+                System.out.println("Tipo de avatar incorrecto. Usa: sombrero, esfinge, pelota o coche.");
                 return;
             }
-            if (nombre.trim().isEmpty()) {
-                System.out.println("Error: El nombre no puede estar vacío");
+            if (partes[2].trim().isEmpty()) {
+                System.out.println("Error: El nombre no puede estar vacío.");
                 return;
             }
 
-            Jugador nuevoJugador = new Jugador(nombre, tipoAvatar, tablero.encontrar_casilla("Salida"), avatares);
-            if (nuevoJugador.getNombre() != null && jugadores.size() < 5 ) {
+            Jugador nuevoJugador = new Jugador(partes[2], partes[3], tablero.encontrar_casilla("Salida"), avatares);
+            if (nuevoJugador.getNombre() != null && jugadores.size() <= 4) {
                 jugadores.add(nuevoJugador);
                 System.out.println("{\n\tnombre: " + nuevoJugador.getNombre() + ",\n\tavatar: " + nuevoJugador.getAvatar().getId() + "\n}");
-            }
+            } else
+                System.out.println("Error: Máximo de jugadores alcanzado.");
 
         } else if (partes.length == 1 && partes[0].equals("comandos")) leerComandos();
 
@@ -113,7 +110,8 @@ public class Menu {
             else if (partes.length == 2 && partes[0].equals("comprar")) comprar(partes[1]);
 
             else if (partes.length == 2 && partes[0].equals("salir") && partes[1].equals("carcel")) salirCarcel();
-        }
+        } else
+            System.out.println("Error: Mínimo de jugadores no alcanzado.");
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
@@ -162,11 +160,9 @@ public class Menu {
 
         if (jugadorActual.enBancarrota() || !puedeTirar()) return; //Si el jugador está en bancarrota o ya ha tirado, no puede tirar
 
-        Avatar avatarActual = jugadorActual.getAvatar();
-
         //Realizar tirada
         int valorTirada, dado1Valor, dado2Valor;
-        boolean sonDobles = false;
+        boolean sonDobles;
 
         if (tirada1 == -1 && tirada2 == -2) { //Tirada aleatoria
             dado1Valor = dado1.hacerTirada();
@@ -195,24 +191,7 @@ public class Menu {
 
         manejarDobles(sonDobles);
 
-        avatarActual.moverAvatar(tablero.getPosiciones(), valorTirada);
-
-        Casilla nuevaCasilla = avatarActual.getLugar();
-
-        // USAR evaluarCasilla para TODAS las casillas
-        boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
-
-        // Si evaluarCasilla retorna false (para IrCarcel), manejar el encarcelamiento
-        if (!solvente && nuevaCasilla.getNombre().equals("IrCarcel")) {
-            jugadorActual.encarcelar(tablero.getPosiciones());
-        }
-        // Si no es solvente por otras razones (falta de dinero)
-        else if (!solvente) {
-            System.out.println(jugadorActual.getNombre() + " debe hipotecar propiedades o declararse en bancarrota");
-        }
-
-        // Repintar tablero
-        repintarTablero();
+        manejarAvatar(valorTirada);
     }
 
 
@@ -353,5 +332,30 @@ public class Menu {
             }
         } else
             lanzamientos = -1; // Resetear contador si no son dobles
+    }
+
+    //Método para manejar las acciones del avatar
+    private void manejarAvatar(int valorTirada) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Avatar avatarActual = jugadorActual.getAvatar();
+
+        avatarActual.moverAvatar(tablero.getPosiciones(), valorTirada);
+
+        Casilla nuevaCasilla = avatarActual.getLugar();
+
+        // USAR evaluarCasilla para TODAS las casillas
+        boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
+
+        // Si evaluarCasilla retorna false (para IrCarcel), manejar el encarcelamiento
+        if (!solvente && nuevaCasilla.getNombre().equals("IrCarcel")) {
+            jugadorActual.encarcelar(tablero.getPosiciones());
+        }
+        // Si no es solvente por otras razones (falta de dinero)
+        else if (!solvente) {
+            System.out.println(jugadorActual.getNombre() + " debe hipotecar propiedades o declararse en bancarrota");
+        }
+
+        // Repintar tablero
+        repintarTablero();
     }
 }
