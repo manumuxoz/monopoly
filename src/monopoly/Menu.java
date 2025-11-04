@@ -109,6 +109,8 @@ public class Menu {
             else if (partes.length == 2 && partes[0].equals("comprar")) comprar(partes[1]);
 
             else if (partes.length == 2 && partes[0].equals("salir") && partes[1].equals("carcel")) salirCarcel();
+
+            else if (partes.length == 2 && partes[0].equals("edificar")) edificar(partes[1]);
         } else
             System.out.println("Error: Mínimo de jugadores no alcanzado.");
     }
@@ -350,5 +352,13 @@ public class Menu {
 
         // Repintar tablero
         repintarTablero();
+    }
+
+    private void edificar(String edificio) {
+        if (edificio.equals("casa", "")) {}
+
+
+        Jugador jugadorActual =  jugadores.get(turno);
+
     }
 }
