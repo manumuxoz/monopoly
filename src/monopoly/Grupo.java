@@ -47,27 +47,13 @@ class Grupo {
     public String getColorGrupo() {
         return colorGrupo;
     }
-    public int getNumCasillas() {
-        return numCasillas;
-    }
-
-    //Setters:
-    public void setMiembros(ArrayList<Casilla> miembros) {
-        this.miembros = miembros;
-    }
-    public void setColorGrupo(String colorGrupo) {
-        this.colorGrupo = colorGrupo;
-    }
-    public void setNumCasillas(int numCasillas) {
-        this.numCasillas = numCasillas;
-    }
 
 
     /* Método que añade una casilla al array de casillas miembro de un grupo.
     * Parámetro: casilla que se quiere añadir.
      */
     public void anhadirCasilla(Casilla miembro) {
-        if(!miembros.contains(miembro)) {
+        if(!miembros.contains(miembro) && numCasillas < 3) {
             miembros.add(miembro);
             numCasillas += 1;
         }
@@ -78,6 +64,6 @@ class Grupo {
     * Valor devuelto: true si es dueño de todas las casillas del grupo, false en otro caso.
      */
     public boolean esDuenhoGrupo(Jugador jugador) {
-        return true;
+        return jugador.getPropiedades().containsAll(miembros);
     }
 }
