@@ -39,20 +39,20 @@ public class Tablero {
 
         //Vamos creando casillas con los diferentes constructores para cada tipo y añadimos al arraylist
         casillasNorte.add(0, new Casilla("Parking", "Especiales", 20, banca)); //Añadimos al arraylist
-        Casilla solar12 = new Casilla("Solar12", "Solar", 21, 2200000, banca, 180000, 1100000, 2200000, 10500000, 2100000, 2100000, 1500000, 1500000, 300000, 600000);
+        Casilla solar12 = new Casilla("Solar12", "Solar", 21, 2200000, banca, 180000, 1100000, 2200000, 10500000, 2100000, 2100000);
         casillasNorte.add(1, solar12);
         casillasNorte.add(2, new Casilla("Suerte", "Suerte", 22, banca));
-        Casilla solar13 = new Casilla("Solar13", "Solar", 23, 2200000, banca, 180000, 1100000, 2200000, 10500000, 2100000, 2100000, 1500000, 1500000, 300000, 600000);
+        Casilla solar13 = new Casilla("Solar13", "Solar", 23, 2200000, banca, 180000, 1100000, 2200000, 10500000, 2100000, 2100000);
         casillasNorte.add(3, solar13);
-        Casilla solar14 = new Casilla("Solar14", "Solar", 24, 2400000, banca, 200000, 1200000, 2325000, 11000000, 2200000, 2200000, 1500000, 1500000, 300000, 600000);
+        Casilla solar14 = new Casilla("Solar14", "Solar", 24, 2400000, banca, 200000, 1200000, 2325000, 11000000, 2200000, 2200000);
         casillasNorte.add(4, solar14);
-        casillasNorte.add(5, new Casilla("Trans3", "Transporte", 25, 500000, banca, 250000, 0,0,0,0,0,0,0,0,0));
-        Casilla solar15 = new Casilla("Solar15", "Solar", 26, 2600000, banca, 220000, 1300000, 2450000, 11500000, 2300000, 2300000, 1500000, 1500000, 300000, 600000);
+        casillasNorte.add(5, new Casilla("Trans3", "Transporte", 25, 500000, banca, 250000, 0,0,0,0,0));
+        Casilla solar15 = new Casilla("Solar15", "Solar", 26, 2600000, banca, 220000, 1300000, 2450000, 11500000, 2300000, 2300000);
         casillasNorte.add(6, solar15);
-        Casilla solar16 = new Casilla("Solar16", "Solar", 27, 2600000, banca, 220000, 1300000, 2450000, 11500000, 2300000, 2300000, 1500000, 1500000, 300000, 600000);
+        Casilla solar16 = new Casilla("Solar16", "Solar", 27, 2600000, banca, 220000, 1300000, 2450000, 11500000, 2300000, 2300000);
         casillasNorte.add(7, solar16);
-        casillasNorte.add(8, new Casilla("Serv2", "Servicios", 28, 500000, banca, 50000, 0,0,0,0,0,0,0,0,0));
-        Casilla solar17 = new Casilla("Solar17", "Solar", 29, 2800000, banca, 240000, 14000000, 2600000, 12000000, 2400000, 2400000, 1500000, 1500000, 300000, 600000);
+        casillasNorte.add(8, new Casilla("Serv2", "Servicios", 28, 500000, banca, 50000, 0,0,0,0,0));
+        Casilla solar17 = new Casilla("Solar17", "Solar", 29, 2800000, banca, 240000, 14000000, 2600000, 12000000, 2400000, 2400000);
         casillasNorte.add(9, solar17);
 
         posiciones.add(2, casillasNorte); //Añadimos al arraylist de arraylist de casillas del tablero
@@ -66,15 +66,15 @@ public class Tablero {
         ArrayList<Casilla> casillasSur = new ArrayList<>();
 
         casillasSur.add(0, new Casilla("Salida", "Especiales", 0, banca));
-        casillasSur.add(1, new Casilla("Solar1", "Solar", 1, 600000, banca, 20000, 300000, 400000, 2500000, 500000, 500000, 500000, 500000, 100000, 200000));
+        casillasSur.add(1, new Casilla("Solar1", "Solar", 1, 600000, banca, 20000, 300000, 400000, 2500000, 500000, 500000));
         casillasSur.add(2, new Casilla("Caja", "Caja", 2, banca));
-        casillasSur.add(3, new Casilla("Solar2", "Solar", 3, 600000, banca, 40000, 300000, 800000, 4500000, 900000, 900000, 500000, 500000, 100000, 200000));
+        casillasSur.add(3, new Casilla("Solar2", "Solar", 3, 600000, banca, 40000, 300000, 800000, 4500000, 900000, 900000));
         casillasSur.add(4, new Casilla("Imp1", 4, 2000000, banca));
-        casillasSur.add(5, new Casilla("Trans1", "Transporte", 5, 500000, banca, 250000, 0,0,0,0,0,0,0,0,0));
-        casillasSur.add(6, new Casilla("Solar3", "Solar", 6, 1000000, banca, 60000, 500000, 1000000, 5500000, 1100000, 1100000, 500000, 500000, 100000, 200000 ));
+        casillasSur.add(5, new Casilla("Trans1", "Transporte", 5, 500000, banca, 250000, 0,0,0,0,0));
+        casillasSur.add(6, new Casilla("Solar3", "Solar", 6, 1000000, banca, 60000, 500000, 1000000, 5500000, 1100000, 1100000));
         casillasSur.add(7, new Casilla("Suerte", "Suerte", 7, banca));
-        casillasSur.add(8, new Casilla("Solar4", "Solar", 8, 1000000, banca, 60000, 500000, 1000000, 5500000, 1100000, 1100000, 500000, 500000, 100000, 200000 ));
-        casillasSur.add(9, new Casilla("Solar5", "Solar", 9, 1200000, banca, 80000, 600000, 1250000, 6000000, 1200000, 1200000, 500000, 500000, 100000, 200000 ));
+        casillasSur.add(8, new Casilla("Solar4", "Solar", 8, 1000000, banca, 60000, 500000, 1000000, 5500000, 1100000, 1100000));
+        casillasSur.add(9, new Casilla("Solar5", "Solar", 9, 1200000, banca, 80000, 600000, 1250000, 6000000, 1200000, 1200000));
 
         posiciones.add(0,casillasSur);
     }
@@ -84,16 +84,15 @@ public class Tablero {
         ArrayList<Casilla> casillasOeste = new ArrayList<>();
 
         casillasOeste.add(0, new Casilla("Carcel", "Especiales", 10, banca));
-        casillasOeste.add(1, new Casilla("Solar6", "Solar", 11, 1400000, banca, 100000, 700000, 1500000, 7500000, 1500000, 1500000,1000000, 1000000, 200000, 400000));
-));
-        casillasOeste.add(2, new Casilla("Serv1", "Servicios", 12, 500000, banca, 50000, 0, 0,0,0,0,0,0,0,0));
-        casillasOeste.add(3, new Casilla("Solar7", "Solar", 13, 1400000, banca, 100000, 700000, 1500000, 7500000, 1500000, 1500000,1000000, 1000000, 200000, 400000));
-        casillasOeste.add(4, new Casilla("Solar8", "Solar", 14, 1600000, banca, 120000, 800000, 1750000, 9000000, 1800000, 1800000, 1000000, 1000000, 200000, 400000));
-        casillasOeste.add(5, new Casilla("Trans2", "Transporte", 15, 500000, banca, 250000, 0,0,0,0,0,0,0,0,0));
-        casillasOeste.add(6, new Casilla("Solar9", "Solar", 16, 1800000, banca, 140000, 900000, 1850000, 9500000, 1900000, 1900000, 1000000, 1000000, 200000, 400000));
+        casillasOeste.add(1, new Casilla("Solar6", "Solar", 11, 1400000, banca, 100000, 700000, 1500000, 7500000, 1500000, 1500000));
+        casillasOeste.add(2, new Casilla("Serv1", "Servicios", 12, 500000, banca, 50000, 0, 0,0,0,0));
+        casillasOeste.add(3, new Casilla("Solar7", "Solar", 13, 1400000, banca, 100000, 700000, 1500000, 7500000, 1500000, 1500000));
+        casillasOeste.add(4, new Casilla("Solar8", "Solar", 14, 1600000, banca, 120000, 800000, 1750000, 9000000, 1800000, 1800000));
+        casillasOeste.add(5, new Casilla("Trans2", "Transporte", 15, 500000, banca, 250000, 0,0,0,0,0));
+        casillasOeste.add(6, new Casilla("Solar9", "Solar", 16, 1800000, banca, 140000, 900000, 1850000, 9500000, 1900000, 1900000));
         casillasOeste.add(7, new Casilla("Caja", "Caja", 17, banca));
-        casillasOeste.add(8, new Casilla("Solar10", "Solar", 18, 1800000, banca, 140000, 900000, 1850000, 9500000, 1900000, 1900000, 1000000, 1000000, 200000, 400000));
-        casillasOeste.add(9, new Casilla("Solar11", "Solar", 19, 2200000, banca, 160000, 1100000, 2000000, 10000000, 2000000, 2000000, 1000000, 1000000, 200000, 400000));
+        casillasOeste.add(8, new Casilla("Solar10", "Solar", 18, 1800000, banca, 140000, 900000, 1850000, 9500000, 1900000, 1900000));
+        casillasOeste.add(9, new Casilla("Solar11", "Solar", 19, 2200000, banca, 160000, 1100000, 2000000, 10000000, 2000000, 2000000));
 
         posiciones.add(1, casillasOeste);
     }
@@ -103,15 +102,15 @@ public class Tablero {
         ArrayList<Casilla> casillasOeste = new ArrayList<>();
 
         casillasOeste.add(0, new Casilla("IrCarcel", "Especiales", 30, banca));
-        casillasOeste.add(1, new Casilla("Solar18", "Solar", 31, 3000000, banca, 260000, 1500000, 2750000, 12750000, 2550000, 2550000, 2000000, 2000000, 400000, 800000));
-        casillasOeste.add(2, new Casilla("Solar19", "Solar", 32, 3000000, banca, 260000, 1500000, 2750000, 12750000, 2550000, 2550000, 2000000, 2000000, 400000, 800000));
+        casillasOeste.add(1, new Casilla("Solar18", "Solar", 31, 3000000, banca, 260000, 1500000, 2750000, 12750000, 2550000, 2550000));
+        casillasOeste.add(2, new Casilla("Solar19", "Solar", 32, 3000000, banca, 260000, 1500000, 2750000, 12750000, 2550000, 2550000));
         casillasOeste.add(3, new Casilla("Caja", "Caja", 33, banca));
-        casillasOeste.add(4, new Casilla("Solar20", "Solar", 34, 3200000, banca, 280000, 1600000, 3000000, 14000000, 2800000, 2800000,2000000, 2000000, 400000, 800000));
-        casillasOeste.add(5, new Casilla("Trans4", "Transporte", 35, 500000, banca, 250000, 0,0,0,0,0,0,0,0,0));
+        casillasOeste.add(4, new Casilla("Solar20", "Solar", 34, 3200000, banca, 280000, 1600000, 3000000, 14000000, 2800000, 2800000));
+        casillasOeste.add(5, new Casilla("Trans4", "Transporte", 35, 500000, banca, 250000, 0,0,0,0,0));
         casillasOeste.add(6, new Casilla("Suerte", "Suerte", 36, banca));
-        casillasOeste.add(7, new Casilla("Solar21", "Solar", 37, 3500000, banca, 350000, 1750000));
+        casillasOeste.add(7, new Casilla("Solar21", "Solar", 37, 3500000, banca, 350000, 1750000, 3250000, 17000000, 3400000, 3400000));
         casillasOeste.add(8, new Casilla("Imp2", 38, 2000000, banca));
-        casillasOeste.add(9, new Casilla("Solar22", "Solar", 39, 4000000, banca, 500000, 2000000));
+        casillasOeste.add(9, new Casilla("Solar22", "Solar", 39, 4000000, banca, 500000, 2000000, 4250000, 20000000, 4000000, 4000000));
 
         posiciones.add(3, casillasOeste);
     }
@@ -182,29 +181,6 @@ public class Tablero {
     }
 
     // Nuevos métodos:
-
-    private inicializarGrupos(ArrayList<ArrayList<Casilla>> posiciones) {
-        //Creamos los grupos de este lado e insertamos en el hashmap
-
-
-
-
-
-
-
-        Grupo grupoBlack = new Grupo(solar1, solar2, "Black");
-        grupos.put("Black", grupoBlack);
-        Grupo grupoBlue = new Grupo(solar3, solar4, solar5, "Blue");
-        grupos.put("Blue", grupoBlue);
-        Grupo grupoPurple = new Grupo(solar6, solar7, solar8, "Purple");
-        grupos.put("Purple", grupoPurple);
-        Grupo grupoWhite = new Grupo(solar9, solar10, solar11, "White");
-        grupos.put("White", grupoWhite);
-        Grupo grupoGreen = new Grupo(solar18, solar19, solar20, "Green");
-        grupos.put("Green", grupoGreen);
-        Grupo grupoCyan = new Grupo(solar21, solar22, "Cyan");
-        grupos.put("Cyan", grupoCyan);
-    }
 
     // Método para formatear cada casilla del tablero para su impresión.
     private String formatearCasilla(Casilla casilla) {
@@ -299,5 +275,101 @@ public class Tablero {
             }
         }
         return null;
+    }
+
+    private void asignarPreciosEdificaciones(ArrayList<Grupo> grupos) {
+        for (Grupo grupo : grupos) {
+            String nombre = grupo.getColorGrupo();
+
+            switch (nombre.toLowerCase()) {
+                case "marrón": case "azul":
+                    grupo.setPrecioCasa(500000);
+                    grupo.setPrecioHotel(500000);
+                    grupo.setPrecioPiscina(100000);
+                    grupo.setPrecioPistaDeporte(200000);
+                    break;
+                    
+                case "rosa": case "naranja":
+                    grupo.setPrecioCasa(1000000);
+                    grupo.setPrecioHotel(1000000);
+                    grupo.setPrecioPiscina(200000);
+                    grupo.setPrecioPistaDeporte(400000);
+                    break;
+
+                case "rojo": case "amarillo":
+                    grupo.setPrecioCasa(1500000);
+                    grupo.setPrecioHotel(1500000);
+                    grupo.setPrecioPiscina(300000);
+                    grupo.setPrecioPistaDeporte(600000);
+                    break;
+
+                case "verde": case "morado":
+                    grupo.setPrecioCasa(2000000);
+                    grupo.setPrecioHotel(2000000);
+                    grupo.setPrecioPiscina(400000);
+                    grupo.setPrecioPistaDeporte(800000);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+
+    public void listarEdificiosGrupo(String nombreGrupo) {
+        Grupo grupo = grupos.get(nombreGrupo);
+        if(grupo == null) return;
+        for (Casilla casilla :grupo.getMiembros()){
+            System.out.println("[propiedad: " + casilla.getNombre() +
+                    "]\n\t[hoteles: " + casilla.getNumeroHotel() +
+                    "]\n\t[casas: " + casilla.getNumeroCasas() +
+                    "]\n\t[piscinas: " + casilla.getNumeroPiscina() +
+                    "]\n\t[pistasDeDeporte: " + casilla.getNumeroPistaDeporte() +
+                    "]\n\t[alquiler: " + casilla.getImpuesto() + "]");
+        }
+        boolean puedePiscina = false;
+        boolean puedeCasa = false;
+        boolean puedeHotel = false;
+        boolean puedePistaDeporte = false;
+        for (Casilla casillas :  grupo.getMiembros()){
+            if (casillas.getNumeroPistaDeporte()<1 && casillas.getNumeroPiscina()==1) puedePistaDeporte = true;
+            if (casillas.getNumeroPiscina()<1 && casillas.getNumeroHotel()==1) puedePiscina = true;
+            if (casillas.getNumeroHotel()<1 && casillas.getNumeroCasas()==4) puedeHotel = true;
+            if (casillas.getNumeroCasas()<4) puedeCasa = true;
+        }
+        System.out.print("Aun se puede edificar ");
+        boolean primero = true;
+        if(puedePiscina){
+            System.out.print("una piscina");
+            primero = false;
+        }
+        if(puedePistaDeporte){
+            if(!primero) System.out.print(" y ");
+            System.out.print("una pista de deporte");
+        }
+        if(puedeHotel){
+            if(!primero) System.out.print(" y ");
+            System.out.print("un hotel");
+        }
+        if(puedeCasa){
+            if(!primero) System.out.print(" y ");
+            System.out.print("una casa");
+        }
+        System.out.println(".");
+        System.out.print("Ya no se pueden construir ");
+        if(!puedeHotel){
+            System.out.print("ni hoteles");
+        }
+        if(!puedeCasa){
+            System.out.print(" ni casas");
+        }
+        if(!puedePistaDeporte){
+            System.out.print(" ni pistas de deporte");
+        }
+        if(!puedePiscina){
+            System.out.print(" ni piscina");
+        }
+        System.out.println(".");
     }
 }

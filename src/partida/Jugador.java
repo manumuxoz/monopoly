@@ -16,6 +16,10 @@ public class Jugador {
     private int vueltas; //Cuenta las vueltas dadas al tablero.
     private ArrayList<Casilla> propiedades;//Propiedades que posee el jugador.
 
+
+    //nuevos atributos
+    private ArrayList<Casilla> propiedadesConEdificios;
+
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
         this.nombre = "banca";
@@ -65,6 +69,7 @@ public class Jugador {
     public ArrayList<Casilla> getPropiedades() {
         return propiedades;
     }
+    public ArrayList<Casilla> getPropiedadesConEdificios() {return  propiedadesConEdificios;}
 
     //Setters:
     public void setNombre(String nombre) {
@@ -97,6 +102,10 @@ public class Jugador {
     public void anhadirPropiedad(Casilla casilla) {
         if (!this.propiedades.contains(casilla))
             this.propiedades.add(casilla);
+    }
+    public void anhadirPropiedadConEdificios(Casilla casilla){
+        if (!this.propiedadesConEdificios.contains(casilla))
+            this.propiedadesConEdificios.add(casilla);
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.

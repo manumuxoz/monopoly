@@ -103,6 +103,8 @@ public class Menu {
 
         else if (partes[0].equals("ver") && partes[1].equals("tablero")) System.out.println(tablero.toString());
 
+        else if (partes.length == 3 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificiosPorGrupo(partes[2]);
+
         if (jugadores.size() > 1) { //Funcionalidades que requieren más de un jugador
             if (partes.length == 1 && partes[0].equals("jugador")) indicarTurnoJugador();
 
@@ -118,6 +120,9 @@ public class Menu {
             else if (partes.length == 2 && partes[0].equals("salir") && partes[1].equals("carcel")) salirCarcel();
 
             else if (partes.length == 2 && partes[0].equals("edificar")) edificar(partes[1]);
+
+            else if (partes.length == 2 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificios();
+
         }
     }
 
@@ -139,6 +144,13 @@ public class Menu {
                     }
                     System.out.print(jugador.getPropiedades().getLast().getNombre());
                     break; //Salimos del bucle
+                }
+                System.out.println("],\n\tedificios: ");
+                if(!jugador.getPropiedadesConEdificios().isEmpty()) {
+                    for (int i = 0; i < jugador.getPropiedadesConEdificios().size() - 1; i++) {
+                        System.out.print(jugador.getPropiedades().get(i).getEdificioConstruido() + " en: " +  jugador.getPropiedades().get(i).getNombre() + ".\n");
+                    }
+                    System.out.print(jugador.getPropiedades().getLast().getEdificioConstruido() + " en: " +  jugador.getPropiedades().getLast().getNombre() + ".");
                 }
             }
 
@@ -285,7 +297,14 @@ public class Menu {
                 }
                 System.out.print(jugador.getPropiedades().getLast().getNombre());
             }
-            System.out.println("],\n\thipotecas: ,\n\tedificios:\n}");
+            System.out.println("]\n\tedificios: ");
+            if(!jugador.getPropiedadesConEdificios().isEmpty()) {
+                for (int i = 0; i < jugador.getPropiedadesConEdificios().size() - 1; i++) {
+                    System.out.print(jugador.getPropiedades().get(i).getEdificioConstruido() + " en: " +  jugador.getPropiedades().get(i).getNombre() + ".\n");
+                }
+                System.out.print(jugador.getPropiedades().getLast().getEdificioConstruido() + " en: " +  jugador.getPropiedades().getLast().getNombre() + ".");
+            }
+            System.out.println("\n\thipotecas: ,");
         }
 
     }
@@ -298,6 +317,9 @@ public class Menu {
     private void acabarTurno() {
         turno = (turno + 1) % jugadores.size(); //Aritmética modular
         System.out.println("El jugador actual es " + jugadores.get(turno).getNombre() + ".");
+        Jugador jugadorActual = jugadores.get(turno);
+        Casilla casillaActual = jugadorActual.getAvatar().getLugar();
+        casillaActual.setturnoacabado(0);
         lanzamientos = 0;
     }
 
@@ -350,8 +372,34 @@ public class Menu {
             System.out.println(casilla.infoCasilla());
     }
 
-    private void edificar(String edificio){
+    private void edificar(String edificio){ //funcion que añade un edificio a la casilla de un jugador
+        Jugador jugadorActual = jugadores.get(turno);
+        Avatar avatarActual = jugadorActual.getAvatar();
+        Casilla casillaActual = avatarActual.getLugar();
+        casillaActual.construirEdificio(jugadorActual, edificio);;
+    }
 
+    private void listarEdificios(){ //funcion que imprime por pantalla todas las propiedades que tienen edificios
+        for (Jugador jugador : jugadores) {
+            if(!jugador.getPropiedadesConEdificios().isEmpty()) {
+                for (int i = 0; i < jugador.getPropiedadesConEdificios().size() - 1; i++) {
+                    System.out.print("id: " + jugador.getPropiedadesConEdificios().get(i).getEdificioConstruido() + "," +
+                            "\n\tpropietario: " + jugador.getNombre() +
+                            ",\n\tcasilla: " + jugador.getPropiedadesConEdificios().get(i).getNombre() +
+                            ",\n\tgrupo: " + jugador.getPropiedadesConEdificios().get(i).getGrupo().getColorGrupo() +
+                            ",\n\tcoste: " + jugador.getPropiedadesConEdificios().get(i).getValor() + ".\n\t");
+                }
+                System.out.print("id: " + jugador.getPropiedadesConEdificios().getLast().getEdificioConstruido() + "," +
+                        "\n\tpropietario: " + jugador.getNombre() +
+                        ",\n\tcasilla: " + jugador.getPropiedadesConEdificios().getLast().getNombre() +
+                        ",\n\tgrupo: " + jugador.getPropiedadesConEdificios().getLast().getGrupo().getColorGrupo() +
+                        ",\n\tcoste: " + jugador.getPropiedadesConEdificios().getLast().getValor());
+            }
+        }
+    }
+
+    private void listarEdificiosPorGrupo(String grupoNombre){
+        tablero.listarEdificiosGrupo(grupoNombre);
     }
 
 }

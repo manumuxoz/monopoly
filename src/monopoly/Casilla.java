@@ -18,16 +18,17 @@ public class Casilla {
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
 
     //Atributos nuevos:
-    private float valorCasa;
-    private float valorHotel;
-    private float valorPiscina;
-    private float valorPistaDeporte;
     private float alquilerCasa;
     private float alquilerHotel;
     private boolean enVenta;
     private float alquilerPiscina;
     private float alquilerPistaDeporte;
     private String edificioConstruido;
+    private int numeroCasas = 0;
+    private int numeroHotel = 0;
+    private int numeroPiscina = 0;
+    private int numeroPistaDeporte = 0;
+    private int turnoacabado = 0;
 
 
     //Constructores:
@@ -37,7 +38,7 @@ public class Casilla {
     /*Constructor para casillas tipo Solar, Servicios o Transporte:
      * Parámetros: nombre casilla, tipo (debe ser solar, serv. o transporte), posición en el tablero, valor y dueño.
      */
-    public Casilla(String nombre, String tipo, int posicion, float valor, Jugador duenho, float alquiler, float hipoteca, float alquilerCasa, float alquilerHotel, float alquilerPiscina, float alquilerPistaDeporte, float valorCasa, float valorHotel, float valorPiscina, float valorPistaDeporte) {
+    public Casilla(String nombre, String tipo, int posicion, float valor, Jugador duenho, float alquiler, float hipoteca, float alquilerCasa, float alquilerHotel, float alquilerPiscina, float alquilerPistaDeporte) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.valor = valor;
@@ -50,10 +51,6 @@ public class Casilla {
         this.alquilerHotel = alquilerHotel;
         this.alquilerPiscina = alquilerPiscina;
         this.alquilerPistaDeporte = alquilerPistaDeporte;
-        this.valorCasa = valorCasa;
-        this.valorHotel = valorHotel;
-        this.valorPiscina = valorPiscina;
-        this.valorPistaDeporte = valorPistaDeporte;
     }
 
     /*Constructor utilizado para inicializar las casillas de tipo IMPUESTOS.
@@ -117,21 +114,6 @@ public class Casilla {
     }
 
     //Getters atributos nuevos:
-    public float getValorCasa() {
-        return valorCasa;
-    }
-
-    public float getValorHotel() {
-        return valorHotel;
-    }
-
-    public float getValorPiscina() {
-        return valorPiscina;
-    }
-
-    public float getValorPistaDeporte() {
-        return valorPistaDeporte;
-    }
 
     public float getAlquilerCasa() {
         return alquilerCasa;
@@ -149,6 +131,23 @@ public class Casilla {
         return alquilerPistaDeporte;
     }
 
+    public String getEdificioConstruido() {
+        return edificioConstruido;
+    }
+
+    public  int getNumeroCasas() {
+        return numeroCasas;
+    }
+    public  int getNumeroHotel() {
+        return numeroHotel;
+    }
+    public  int getNumeroPiscina() {
+        return numeroPiscina;
+    }
+    public  int getNumeroPistaDeporte() {
+        return numeroPistaDeporte;
+    }
+
     //Setters:
     public void setDuenho(Jugador duenho) {
         this.duenho = duenho;
@@ -164,6 +163,10 @@ public class Casilla {
 
     public void setAvatares(ArrayList<Avatar> avatares) {
         this.avatares = avatares;
+    }
+
+    public void setturnoacabado(int turnoacabado) {
+        this.turnoacabado = turnoacabado;
     }
 
     //Método utilizado para añadir un avatar al array de avatares en casilla.
@@ -289,6 +292,7 @@ public class Casilla {
             banca.eliminarPropiedad(this);
             solicitante.anhadirPropiedad(this);
             this.setDuenho(solicitante);
+            edificioConstruido = "nada";
             System.out.println("El jugador " + solicitante.getNombre() + " compra la casilla " + nombre +
                     " por " + valor + "$. Su fortuna actual es " + solicitante.getFortuna() + "$");
         }
@@ -317,10 +321,10 @@ public class Casilla {
                         ",\n\tpropietario: " + duenho.getNombre() +
                         ",\n\tvalor: " + valor +
                         ",\n\talquiler: " + impuesto +
-                        ",\n\tvalor hotel: " + valorHotel +
-                        ",\n\tvalor casa: " + valorCasa +
-                        ",\n\tvalor piscina: " + valorPiscina +
-                        ",\n\tvalor pista de deporte: " + valorPistaDeporte +
+                        ",\n\tvalor hotel: " + grupo.getPrecioHotel() +
+                        ",\n\tvalor casa: " + grupo.getPrecioCasa() +
+                        ",\n\tvalor piscina: " + grupo.getPrecioPiscina() +
+                        ",\n\tvalor pista de deporte: " + grupo.getPrecioPistaDeporte() +
                         ",\n\talquiler casa: " + alquilerCasa +
                         ",\n\talquiler hotel: " + alquilerHotel +
                         ",\n\talquiler piscina: " + alquilerPiscina +
@@ -387,18 +391,86 @@ public class Casilla {
         return "";
     }
 
-    public void construirEdificio(Jugador solicitante){
+    public void construirEdificio(Jugador solicitante, String edificio){ //funcion en la que solicitante compra el edificio
         if(!duenho.equals(solicitante)){
             System.out.println("Esta casilla tiene otro dueño: " + duenho.getNombre());
             return;
         }
-        if (edificioConstruido.equals("nada") && solicitante.getFortuna() >= valorCasa && getGrupo().esDuenhoGrupo(solicitante)){
-            solicitante.sumarGastos(valorCasa);
-            solicitante.sumarFortuna(-valorCasa);
-            valor =
-
-
+        else if(!getGrupo().esDuenhoGrupo(solicitante)){ //para comprarla tiene que ser dueño de todas las propiedades del grupo
+            System.out.println(solicitante.getNombre() + " no posee todas las propiedades del grupo: " + grupo.getColorGrupo() + ".");
+            return;
+        }
+        switch(edificio){
+            case "casa":
+                if ((edificioConstruido.equals("nada") || edificioConstruido.equals("1 casa") || edificioConstruido.equals("2 casas") || edificioConstruido.equals("3 casas")) && solicitante.getFortuna() >= getGrupo().getPrecioCasa() && getGrupo().esDuenhoGrupo(solicitante) && numeroCasas<4) {
+                    solicitante.sumarGastos(getGrupo().getPrecioCasa());
+                    solicitante.sumarFortuna(-getGrupo().getPrecioCasa());
+                    System.out.println("Se ha edificado una casa en " + getNombre() + ". La fortuna de " + solicitante.getNombre() + " se reduce en " + getGrupo().getPrecioCasa());
+                    impuesto = impuesto + alquilerCasa;
+                    numeroCasas = numeroCasas + 1;
+                    solicitante.anhadirPropiedadConEdificios(this);
+                    if (numeroCasas == 1) edificioConstruido = "1 casa";
+                    if (numeroCasas == 2) edificioConstruido = "2 casas";
+                    if (numeroCasas == 3) edificioConstruido = "3 casas";
+                    if (numeroCasas == 4) { //puede continuar comprando casas hasta que tenga 4
+                        edificioConstruido = "4 casas";
+                        turnoacabado = 1;
+                    }
+                    return;
+                }
+                else if(!edificioConstruido.equals("nada")) System.out.println("No se puede edificar ninguna casa más en esta casilla");
+                else if(!(solicitante.getFortuna()>=getGrupo().getPrecioCasa())) System.out.println("La fortuna de " + solicitante.getNombre() + " no es suficiente para edificar una casa en la casilla " + getNombre() + ".");
+                break;
+            case "hotel":
+                if (edificioConstruido.equals("4 casas") && solicitante.getFortuna()>= getGrupo().getPrecioHotel() && getGrupo().esDuenhoGrupo(solicitante) && turnoacabado == 0) {
+                    solicitante.sumarGastos(getGrupo().getPrecioHotel());
+                    solicitante.sumarFortuna(-getGrupo().getPrecioHotel());
+                    System.out.println("Se ha edificado un hotel en " + getNombre() + ". La fortuna de " + solicitante.getNombre() + " se reduce en " + getGrupo().getPrecioHotel());
+                    impuesto = alquilerHotel; //cuando se compra un hotel todas las casas desaparecen
+                    solicitante.anhadirPropiedadConEdificios(this); //añadimos la propiedad a un array que facilita el acceso
+                    edificioConstruido = "hotel";
+                    numeroHotel = 1;
+                    numeroCasas = 0;
+                    turnoacabado = 1;
+                    return;
+                }
+                else if(!edificioConstruido.equals("4 casas")) System.out.println("No se puede edificar un hotel ya que no se dispone de cuatro casas.");
+                else if(!(solicitante.getFortuna()>=getGrupo().getPrecioCasa())) System.out.println("La fortuna de " + solicitante.getNombre() + " no es suficiente para edificar un hotel en la casilla " + getNombre() + ".");
+                break;
+            case "piscina":
+                if (edificioConstruido.equals("hotel") && solicitante.getFortuna()>= getGrupo().getPrecioPiscina() && getGrupo().esDuenhoGrupo(solicitante) && turnoacabado == 0) {
+                    solicitante.sumarGastos(getGrupo().getPrecioPiscina());
+                    solicitante.sumarFortuna(-getGrupo().getPrecioPiscina());
+                    System.out.println("Se ha edificado una piscina en " + getNombre() + ". La fortuna de " + solicitante.getNombre() + " se reduce en " + getGrupo().getPrecioPiscina());
+                    impuesto = impuesto + alquilerPiscina;
+                    solicitante.anhadirPropiedadConEdificios(this); //añadimos la propiedad a un array que facilita el acceso
+                    edificioConstruido = "piscina";
+                    numeroPiscina = 1;
+                    turnoacabado = 1;
+                    return;
+                }
+                else if(!edificioConstruido.equals("hotel")) System.out.println("No se puede edificar una piscina ya que no se dispone de un hotel.");
+                else if(!(solicitante.getFortuna()>=getGrupo().getPrecioCasa())) System.out.println("La fortuna de " + solicitante.getNombre() + " no es suficiente para edificar una piscina en la casilla " + getNombre() + ".");
+                break;
+            case "pista_deporte":
+                if (edificioConstruido.equals("piscina") && solicitante.getFortuna()>=getGrupo().getPrecioPistaDeporte() && getGrupo().esDuenhoGrupo(solicitante) && turnoacabado == 0) {
+                    solicitante.sumarGastos(getGrupo().getPrecioPistaDeporte());
+                    solicitante.sumarFortuna(-getGrupo().getPrecioPistaDeporte());
+                    System.out.println("Se ha edificado una pista de deporte en " + getNombre() + ". La fortuna de " + solicitante.getNombre() + " se reduce en " + getGrupo().getPrecioPistaDeporte());
+                    impuesto = impuesto + alquilerPistaDeporte;
+                    solicitante.anhadirPropiedadConEdificios(this); //añadimos la propiedad a un array que facilita el acceso
+                    edificioConstruido = "pistaDeporte";
+                    numeroPistaDeporte = 1;
+                    turnoacabado = 1;
+                    return;
+                }
+                else if(!edificioConstruido.equals("piscina")) System.out.println("No se puede edificar una pista de deporte ya que no se dispone de una piscina.");
+                else if(!(solicitante.getFortuna()>=getGrupo().getPrecioCasa())) System.out.println("La fortuna de " + solicitante.getNombre() + " no es suficiente para edificar una pista de deporte en la casilla " + getNombre() + ".");
+                break;
+            default:
+                break;
         }
 
     }
+
 }

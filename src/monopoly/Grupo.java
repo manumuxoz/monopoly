@@ -10,6 +10,12 @@ class Grupo {
     private String colorGrupo; //Color del grupo
     private int numCasillas; //Número de casillas del grupo.
 
+    //nuevos atributos
+    private float precioCasa;
+    private float precioHotel;
+    private float precioPiscina;
+    private float precioPistaDeporte;
+
     //Constructor vacío.
     public Grupo() {
     }
@@ -50,6 +56,19 @@ class Grupo {
     public int getNumCasillas() {
         return numCasillas;
     }
+    public float getPrecioCasa() {
+        return precioCasa;
+    }
+    public float getPrecioHotel() {
+        return precioHotel;
+    }
+    public float getPrecioPiscina() {
+        return precioPiscina;
+    }
+    public float getPrecioPistaDeporte() {
+        return precioPistaDeporte;
+    }
+
 
     //Setters:
     public void setMiembros(ArrayList<Casilla> miembros) {
@@ -60,6 +79,18 @@ class Grupo {
     }
     public void setNumCasillas(int numCasillas) {
         this.numCasillas = numCasillas;
+    }
+    public void setPrecioCasa(float precioCasa) {
+        this.precioCasa = precioCasa;
+    }
+    public void setPrecioHotel(float precioHotel) {
+        this.precioHotel = precioHotel;
+    }
+    public void setPrecioPiscina(float precioPiscina) {
+        this.precioPiscina = precioPiscina;
+    }
+    public void setPrecioPistaDeporte(float precioPistaDeporte) {
+        this.precioPistaDeporte = precioPistaDeporte;
     }
 
 
@@ -78,6 +109,7 @@ class Grupo {
     * Valor devuelto: true si es dueño de todas las casillas del grupo, false en otro caso.
      */
     public boolean esDuenhoGrupo(Jugador jugador) {
-        return true;
+        if (jugador.getPropiedades().containsAll(getMiembros())) return true;
+        else return false;
     }
 }
