@@ -1,6 +1,8 @@
 package partida;
 
 import java.util.ArrayList;
+import java.util.Objects;
+
 import static monopoly.Valor.*;
 import monopoly.*;
 
@@ -18,7 +20,7 @@ public class Jugador {
 
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
-        this.nombre = "banca";
+        this.nombre = "Banca";
         this.propiedades = new ArrayList<>();
     }
 
@@ -159,5 +161,12 @@ public class Jugador {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Jugador jugador = (Jugador) o;
+        return Objects.equals(nombre, jugador.nombre);
     }
 }

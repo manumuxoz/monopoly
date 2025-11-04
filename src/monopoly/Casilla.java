@@ -402,6 +402,7 @@ public class Casilla {
 
     //Métodos nueos:
 
+    //Método que devuelve el nombre del color de un grupo pasado por argumento
     private String color(String colorGrupo) {
         return switch (colorGrupo) {
             case BLACK -> "Negro";
@@ -416,13 +417,26 @@ public class Casilla {
         };
     }
 
+    //Método para cambiar el valor del alquiler de las casillas de tipo 'Solar'
     private void incrementarAlquiler() {
-        if (grupo.esDuenhoGrupo(duenho)) {
-            if (numCasas == 0 && !hotel) impuesto += impuesto;
-            if (hotel) impuesto = alquilerHotel;
-            if (piscina) impuesto += alquilerPiscina;
-            if (pistaDeporte) impuesto += alquilerPistaDeporte;
-            if (numCasas > 0) impuesto = alquilerCasa * numCasas;
+        if (numCasas == 0 && !hotel) impuesto += impuesto;
+        if (hotel) impuesto = alquilerHotel;
+        if (piscina) impuesto = alquilerHotel + alquilerPiscina;
+        if (pistaDeporte) impuesto = alquilerHotel + alquilerPiscina + alquilerPistaDeporte;
+        if (numCasas > 0) impuesto = alquilerCasa * numCasas;
+    }
+
+    private void edificarCasa(Jugador solicitante) {
+        if (!duenho.equals(solicitante)) {
+            System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
+            return;
         }
+        if (!grupo.esDuenhoGrupo(solicitante)){ //para comprarla tiene que ser dueño de todas las propiedades del grupo
+            System.out.println(solicitante.getNombre() + " no posee todas las propiedades del grupo: " + color(grupo.getColorGrupo()) + ".");
+            return;
+        }
+        if (numCasas = 4)
+            System.out.println();
+
     }
 }

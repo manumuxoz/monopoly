@@ -355,10 +355,17 @@ public class Menu {
     }
 
     private void edificar(String edificio) {
-        if (edificio.equals("casa", "")) {}
-
-
         Jugador jugadorActual =  jugadores.get(turno);
-
+        Casilla casillaActual = jugadorActual.getAvatar().getLugar();
+        if (edificio.equals("casa")) {
+            casillaActual.edificarCasa(jugadorActual);
+        } else if (edificio.equals("hotel")) {
+            casillaActual.edificarHotel(jugadorActual);
+        } else if (edificio.equals("piscina")) {
+            casillaActual.edificarPiscina(jugadorActual);
+        } else if (edificio.equals("pista")) {
+            casillaActual.edificarPista(jugadorActual);
+        } else
+            System.out.println("Error: Nombre de edificación inválido. Usa: casa, hotel, piscina o pista");
     }
 }
