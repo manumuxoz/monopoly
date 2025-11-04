@@ -26,6 +26,10 @@ public class Casilla {
     private float alquilerHotel;
     private float alquilerPiscina;
     private float alquilerPistaDeporte;
+    private int numCasas = 0;
+    private boolean hotel;
+    private boolean piscina;
+    private boolean pistaDeporte;
 
 
 
@@ -36,7 +40,7 @@ public class Casilla {
     /*Constructor para casillas tipo Solar, Servicios o Transporte:
      * Parámetros: nombre casilla, tipo (debe ser solar, serv. o transporte), posición en el tablero, valor y dueño.
      */
-    public Casilla(String nombre, String tipo, int posicion, float valor, Jugador duenho, float alquiler, float hipoteca) {
+    public Casilla(String nombre, String tipo, int posicion, float valor, Jugador duenho, float alquiler, float hipoteca, float alquilerCasa, float alquilerHotel, float alquilerPiscina, float alquilerPistaDeporte) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.valor = valor;
@@ -45,10 +49,10 @@ public class Casilla {
         this.impuesto = alquiler;
         this.hipoteca = hipoteca;
         avatares = new ArrayList<>();
-        alquilerCasa = 0;
-        alquilerHotel = 0;
-        alquilerPiscina = 0;
-        alquilerPistaDeporte = 0;
+        this.alquilerCasa = alquilerCasa;
+        this.alquilerHotel = alquilerHotel;
+        this.alquilerPiscina = alquilerPiscina;
+        this.alquilerPistaDeporte = alquilerPistaDeporte;
     }
 
     /*Constructor utilizado para inicializar las casillas de tipo IMPUESTOS.
@@ -216,12 +220,12 @@ public class Casilla {
                 break;
 
             case "Servicios":
-                if (!this.duenho.equals(banca) && !duenho.equals(actual)) {
+                if (!duenho.equals(banca) && !duenho.equals(actual)) {
                     int valorImpuesto = tirada * 4 * 50000;
                     if (actual.getFortuna() >= valorImpuesto) {
                         actual.sumarGastos(valorImpuesto);
                         actual.sumarFortuna(-valorImpuesto);
-                        Jugador propietario = this.duenho;
+                        Jugador propietario = duenho;
                         propietario.sumarFortuna(valorImpuesto);
                         System.out.println("Se han pagado " + valorImpuesto + "€ de servicio.");
                         return true;
@@ -233,14 +237,13 @@ public class Casilla {
                 break;
 
             case "Transporte":
-                if (!this.duenho.equals(banca) && !this.duenho.equals(actual)) {
-                    float alquiler = impuesto;
-                    if (actual.getFortuna() >= alquiler) {
-                        actual.sumarGastos(alquiler);
-                        actual.sumarFortuna(-alquiler);
-                        Jugador propietario = this.duenho;
-                        propietario.sumarFortuna(alquiler);
-                        System.out.println("Se han pagado " + (int)alquiler + "€ de transporte.");
+                if (!duenho.equals(banca) && !duenho.equals(actual)) {
+                    if (actual.getFortuna() >= impuesto) {
+                        actual.sumarGastos(impuesto);
+                        actual.sumarFortuna(-impuesto);
+                        Jugador propietario = duenho;
+                        propietario.sumarFortuna(impuesto);
+                        System.out.println("Se han pagado " + (int)impuesto + "€ de transporte.");
                         return true;
                     } else {
                         System.out.println(actual.getNombre() + " no tiene dinero suficiente para pagar el transporte");
@@ -250,7 +253,6 @@ public class Casilla {
                 break;
 
             case "Impuesto":
-                float impuesto = this.impuesto;
                 if (actual.getFortuna() >= impuesto) {
                     actual.sumarGastos(impuesto);
                     actual.sumarFortuna(-impuesto);
@@ -265,10 +267,9 @@ public class Casilla {
 
             case "Especiales":
                 if (this.nombre.equals("Parking")) {
-                    float bote = this.impuesto;
-                    if (bote > 0) {
-                        actual.sumarFortuna(bote);
-                        System.out.println("El jugador " + actual.getNombre() + " recibe " + (int)bote + "€.");
+                    if (impuesto > 0) {
+                        actual.sumarFortuna(impuesto);
+                        System.out.println("El jugador " + actual.getNombre() + " recibe " + (int)impuesto + "€.");
                         this.impuesto = 0;
                     }
                     return true;
