@@ -438,7 +438,7 @@ public class Casilla {
         return nuevoID;
     }
 
-    private void edificarCasa(Jugador solicitante, ArrayList<String> edificiosCreados) {
+    public void edificarCasa(Jugador solicitante, ArrayList<String> edificiosCreados) {
         if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
             System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
             return;
@@ -465,4 +465,11 @@ public class Casilla {
         System.out.println("Se ha edificado una casa en " + nombre + ".La fortuna de " + solicitante.getNombre() +
                 "se reduce en " + valorCasa + "$.");
     }
+
+    public void edificarHotel(Jugador solicitante, ArrayList<String> edificiosCreados) {}
+
+    public void edificarPiscina(Jugador solicitante, ArrayList<String> edificiosCreados) {}
+
+    public void edificarPista(Jugador solicitante, ArrayList<String> edificiosCreados) {}
+
 }

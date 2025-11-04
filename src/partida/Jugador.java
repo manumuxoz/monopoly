@@ -88,6 +88,14 @@ public class Jugador {
         this.tiradasCarcel = tiradasCarcel;
     }
 
+    //Otros métodos:
+
+    //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
+    public void anhadirPropiedad(Casilla casilla) {
+        if (!this.propiedades.contains(casilla))
+            this.propiedades.add(casilla);
+    }
+
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
     public void eliminarPropiedad(Casilla casilla) {
         if(propiedades.contains(casilla))
