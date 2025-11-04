@@ -217,16 +217,4 @@ public class Tablero {
 
         return avataresStr.toString();
     }
-
-    //Método usado para buscar la cosilla en la posicion pasada por argumento:
-    public Casilla encontrarCasillaPorPosicion(float posicion) {
-        for (ArrayList<Casilla> lado : posiciones) {
-            for (Casilla casilla : lado) {
-                if (casilla.getPosicion() == posicion) {
-                    return casilla;
-                }
-            }
-        }
-        return null;
-    }
 }
