@@ -200,7 +200,7 @@ public class Tablero {
         return null;
     }
 
-    // Nuevos métodos:
+    //Métodos nuevos:
 
     // Método para formatear cada casilla del tablero para su impresión.
     private String formatearCasilla(Casilla casilla) {

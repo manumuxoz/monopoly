@@ -191,8 +191,7 @@ public class Casilla {
 
     //Método utilizado para eliminar un avatar del array de avatares en casilla.
     public void eliminarAvatar(Avatar av) {
-        if (avatares.contains(av))
-            avatares.remove(av);
+        avatares.remove(av);
     }
 
     /*Método para evaluar qué hacer en una casilla concreta. Parámetros:
@@ -415,5 +414,15 @@ public class Casilla {
             case BLUE -> "Azul";
             default -> "";
         };
+    }
+
+    private void incrementarAlquiler() {
+        if (grupo.esDuenhoGrupo(duenho)) {
+            if (numCasas == 0 && !hotel) impuesto += impuesto;
+            if (hotel) impuesto = alquilerHotel;
+            if (piscina) impuesto += alquilerPiscina;
+            if (pistaDeporte) impuesto += alquilerPistaDeporte;
+            if (numCasas > 0) impuesto = alquilerCasa * numCasas;
+        }
     }
 }
