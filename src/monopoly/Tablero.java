@@ -3,6 +3,8 @@ package monopoly;
 import partida.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
 import static monopoly.Valor.*;
 
 
@@ -31,6 +33,8 @@ public class Tablero {
         insertarLadoOeste();
         insertarLadoNorte();
         insertarLadoEste();
+
+        generarPreciosEdificaciones(grupos); //Asignamos también el precio de las edificaciones
     }
 
     //Método para insertar las casillas del lado norte.
@@ -216,5 +220,48 @@ public class Tablero {
             avataresStr.append(" &").append(avatar.getId());
 
         return avataresStr.toString();
+    }
+
+    //Método para adignar los precios de las edificaciones en base a su grupo
+    private void generarPreciosEdificaciones(HashMap<String, Grupo> grupos) {
+        //Como el precio de las ideficaciones depende del grupo al que pertenezcan las casillas de tipo 'Solar'
+        //iteramos sobre el hashmap que almacena los grupos
+        for (Map.Entry<String, Grupo> grupo : grupos.entrySet()) {
+            switch (grupo.getKey()) {
+                case "Negro": case "Cian":
+                    for (Casilla casilla : grupo.getValue().getMiembros()) {
+                        casilla.setValorCasa(500000);
+                        casilla.setValorHotel(500000);
+                        casilla.setValorPiscina(100000);
+                        casilla.setValorPistaDeporte(200000);
+                    }
+                    break;
+                case "Morado": case "Blanco":
+                    for (Casilla casilla : grupo.getValue().getMiembros()) {
+                        casilla.setValorCasa(1000000);
+                        casilla.setValorHotel(1000000);
+                        casilla.setValorPiscina(200000);
+                        casilla.setValorPistaDeporte(400000);
+                    }
+                    break;
+                case "Rojo": case "Amarillo":
+                    for (Casilla casilla : grupo.getValue().getMiembros()) {
+                        casilla.setValorCasa(1500000);
+                        casilla.setValorHotel(1500000);
+                        casilla.setValorPiscina(300000);
+                        casilla.setValorPistaDeporte(600000);
+                    }
+                    break;
+                case "Verde": case "Azul":
+                    for (Casilla casilla : grupo.getValue().getMiembros()) {
+                        casilla.setValorCasa(2000000);
+                        casilla.setValorHotel(2000000);
+                        casilla.setValorPiscina(400000);
+                        casilla.setValorPistaDeporte(800000);
+                    }
+                    break;
+                default: break;
+            }
+        }
     }
 }

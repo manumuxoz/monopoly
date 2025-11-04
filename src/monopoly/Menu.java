@@ -19,7 +19,6 @@ public class Menu {
     private Dado dado1; //Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
     private Jugador banca; //El jugador banca.
-    private boolean tirado; //Booleano para comprobar si el jugador que tiene el turno ha tirado o no.
     private boolean solvente; //Booleano para comprobar si el jugador que tiene el turno es solvente, es decir, si ha pagado sus deudas.
     private boolean ultimoDoble = true;//booleano que indica si en la ultima tirada fueron dobles
 
@@ -161,35 +160,32 @@ public class Menu {
     private void lanzarDados(int tirada1, int tirada2) {
         Jugador jugadorActual = jugadores.get(turno);
 
-        if (jugadorActual.getFortuna() <= 0) {
-            System.out.println("Error: " + jugadorActual.getNombre() + " está en bancarrota");
-            return;
-        }
-
-        if (lanzamientos == -1) {
-            System.out.println("Ya tiraste este turno. Usa 'acabar turno' para continuar.");
-            return;
-        }
+        if (jugadorActual.enBancarrota() || !puedeTirar()) return; //Si el jugador está en bancarrota o ya ha tirado, no puede tirar
 
         Avatar avatarActual = jugadorActual.getAvatar();
 
-        // Realizar tirada
-        int valorTirada;
-        int dado1Valor = dado1.hacerTirada();
-        int dado2Valor = dado2.hacerTirada();
+        //Realizar tirada
+        int valorTirada, dado1Valor, dado2Valor;
+        boolean sonDobles = false;
 
-        if (tirada1 == -1 && tirada2 == -2) {
-            // Tirada aleatoria
+        if (tirada1 == -1 && tirada2 == -2) { //Tirada aleatoria
+            dado1Valor = dado1.hacerTirada();
+            dado2Valor = dado2.hacerTirada();
             valorTirada = dado1Valor + dado2Valor;
             System.out.println("Tirada: " + dado1Valor + " + " + dado2Valor + " = " + valorTirada);
-        } else {
-            // Tirada manual
-            valorTirada = tirada1 + tirada2;
-            if (tirada1 < 0 || tirada1 > 6 || tirada2 < 0 || tirada2 > 6) return;
-            System.out.println("Tirada manual: " + tirada1 + " + " + tirada2 + " = " + valorTirada);
-        }
 
-        boolean sonDobles = ((dado1Valor == dado2Valor) || (tirada1 == tirada2));
+            sonDobles = (dado1Valor == dado2Valor); //Comprobamos que sean dobles
+        } else { //Tirada manual
+            valorTirada = tirada1 + tirada2;
+
+            if (tirada1 < 0 || tirada1 > 6 || tirada2 < 0 || tirada2 > 6) {
+                System.out.println("Error: tirada no válida");
+                return;
+            }
+            System.out.println("Tirada manual: " + tirada1 + " + " + tirada2 + " = " + valorTirada);
+
+            sonDobles = (tirada1 == tirada2); //Comprobamos que sean dobles
+        }
 
         // Verificar si el jugador está en la cárcel
         if (jugadorActual.getEnCarcel()) {
@@ -197,38 +193,11 @@ public class Menu {
             return;
         }
 
-        if (sonDobles) {
-            lanzamientos++; // Aumentar contador de dobles consecutivos
-            System.out.println("¡Dobles! Llevas " + lanzamientos + " dobles consecutivos");
+        manejarDobles(sonDobles);
 
-            // Si son 3 dobles consecutivos, ir a la cárcel
-            if (lanzamientos == 3) {
-                System.out.println("¡3 dobles consecutivos! " + jugadorActual.getNombre() + " va a la cárcel");
-                jugadorActual.encarcelar(tablero.getPosiciones());
-                lanzamientos = -1; // Resetear contador
-                return;
-            }
-        } else {
-            lanzamientos = -1; // Resetear contador si no son dobles
-        }
+        avatarActual.moverAvatar(tablero.getPosiciones(), valorTirada);
 
-        // Obtener casilla actual y nueva posición
-        Casilla casillaActual = avatarActual.getLugar();
-        float posicionActual = casillaActual.getPosicion();
-        float nuevaPosicion = (posicionActual + valorTirada) % 40;
-
-        // Encontrar nueva casilla
-        Casilla nuevaCasilla = tablero.encontrarCasillaPorPosicion(nuevaPosicion);
-
-        // Mostrar movimiento básico
-        System.out.println("El avatar " + avatarActual.getId() + " avanza " + valorTirada +
-                " posiciones, desde " + casillaActual.getNombre() + " hasta " +
-                nuevaCasilla.getNombre() + ".");
-
-        // Mover avatar
-        casillaActual.eliminarAvatar(avatarActual);
-        avatarActual.setLugar(nuevaCasilla);
-        nuevaCasilla.anhadirAvatar(avatarActual);
+        Casilla nuevaCasilla = avatarActual.getLugar();
 
         // USAR evaluarCasilla para TODAS las casillas
         boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
@@ -314,10 +283,7 @@ public class Menu {
         if (!jugadores.isEmpty()) {
             Jugador jugadorActual = jugadores.get(turno);
             Avatar avatarActual = jugadorActual.getAvatar();
-            System.out.println("{" +
-                    "\n\tnombre: " + jugadorActual.getNombre() +
-                    ",\n\tavatar: " + avatarActual.getId() +
-                    "\n}");
+            System.out.println("{\n\tnombre: " + jugadorActual.getNombre() + ",\n\tavatar: " + avatarActual.getId() + "\n}");
         }
     }
 
@@ -346,16 +312,46 @@ public class Menu {
         if (jugador.getTiradasCarcel() >= 3 || ultimoDoble) {
             jugador.setenCarcel(false);
             jugador.setTiradasCarcel(0);
-            System.out.println(jugador.getNombre() + " sale de la cárcel");
+            System.out.println(jugador.getNombre() + " sale de la cárcel.");
         } else {
             System.out.println(jugador.getNombre() + " está en la cárcel. Turno " +
                     jugador.getTiradasCarcel() + "/3. Use 'salir carcel' para pagar fianza.");
         }
     }
+
+
     private void descCasillaActual(String nombre) {
         Casilla casilla = tablero.encontrar_casilla(nombre); //Buscamos casilla en el tablero
         if (casilla != null) //Si no devuelve null imprimimos la información
             System.out.println(casilla.infoCasilla());
+        else
+            System.out.println("Error: La casilla " + nombre + " no existe.");
     }
 
+    //Método para saber si un jugador puede tirar
+    private boolean puedeTirar() {
+        if (lanzamientos == -1) {
+            System.out.println("Ya tiraste este turno. Usa 'acabar turno' para continuar.");
+            return false;
+        }
+        return true;
+    }
+
+    //Método para manejar las situaciones en que la tirada ha sido dobles
+    private void manejarDobles(boolean sonDobles) {
+        Jugador jugadorActual = jugadores.get(turno);
+
+        if (sonDobles) {
+            lanzamientos++; // Aumentar contador de dobles consecutivos
+            System.out.println("¡Dobles! Llevas " + lanzamientos + " dobles consecutivos");
+
+            // Si son 3 dobles consecutivos, ir a la cárcel
+            if (lanzamientos == 3) {
+                System.out.println("¡3 dobles consecutivos! " + jugadorActual.getNombre() + " va a la cárcel");
+                jugadorActual.encarcelar(tablero.getPosiciones());
+                lanzamientos = -1; // Resetear contador
+            }
+        } else
+            lanzamientos = -1; // Resetear contador si no son dobles
+    }
 }

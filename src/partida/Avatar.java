@@ -62,6 +62,7 @@ public class Avatar {
         float posicionActual = casillaActual.getPosicion();
         float nuevaPosicion = (posicionActual + valorTirada) % 40;
         Casilla nuevaCasilla = null;
+
         // Encontrar nueva casilla
         for (ArrayList<Casilla> lado : casillas) {
             for (Casilla casilla : lado) {
@@ -70,7 +71,8 @@ public class Avatar {
                 }
             }
         }
-        if (nuevaCasilla==null){
+
+        if (nuevaCasilla == null){
             System.out.println("Esta casilla no existe.");
             return;
         }

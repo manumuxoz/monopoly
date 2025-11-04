@@ -17,14 +17,13 @@ public class Casilla {
     private float hipoteca; //Valor otorgado por hipotecar una casilla
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
 
-    //Atributos nuevos:
+    //Atributos nuevos (Edificaciones):
     private float valorCasa;
     private float valorHotel;
     private float valorPiscina;
     private float valorPistaDeporte;
     private float alquilerCasa;
     private float alquilerHotel;
-    private boolean enVenta;
     private float alquilerPiscina;
     private float alquilerPistaDeporte;
 
@@ -159,6 +158,23 @@ public class Casilla {
 
     public void setAvatares(ArrayList<Avatar> avatares) {
         this.avatares = avatares;
+    }
+
+    //Setters atributos nuevos:
+    public void setValorCasa(float valorCasa) {
+        this.valorCasa = valorCasa;
+    }
+
+    public void setValorHotel(float valorHotel) {
+        this.valorHotel = valorHotel;
+    }
+
+    public void setValorPiscina(float valorPiscina) {
+        this.valorPiscina = valorPiscina;
+    }
+
+    public void setValorPistaDeporte(float valorPistaDeporte) {
+        this.valorPistaDeporte = valorPistaDeporte;
     }
 
     //Método utilizado para añadir un avatar al array de avatares en casilla.

@@ -95,8 +95,8 @@ public class Jugador {
     //Otros métodos:
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
     public void anhadirPropiedad(Casilla casilla) {
-        if (!this.propiedades.contains(casilla))
-            this.propiedades.add(casilla);
+        if (!propiedades.contains(casilla))
+            propiedades.add(casilla);
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
@@ -108,19 +108,19 @@ public class Jugador {
     //Método para añadir fortuna a un jugador
     //Como parámetro se pide el valor a añadir. Si hay que restar fortuna, se pasaría un valor negativo.
     public void sumarFortuna(float valor) {
-        this.fortuna += valor;
+        fortuna += valor;
     }
 
     //Método para sumar gastos a un jugador.
     //Parámetro: valor a añadir a los gastos del jugador (será el precio de un solar, impuestos pagados...).
     public void sumarGastos(float valor) {
-        this.gastos += valor;
+        gastos += valor;
     }
 
     /*Método para establecer al jugador en la cárcel. 
     * Se requiere disponer de las casillas del tablero para ello (por eso se pasan como parámetro).*/
     public void encarcelar(ArrayList<ArrayList<Casilla>> pos) {
-        Casilla carcel = null;
+        Casilla carcel = new Casilla();
         for (ArrayList<Casilla> lado : pos){
             for (Casilla casilla : lado){
                 if (casilla.getNombre().equals("Carcel")){
@@ -128,20 +128,18 @@ public class Jugador {
                     break;
                 }
             }
-            if (carcel != null) {
-                Casilla casillaActual = avatar.getLugar();
-                if(casillaActual!= null) {
-                    casillaActual.eliminarAvatar(avatar);
-                }
-                avatar.setLugar(carcel);
-                carcel.anhadirAvatar(avatar);
-                enCarcel = true;
-                tiradasCarcel = 0;
-                System.out.println(nombre + " ha sido enviado a la carcel");
-                break;
-            }
         }
+
+        Casilla casillaActual = avatar.getLugar();
+        casillaActual.eliminarAvatar(avatar);
+        avatar.setLugar(carcel);
+        carcel.anhadirAvatar(avatar);
+        enCarcel = true;
+        tiradasCarcel = 0;
+        System.out.println(nombre + " ha sido enviado a la carcel");
     }
+
+    //Nuevos métodos:
 
     /*Método que comprueba si ya existe el nombre de un jugador. Parámetros:
      * - Un arraylist de los avatares ya creados.
@@ -152,5 +150,14 @@ public class Jugador {
                 return true;
 
         return false; //Comprobamos si se encuentra el nombre del jugador
+    }
+
+    //Método para saber si un jugador está en bancarrota
+    public boolean enBancarrota() {
+        if (fortuna <= 0) {
+            System.out.println(nombre + " está en bancarrota");
+            return true;
+        }
+        return false;
     }
 }
