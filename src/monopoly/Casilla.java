@@ -334,12 +334,11 @@ public class Casilla {
             case "Especiales":
                 if (nombre.equals("Parking")) {
                     System.out.print("{\n\tbote: " + impuesto + "\n\tjugadores: [");
-
-                    if (!avatares.isEmpty()) {
-                        for (int i = 0; i < avatares.size() - 1; i++) //Recorremos avatares
-                            System.out.print(avatares.get(i).getJugador().getNombre() + ", ");
-
-                        System.out.print(avatares.getLast().getJugador().getNombre());
+                    for (Avatar avatar : avatares) {
+                        if (!avatar.equals(avatares.getLast()))
+                            System.out.print(avatar.getJugador().getNombre() + ", ");
+                        else
+                            System.out.print(avatar.getJugador().getNombre());
                     }
                     System.out.println("]\n}");
                 }
@@ -361,8 +360,7 @@ public class Casilla {
      */
     public String casEnVenta() {
         // Solo mostrar si el dueño es la banca (está en venta)
-
-        if (duenho != null && duenho.getNombre().equals("Banca")) {
+        if (duenho.getNombre().equals("Banca")) {
             if (this.getTipo().equals("Solar"))
                 return "{" +
                         "\n\tnombre: " + nombre +
@@ -441,7 +439,7 @@ public class Casilla {
         numCasas++; //Sumamos una casa al contador
         incrementarAlquiler(); //Incrementamos alquiler
 
-        System.out.println("Se ha edificado una casa en " + nombre + ".La fortuna de " + solicitante.getNombre() +
+        System.out.println("Se ha edificado una casa en " + nombre + ". La fortuna de " + solicitante.getNombre() +
                 " se reduce en " + valorCasa + "$.");
     }
 
@@ -471,7 +469,7 @@ public class Casilla {
         hotel = true;
         incrementarAlquiler(); //Incrementamos alquiler
 
-        System.out.println("Se ha edificado un hotel en " + nombre + ".La fortuna de " + solicitante.getNombre() +
+        System.out.println("Se ha edificado un hotel en " + nombre + ". La fortuna de " + solicitante.getNombre() +
                 " se reduce en " + valorHotel + "$.");
     }
 
@@ -500,7 +498,7 @@ public class Casilla {
         piscina = true; //Cambiamos bandera
         incrementarAlquiler(); //Incrementamos alquiler
 
-        System.out.println("Se ha edificado una piscina en " + nombre + ".La fortuna de " + solicitante.getNombre() +
+        System.out.println("Se ha edificado una piscina en " + nombre + ". La fortuna de " + solicitante.getNombre() +
                 " se reduce en " + valorPiscina + "$.");
     }
 
@@ -529,7 +527,7 @@ public class Casilla {
         pistaDeporte = true; //Cambiamos bandera
         incrementarAlquiler(); //Incrementamos alquiler
 
-        System.out.println("Se ha edificado una pista de deporte en " + nombre + ".La fortuna de " + solicitante.getNombre() +
+        System.out.println("Se ha edificado una pista de deporte en " + nombre + ". La fortuna de " + solicitante.getNombre() +
                 " se reduce en " + valorPistaDeporte + "$.");
     }
 
