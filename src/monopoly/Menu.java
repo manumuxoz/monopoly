@@ -136,12 +136,6 @@ public class Menu {
                 }
                 System.out.print("],\n\thipotecas: [],\n\tedificios: [");
 
-                if (!jugador.getEdificios().isEmpty()) {
-                    for (int i = 0; i < jugador.getEdificios().size() - 1; i++) {
-                        System.out.print(jugador.getEdificios().get(i) + ", ");
-                    }
-                    System.out.print(jugador.getEdificios().getLast());
-                }
                 System.out.print("]\n}\n");
             }
         }
@@ -253,12 +247,6 @@ public class Menu {
                 }
                 System.out.print("],\n\thipotecas: [],\n\tedificios: [");
 
-                if (!jugador.getEdificios().isEmpty()) {
-                    for (int i = 0; i < jugador.getEdificios().size() - 1; i++) {
-                        System.out.print(jugador.getEdificios().get(i) + ", ");
-                    }
-                    System.out.print(jugador.getEdificios().getLast());
-                }
                 System.out.print("]\n}\n");
             }
         } else
