@@ -1,6 +1,7 @@
 package monopoly;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import partida.*;
 import  static monopoly.Valor.*;
@@ -386,4 +387,6 @@ public class Menu {
         } else
             System.out.println("Error: Nombre de edificación inválido. Usa: casa, hotel, piscina o pista");
     }
+
+    private void listarEdificios() {}
 }

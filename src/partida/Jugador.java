@@ -1,6 +1,7 @@
 package partida;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 import static monopoly.Valor.*;
@@ -20,7 +21,7 @@ public class Jugador {
 
 
     //nuevos atributos
-    private ArrayList<String> edificios;
+    private HashMap<Casilla, ArrayList<String>> edificios;
 
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
@@ -43,7 +44,7 @@ public class Jugador {
             tiradasCarcel = 0;
             vueltas = 0;
             propiedades = new ArrayList<>();
-            edificios = new ArrayList<>();
+            edificios = new HashMap<>();
         }
     }
 
@@ -71,7 +72,7 @@ public class Jugador {
     }
 
     //Getters nuevos atributos:
-    public ArrayList<String> getEdificios() {
+    public HashMap<Casilla, ArrayList<String>> getEdificios() {
         return edificios;
     }
 
