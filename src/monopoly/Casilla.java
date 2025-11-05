@@ -78,41 +78,33 @@ public class Casilla {
         this.posicion = posicion;
         this.duenho = duenho;
         avatares = new ArrayList<>();
-    } //MANUEL
+    }
 
     //Getters:
     public String getNombre() {
         return nombre;
     }
-
     public String getTipo() {
         return tipo;
     }
-
     public float getValor() {
         return valor;
     }
-
     public float getPosicion() {
         return posicion;
     }
-
     public Jugador getDuenho() {
         return duenho;
     }
-
     public Grupo getGrupo() {
         return grupo;
     }
-
     public float getImpuesto() {
         return impuesto;
     }
-
     public float getHipoteca() {
         return hipoteca;
     }
-
     public ArrayList<Avatar> getAvatares() {
         return avatares;
     }
@@ -121,31 +113,24 @@ public class Casilla {
     public float getValorCasa() {
         return valorCasa;
     }
-
     public float getValorHotel() {
         return valorHotel;
     }
-
     public float getValorPiscina() {
         return valorPiscina;
     }
-
     public float getValorPistaDeporte() {
         return valorPistaDeporte;
     }
-
     public float getAlquilerCasa() {
         return alquilerCasa;
     }
-
     public float getAlquilerHotel() {
         return alquilerHotel;
     }
-
     public float getAlquilerPiscina() {
         return alquilerPiscina;
     }
-
     public float getAlquilerPistaDeporte() {
         return alquilerPistaDeporte;
     }
@@ -154,15 +139,12 @@ public class Casilla {
     public void setDuenho(Jugador duenho) {
         this.duenho = duenho;
     }
-
     public void setGrupo(Grupo grupo) {
         this.grupo = grupo;
     }
-
     public void setImpuesto(float impuesto) {
         this.impuesto = impuesto;
     }
-
     public void setAvatares(ArrayList<Avatar> avatares) {
         this.avatares = avatares;
     }
@@ -171,15 +153,12 @@ public class Casilla {
     public void setValorCasa(float valorCasa) {
         this.valorCasa = valorCasa;
     }
-
     public void setValorHotel(float valorHotel) {
         this.valorHotel = valorHotel;
     }
-
     public void setValorPiscina(float valorPiscina) {
         this.valorPiscina = valorPiscina;
     }
-
     public void setValorPistaDeporte(float valorPistaDeporte) {
         this.valorPistaDeporte = valorPistaDeporte;
     }
