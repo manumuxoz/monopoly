@@ -438,6 +438,18 @@ public class Casilla {
         return nuevoID;
     }
 
+    //Método para eliminar las casas de una casilla
+    private void eliminarCasas(ArrayList<String> edificios) {
+        for (String ID : edificios) {
+            String[] partes = ID.split("-");
+            if (partes[0].equals("casa")) {
+                edificios.remove(ID);
+                numCasas--;
+            }
+        }
+    }
+
+    //Método para edificar una casa
     public void edificarCasa(Jugador solicitante, ArrayList<String> edificiosCreados) {
         if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
             System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
@@ -466,6 +478,7 @@ public class Casilla {
                 "se reduce en " + valorCasa + "$.");
     }
 
+    //Método para edificar un hotel
     public void edificarHotel(Jugador solicitante, ArrayList<String> edificiosCreados) {
         if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
             System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
@@ -486,8 +499,7 @@ public class Casilla {
 
         solicitante.sumarGastos(valorHotel); //Sumamos gastos y restamos fortuna
         solicitante.sumarFortuna(-valorHotel);
-        numCasas = 0; //Reseteamos el contador
-        solicitante.getEdificios(); //Eliminamos las casas (por hcer)
+        eliminarCasas(solicitante.getEdificios()); //Eliminamos las casas
         hotel = true;
         incrementarAlquiler(); //Incrementamos alquiler
         solicitante.getEdificios().add(generarIDEdificio(edificiosCreados, "hotel")); //Añadimos el edificio al jugador
@@ -496,8 +508,54 @@ public class Casilla {
                 "se reduce en " + valorHotel + "$.");
     }
 
-    public void edificarPiscina(Jugador solicitante, ArrayList<String> edificiosCreados) {}
+    //Método para edificar una piscina
+    public void edificarPiscina(Jugador solicitante, ArrayList<String> edificiosCreados) {
+        if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
+            System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
+            return;
+        }
+        if (!grupo.esDuenhoGrupo(solicitante)){ //Para comprar tiene que ser dueño de todas las propiedades del grupo
+            System.out.println(solicitante.getNombre() + " no posee todas las propiedades del grupo: " + color(grupo.getColorGrupo()) + ".");
+            return;
+        }
+        if (!hotel) { //Si hay un hotel no puede construir casas
+            System.out.println("No se puede edificar una piscina, ya que no se dispone de un hotel.");
+            return;
+        }
 
-    public void edificarPista(Jugador solicitante, ArrayList<String> edificiosCreados) {}
+        solicitante.sumarGastos(valorPiscina); //Sumamos gastos y restamos fortuna
+        solicitante.sumarFortuna(-valorPiscina);
+        piscina = true; //Cambiamos bandera
+        incrementarAlquiler(); //Incrementamos alquiler
+        solicitante.getEdificios().add(generarIDEdificio(edificiosCreados, "piscina")); //Añadimos el edificio al jugador
+
+        System.out.println("Se ha edificado una piscina en " + nombre + ".La fortuna de " + solicitante.getNombre() +
+                "se reduce en " + valorPiscina + "$.");
+    }
+
+    //Método paara edificar una pista de deporte
+    public void edificarPista(Jugador solicitante, ArrayList<String> edificiosCreados) {
+        if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
+            System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
+            return;
+        }
+        if (!grupo.esDuenhoGrupo(solicitante)){ //Para comprar tiene que ser dueño de todas las propiedades del grupo
+            System.out.println(solicitante.getNombre() + " no posee todas las propiedades del grupo: " + color(grupo.getColorGrupo()) + ".");
+            return;
+        }
+        if (!piscina) { //Si hay un hotel no puede construir casas
+            System.out.println("No se puede edificar una pista de deporte, ya que no se dispone de una piscina.");
+            return;
+        }
+
+        solicitante.sumarGastos(valorPistaDeporte); //Sumamos gastos y restamos fortuna
+        solicitante.sumarFortuna(-valorPistaDeporte);
+        pistaDeporte = true; //Cambiamos bandera
+        incrementarAlquiler(); //Incrementamos alquiler
+        solicitante.getEdificios().add(generarIDEdificio(edificiosCreados, "pista")); //Añadimos el edificio al jugador
+
+        System.out.println("Se ha edificado una pista de deporte en " + nombre + ".La fortuna de " + solicitante.getNombre() +
+                "se reduce en " + valorPistaDeporte + "$.");
+    }
 
 }
