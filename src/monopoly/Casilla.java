@@ -433,16 +433,7 @@ public class Casilla {
 
     //Método para eliminar las casas de una casilla
     private void eliminarCasas(ArrayList<Edificio> edificiosCreados) {
-        ArrayList<Edificio> casas = new ArrayList<>(); //Creamos arraylist para almacenar las casa encontradas
-
-        for (Edificio edificio : edificiosCreados) {
-            if (edificio.getCasilla().equals(this) && edificio.getTipo().equals("casa")) {
-                casas.add(edificio);
-                numCasas--;
-            }
-        }
-
-        edificiosCreados.removeAll(casas); //Borramos todas las casas encontradas
+        edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("casa"));
     }
 
     //Método para edificar una casa
