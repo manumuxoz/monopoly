@@ -114,6 +114,8 @@ public class Menu {
             else if (partes.length == 2 && partes[0].equals("salir") && partes[1].equals("carcel")) salirCarcel();
 
             else if (partes.length == 2 && partes[0].equals("edificar")) edificar(partes[1]);
+
+            else if (partes.length == 2 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificios();
         }
     }
 
@@ -387,5 +389,12 @@ public class Menu {
         }
     }
 
-    private void listarEdificios() {}
+    public void listarEdificios() {
+        if (!edificios.isEmpty()) {
+            for (Edificio edificio : edificios) {
+                System.out.println(edificio.infoEdificio());
+            }
+        } else
+            System.out.println("No hay edificios para listar.");
+    }
 }

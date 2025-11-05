@@ -381,7 +381,7 @@ public class Casilla {
     //Métodos nueos:
 
     //Método que devuelve el nombre del color de un grupo pasado por argumento
-    private String color(String colorGrupo) {
+    public String color(String colorGrupo) {
         return switch (colorGrupo) {
             case BLACK -> "Negro";
             case CYAN -> "Cian";

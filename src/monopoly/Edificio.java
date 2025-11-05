@@ -52,6 +52,28 @@ public class Edificio { //Nueva clase edificio
         return tipo;
     }
 
+    /*Método para mostrar información sobre un edificio.
+     * Devuelve una cadena con información específica de cada tipo de edificio.*/
+    public String infoEdificio() {
+        return "{\n\tid: " + ID +
+                ",\n\tpropietario: " + duenho.getNombre() +
+                ",\n\tcasilla: " + casilla.getNombre() +
+                ",\n\tgrupo: " + casilla.color(casilla.getGrupo().getColorGrupo()) +
+                ",\n\tcoste: " + imprimirCoste(tipo) +
+                "\n}";
+    }
+
+    //Método para imprimir el valor del alquiler de cada edificio dependiendo de su tipo
+    private String imprimirCoste(String tipo) {
+        return switch (tipo) {
+            case "casa" -> String.valueOf(casilla.getAlquilerCasa());
+            case "hotel" -> String.valueOf(casilla.getAlquilerHotel());
+            case "piscina" -> String.valueOf(casilla.getAlquilerPiscina());
+            case "pista" -> String.valueOf(casilla.getAlquilerPistaDeporte());
+            default -> "";
+        };
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
