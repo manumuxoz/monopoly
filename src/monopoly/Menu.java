@@ -122,23 +122,28 @@ public class Menu {
     private void descJugador(String[] partes) {
         for (Jugador jugador : jugadores) { //Recorremos todos los jugadores
             if (jugador.getNombre().equals(partes[2])) { //Si existe su nombre imprimimos datos del jugador
-                System.out.print("{" +
-                        "\n\tnombre: " + jugador.getNombre() +
+                System.out.print("{\n\tnombre: " + jugador.getNombre() +
                         ",\n\tavatar: " + jugador.getAvatar().getId() +
                         ",\n\tfortuna: " + jugador.getFortuna() +
                         ",\n\tpropiedades: [");
 
-                if(!jugador.getPropiedades().isEmpty()) { //Imprimimos lista de propiedades si no está vacía
+                if (!jugador.getPropiedades().isEmpty()) { //Imprimimos lista de propiedades si no está vacía
                     for (int i = 0; i < jugador.getPropiedades().size() - 1; i++) {
                         System.out.print(jugador.getPropiedades().get(i).getNombre() + ", ");
                     }
                     System.out.print(jugador.getPropiedades().getLast().getNombre());
-                    break; //Salimos del bucle
                 }
-            }
+                System.out.print("],\n\thipotecas: [],\n\tedificios: [");
 
+                if (!jugador.getEdificios().isEmpty()) {
+                    for (int i = 0; i < jugador.getEdificios().size() - 1; i++) {
+                        System.out.print(jugador.getEdificios().get(i) + ", ");
+                    }
+                    System.out.print(jugador.getEdificios().getLast());
+                }
+                System.out.print("]\n}\n");
+            }
         }
-        System.out.println("]\n}");
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir avatar'.
@@ -232,19 +237,31 @@ public class Menu {
 
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
     private void listarJugadores() {
-        for (Jugador jugador : jugadores) {
-            System.out.print("{\n\tnombre: " + jugador.getNombre() +
-                    ",\n\tavatar: " + jugador.getAvatar().getId() +
-                    ",\n\tfortuna: " + jugador.getFortuna() +
-                    ",\n\tpropiedades: [");
-            if(!jugador.getPropiedades().isEmpty()) { //Imprimimos lista de propiedades si no está vacía
-                for (int i = 0; i < jugador.getPropiedades().size() - 1; i++) {
-                    System.out.print(jugador.getPropiedades().get(i).getNombre() + ", ");
+        if (!jugadores.isEmpty()) {
+            for (Jugador jugador : jugadores) {
+                System.out.print("{\n\tnombre: " + jugador.getNombre() +
+                        ",\n\tavatar: " + jugador.getAvatar().getId() +
+                        ",\n\tfortuna: " + jugador.getFortuna() +
+                        ",\n\tpropiedades: [");
+
+                if (!jugador.getPropiedades().isEmpty()) { //Imprimimos lista de propiedades si no está vacía
+                    for (int i = 0; i < jugador.getPropiedades().size() - 1; i++) {
+                        System.out.print(jugador.getPropiedades().get(i).getNombre() + ", ");
+                    }
+                    System.out.print(jugador.getPropiedades().getLast().getNombre());
                 }
-                System.out.print(jugador.getPropiedades().getLast().getNombre());
+                System.out.print("],\n\thipotecas: [],\n\tedificios: [");
+
+                if (!jugador.getEdificios().isEmpty()) {
+                    for (int i = 0; i < jugador.getEdificios().size() - 1; i++) {
+                        System.out.print(jugador.getEdificios().get(i) + ", ");
+                    }
+                    System.out.print(jugador.getEdificios().getLast());
+                }
+                System.out.print("]\n}\n");
             }
-            System.out.println("],\n\thipotecas: ,\n\tedificios:\n}");
-        }
+        } else
+            System.out.println("No hay jugadores en la partida");
 
     }
 

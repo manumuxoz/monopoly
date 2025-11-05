@@ -48,8 +48,6 @@ public class Avatar {
         return tipo;
     }
 
-
-
     //A continuación, tenemos otros métodos útiles para el desarrollo del juego.
     /*Método que permite mover a un avatar a una casilla concreta. Parámetros:
     * - Un array con las casillas del tablero. Se trata de un arrayList de arrayList de casillas (uno por lado).
@@ -86,8 +84,6 @@ public class Avatar {
         this.setLugar(nuevaCasilla);
         nuevaCasilla.anhadirAvatar(this);
     }
-
-
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
     * El ID generado será una letra mayúscula. Parámetros:
