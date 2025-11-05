@@ -171,8 +171,8 @@ public class Tablero {
             tableroStr.append("|").append(formatearCasilla(casillaOeste)).append("|");
 
             String vacio = ""; //Rellenamos el interior en blanco
-            tableroStr.repeat(String.format("%20s", vacio), 8); //Bucle para 8 iteraciones
-            tableroStr.append(String.format("%19s", vacio)); //Ultima casilla vacía con un caracter menos para cuadrar
+            tableroStr.repeat(String.format("%21s", vacio), 8); //Bucle para 8 iteraciones
+            tableroStr.append(String.format("%20s", vacio)); //Ultima casilla vacía con un caracter menos para cuadrar
 
             Casilla casillaEste = ladoEste.get(i + 1); //Solar18 -> Solar22 (de arriba a abajo)
             tableroStr.append("|").append(formatearCasilla(casillaEste)).append("|\n");
@@ -207,7 +207,7 @@ public class Tablero {
         String color = RESET;
         if (casilla.getTipo().equals("Solar")) color = casilla.getGrupo().getColorGrupo();
 
-        return color + String.format("%-8s" + RESET + "%11s", casilla.getNombre(), formatearAvatares(casilla));
+        return color + String.format("%-8s" + RESET + "%12s", casilla.getNombre(), formatearAvatares(casilla));
     }
 
     //Método para formatear avatares de una casilla pasada por argumento.

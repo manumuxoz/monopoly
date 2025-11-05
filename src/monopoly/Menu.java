@@ -83,8 +83,7 @@ public class Menu {
             if (nuevoJugador.getNombre() != null && jugadores.size() <= 4) {
                 jugadores.add(nuevoJugador);
                 System.out.println("{\n\tnombre: " + nuevoJugador.getNombre() + ",\n\tavatar: " + nuevoJugador.getAvatar().getId() + "\n}");
-            } else
-                System.out.println("Error: Máximo de jugadores alcanzado.");
+            }
 
         } else if (partes.length == 1 && partes[0].equals("comandos")) leerComandos();
 
@@ -114,8 +113,7 @@ public class Menu {
             else if (partes.length == 2 && partes[0].equals("salir") && partes[1].equals("carcel")) salirCarcel();
 
             else if (partes.length == 2 && partes[0].equals("edificar")) edificar(partes[1]);
-        } else
-            System.out.println("Error: Mínimo de jugadores no alcanzado.");
+        }
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
