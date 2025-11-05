@@ -504,7 +504,7 @@ public class Casilla {
     }
 
     //Método para edificar una piscina
-    public void edificarPiscina(Jugador solicitante, ArrayList<String> edificiosCreados) {
+    public void edificarPiscina(Jugador solicitante) {
         if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
             System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
             return;

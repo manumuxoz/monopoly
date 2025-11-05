@@ -379,16 +379,16 @@ public class Menu {
 
         if (tipoEdificio.equals("casa")) {
             Edificio nuevaCasa = new Edificio(jugadorActual, casillaActual, tipoEdificio, edificios);
-            casillaActual.edificarCasa(jugadorActual, edificios);
+            casillaActual.edificarCasa(jugadorActual);
         } else if (tipoEdificio.equals("hotel")) {
             Edificio nuevoHotel = new Edificio(jugadorActual, casillaActual, tipoEdificio, edificios);
             casillaActual.edificarHotel(jugadorActual, edificios);
         } else if (tipoEdificio.equals("piscina")) {
             Edificio nuevaPiscina = new Edificio(jugadorActual, casillaActual, tipoEdificio, edificios);
-            casillaActual.edificarPiscina(jugadorActual, edificios);
+            casillaActual.edificarPiscina(jugadorActual);
         } else if (tipoEdificio.equals("pista")) {
             Edificio nuevaPistaDeporte = new Edificio(jugadorActual, casillaActual, tipoEdificio, edificios);
-            .edificarPista(jugadorActual, edificios);
+            casillaActual.edificarPista(jugadorActual);
         } else
             System.out.println("Error: Nombre de edificación inválido. Usa: casa, hotel, piscina o pista");
     }
