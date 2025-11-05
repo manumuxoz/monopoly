@@ -434,6 +434,7 @@ public class Casilla {
     //Método para eliminar las casas de una casilla
     private void eliminarCasas(ArrayList<Edificio> edificiosCreados) {
         edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("casa"));
+        numCasas = 0; //Reseteamos bandera
     }
 
     //Método para edificar una casa
@@ -488,7 +489,6 @@ public class Casilla {
         solicitante.sumarFortuna(-valorHotel);
         eliminarCasas(edificiosCreados); //Eliminamos las casas
         new Edificio(solicitante, this, "hotel", edificiosCreados); //Creamos hotel
-        numCasas = 0;
         hotel = true;
         incrementarAlquiler(); //Incrementamos alquiler
 
