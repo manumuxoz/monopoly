@@ -2,6 +2,8 @@ package monopoly;
 
 import partida.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import static monopoly.Valor.*;
 
 
@@ -439,13 +441,20 @@ public class Casilla {
     }
 
     //Método para eliminar las casas de una casilla
-    private void eliminarCasas(ArrayList<String> edificios) {
-        for (String ID : edificios) {
-            String[] partes = ID.split("-");
+    private void eliminarCasas(ArrayList<String> edificios, ArrayList<String> edificiosCreados) {
+        ArrayList<String> IDcasas = new ArrayList<>();
+        for (Iterator<String> it = edificios.iterator(); it.hasNext(); ) {
+            String[] partes = it.next().split("-");
             if (partes[0].equals("casa")) {
-                edificios.remove(ID);
+                IDcasas.add(it.next());
+                it.remove();
                 numCasas--;
             }
+        }
+
+        for (Iterator<String> it = edificiosCreados.iterator(); it.hasNext(); ) {
+            if (IDcasas.contains(it.next()))
+                it.remove();
         }
     }
 
@@ -499,7 +508,7 @@ public class Casilla {
 
         solicitante.sumarGastos(valorHotel); //Sumamos gastos y restamos fortuna
         solicitante.sumarFortuna(-valorHotel);
-        eliminarCasas(solicitante.getEdificios()); //Eliminamos las casas
+        eliminarCasas(solicitante.getEdificios(), edificiosCreados); //Eliminamos las casas
         hotel = true;
         incrementarAlquiler(); //Incrementamos alquiler
         solicitante.getEdificios().add(generarIDEdificio(edificiosCreados, "hotel")); //Añadimos el edificio al jugador
