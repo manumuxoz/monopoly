@@ -418,6 +418,7 @@ public class Menu {
                 return;
             }
         }
+
         if  (countSolares == 3) //Puede tener hasta 12 casas, 3 hoteles, 3 piscinas y 3 pistas de deporte
             System.out.println("Se pueden edificar " + (12 - countCasas) + " casas, " + (3 - countHoteles) + " hoteles, "
                 + (3 - countPiscina) + " piscinas y " + (3 - countPista) + " pistas.");
