@@ -480,7 +480,7 @@ public class Casilla {
         solicitante.getEdificios().add(generarIDEdificio(edificiosCreados, "casa")); //Añadimos el edificio al jugador
 
         System.out.println("Se ha edificado una casa en " + nombre + ".La fortuna de " + solicitante.getNombre() +
-                "se reduce en " + valorCasa + "$.");
+                " se reduce en " + valorCasa + "$.");
     }
 
     //Método para edificar un hotel
@@ -505,12 +505,13 @@ public class Casilla {
         solicitante.sumarGastos(valorHotel); //Sumamos gastos y restamos fortuna
         solicitante.sumarFortuna(-valorHotel);
         eliminarCasas(solicitante.getEdificios(), edificiosCreados); //Eliminamos las casas
+        numCasas = 0;
         hotel = true;
         incrementarAlquiler(); //Incrementamos alquiler
         solicitante.getEdificios().add(generarIDEdificio(edificiosCreados, "hotel")); //Añadimos el edificio al jugador
 
         System.out.println("Se ha edificado un hotel en " + nombre + ".La fortuna de " + solicitante.getNombre() +
-                "se reduce en " + valorHotel + "$.");
+                " se reduce en " + valorHotel + "$.");
     }
 
     //Método para edificar una piscina
@@ -535,7 +536,7 @@ public class Casilla {
         solicitante.getEdificios().add(generarIDEdificio(edificiosCreados, "piscina")); //Añadimos el edificio al jugador
 
         System.out.println("Se ha edificado una piscina en " + nombre + ".La fortuna de " + solicitante.getNombre() +
-                "se reduce en " + valorPiscina + "$.");
+                " se reduce en " + valorPiscina + "$.");
     }
 
     //Método paara edificar una pista de deporte
@@ -560,7 +561,7 @@ public class Casilla {
         solicitante.getEdificios().add(generarIDEdificio(edificiosCreados, "pista")); //Añadimos el edificio al jugador
 
         System.out.println("Se ha edificado una pista de deporte en " + nombre + ".La fortuna de " + solicitante.getNombre() +
-                "se reduce en " + valorPistaDeporte + "$.");
+                " se reduce en " + valorPistaDeporte + "$.");
     }
 
 }
