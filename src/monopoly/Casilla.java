@@ -443,19 +443,15 @@ public class Casilla {
     //Método para eliminar las casas de una casilla
     private void eliminarCasas(ArrayList<String> edificios, ArrayList<String> edificiosCreados) {
         ArrayList<String> IDcasas = new ArrayList<>();
-        for (Iterator<String> it = edificios.iterator(); it.hasNext(); ) {
-            String[] partes = it.next().split("-");
-            if (partes[0].equals("casa")) {
-                IDcasas.add(it.next());
-                it.remove();
-                numCasas--;
-            }
+
+        for (String ID : edificios) {
+            String[] partes = ID.split("-");
+            if (partes[0].equals("casa"))
+                IDcasas.add(ID);
         }
 
-        for (Iterator<String> it = edificiosCreados.iterator(); it.hasNext(); ) {
-            if (IDcasas.contains(it.next()))
-                it.remove();
-        }
+        edificios.removeIf(IDcasas::contains);
+        edificiosCreados.removeIf(IDcasas::contains);
     }
 
     //Método para edificar una casa
