@@ -172,7 +172,7 @@ public class Menu {
             valorTirada = tirada1 + tirada2;
 
             if (tirada1 < 0 || tirada1 > 6 || tirada2 < 0 || tirada2 > 6) {
-                System.out.println("Error: tirada no válida");
+                System.out.println("Error: tirada no válida.");
                 return;
             }
             System.out.println("Tirada manual: " + tirada1 + " + " + tirada2 + " = " + valorTirada);
@@ -190,7 +190,6 @@ public class Menu {
 
         manejarAvatar(valorTirada);
     }
-
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
      * Parámetro: cadena de caracteres con el nombre de la casilla.
@@ -320,11 +319,11 @@ public class Menu {
 
         if (sonDobles) {
             lanzamientos++; // Aumentar contador de dobles consecutivos
-            System.out.println("¡Dobles! Llevas " + lanzamientos + " dobles consecutivos");
+            System.out.println("¡Dobles! Llevas " + lanzamientos + " dobles consecutivos.");
 
             // Si son 3 dobles consecutivos, ir a la cárcel
             if (lanzamientos == 3) {
-                System.out.println("¡3 dobles consecutivos! " + jugadorActual.getNombre() + " va a la cárcel");
+                System.out.println("¡3 dobles consecutivos! " + jugadorActual.getNombre() + " va a la cárcel.");
                 jugadorActual.encarcelar(tablero.getPosiciones());
                 lanzamientos = -1; // Resetear contador
             }
