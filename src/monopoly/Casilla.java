@@ -446,7 +446,7 @@ public class Casilla {
     }
 
     //Método para edificar una casa
-    public void edificarCasa(Jugador solicitante) {
+    public void edificarCasa(Jugador solicitante, ArrayList<Edificio> edificiosCreados) {
         if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
             System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
             return;
@@ -466,6 +466,7 @@ public class Casilla {
 
         solicitante.sumarGastos(valorCasa); //Sumamos gastos y restamos fortuna
         solicitante.sumarFortuna(-valorCasa);
+        new Edificio(solicitante, this, "casa", edificiosCreados); //Creamos una casa
         numCasas++; //Sumamos una casa al contador
         incrementarAlquiler(); //Incrementamos alquiler
 
@@ -495,6 +496,7 @@ public class Casilla {
         solicitante.sumarGastos(valorHotel); //Sumamos gastos y restamos fortuna
         solicitante.sumarFortuna(-valorHotel);
         eliminarCasas(edificiosCreados); //Eliminamos las casas
+        new Edificio(solicitante, this, "hotel", edificiosCreados); //Creamos hotel
         numCasas = 0;
         hotel = true;
         incrementarAlquiler(); //Incrementamos alquiler
@@ -504,7 +506,7 @@ public class Casilla {
     }
 
     //Método para edificar una piscina
-    public void edificarPiscina(Jugador solicitante) {
+    public void edificarPiscina(Jugador solicitante, ArrayList<Edificio> edificiosCreados) {
         if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
             System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
             return;
@@ -517,9 +519,14 @@ public class Casilla {
             System.out.println("No se puede edificar una piscina, ya que no se dispone de un hotel.");
             return;
         }
+        if (piscina) {
+            System.out.println("No se puede edificar una piscina, ya que ya se dispone de una.");
+            return;
+        }
 
         solicitante.sumarGastos(valorPiscina); //Sumamos gastos y restamos fortuna
         solicitante.sumarFortuna(-valorPiscina);
+        new Edificio(solicitante, this, "piscina", edificiosCreados); //Creamos una piscina
         piscina = true; //Cambiamos bandera
         incrementarAlquiler(); //Incrementamos alquiler
 
@@ -528,7 +535,7 @@ public class Casilla {
     }
 
     //Método paara edificar una pista de deporte
-    public void edificarPista(Jugador solicitante) {
+    public void edificarPista(Jugador solicitante, ArrayList<Edificio> edificiosCreados) {
         if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
             System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
             return;
@@ -541,9 +548,14 @@ public class Casilla {
             System.out.println("No se puede edificar una pista de deporte, ya que no se dispone de una piscina.");
             return;
         }
+        if (pistaDeporte) {
+            System.out.println("No se puede edificar una pista de deporte, ya que ya se dispone de una.");
+            return;
+        }
 
         solicitante.sumarGastos(valorPistaDeporte); //Sumamos gastos y restamos fortuna
         solicitante.sumarFortuna(-valorPistaDeporte);
+        new Edificio(solicitante, this, "pista", edificiosCreados); //Creamos una pista de deporte
         pistaDeporte = true; //Cambiamos bandera
         incrementarAlquiler(); //Incrementamos alquiler
 

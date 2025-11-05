@@ -50,18 +50,4 @@ public class Edificio { //Nueva clase edificio
     public String getTipo() {
         return tipo;
     }
-
-    //Setters:
-    public void setDuenho(Jugador duenho) {
-        this.duenho = duenho;
-    }
-    public void setCasilla(Casilla casilla) {
-        this.casilla = casilla;
-    }
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
 }

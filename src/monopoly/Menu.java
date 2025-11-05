@@ -365,20 +365,15 @@ public class Menu {
         Jugador jugadorActual =  jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
 
-        if (tipoEdificio.equals("casa")) {
-            Edificio nuevaCasa = new Edificio(jugadorActual, casillaActual, tipoEdificio, edificios);
-            casillaActual.edificarCasa(jugadorActual);
-        } else if (tipoEdificio.equals("hotel")) {
-            Edificio nuevoHotel = new Edificio(jugadorActual, casillaActual, tipoEdificio, edificios);
-            casillaActual.edificarHotel(jugadorActual, edificios);
-        } else if (tipoEdificio.equals("piscina")) {
-            Edificio nuevaPiscina = new Edificio(jugadorActual, casillaActual, tipoEdificio, edificios);
-            casillaActual.edificarPiscina(jugadorActual);
-        } else if (tipoEdificio.equals("pista")) {
-            Edificio nuevaPistaDeporte = new Edificio(jugadorActual, casillaActual, tipoEdificio, edificios);
-            casillaActual.edificarPista(jugadorActual);
-        } else
-            System.out.println("Error: Nombre de edificación inválido. Usa: casa, hotel, piscina o pista");
+        if (tipoEdificio.equals("casa")) casillaActual.edificarCasa(jugadorActual, edificios);
+
+        else if (tipoEdificio.equals("hotel")) casillaActual.edificarHotel(jugadorActual, edificios);
+
+        else if (tipoEdificio.equals("piscina")) casillaActual.edificarPiscina(jugadorActual, edificios);
+
+        else if (tipoEdificio.equals("pista")) casillaActual.edificarPista(jugadorActual, edificios);
+
+        else System.out.println("Error: Nombre de edificación inválido. Usa: casa, hotel, piscina o pista");
     }
 
     private void listarEdificios() {}
