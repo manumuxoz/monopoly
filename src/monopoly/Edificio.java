@@ -8,6 +8,7 @@ import java.util.Objects;
 public class Edificio { //Nueva clase edificio
     private Jugador duenho; //Jugador al que pertenece
     private Casilla casilla; //Casilla en la que está el edificio
+    private Grupo grupo; //Grupo en el que está el edificio
     private String ID; //ID que identifica de manera única al edificio
     private String tipo; //String para el tipo de edificio (casa, hotel, piscina o pista)
 
@@ -22,6 +23,7 @@ public class Edificio { //Nueva clase edificio
             this.duenho = duenho;
             this.casilla = casilla;
             this.tipo = tipo;
+            grupo = casilla.getGrupo();
             generarID(tipo,  edificiosCreados); //Creamos ID
         }
     }
@@ -51,6 +53,9 @@ public class Edificio { //Nueva clase edificio
     public String getTipo() {
         return tipo;
     }
+    public Grupo getGrupo() {
+        return grupo;
+    }
 
     /*Método para mostrar información sobre un edificio.
      * Devuelve una cadena con información específica de cada tipo de edificio.*/
@@ -58,7 +63,7 @@ public class Edificio { //Nueva clase edificio
         return "{\n\tid: " + ID +
                 ",\n\tpropietario: " + duenho.getNombre() +
                 ",\n\tcasilla: " + casilla.getNombre() +
-                ",\n\tgrupo: " + casilla.color(casilla.getGrupo().getColorGrupo()) +
+                ",\n\tgrupo: " + casilla.color(grupo.getColorGrupo()) +
                 ",\n\tcoste: " + imprimirCoste(tipo) +
                 "\n}";
     }

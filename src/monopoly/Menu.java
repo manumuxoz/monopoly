@@ -2,6 +2,7 @@ package monopoly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import partida.*;
 import  static monopoly.Valor.*;
@@ -116,6 +117,8 @@ public class Menu {
             else if (partes.length == 2 && partes[0].equals("edificar")) edificar(partes[1]);
 
             else if (partes.length == 2 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificios();
+
+            else if (partes.length == 3 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificiosGrupo(partes[3]);
         }
     }
 
@@ -389,6 +392,7 @@ public class Menu {
         }
     }
 
+    //Método para listar todos los edificios construidos
     public void listarEdificios() {
         if (!edificios.isEmpty()) {
             for (Edificio edificio : edificios) {
@@ -396,5 +400,30 @@ public class Menu {
             }
         } else
             System.out.println("No hay edificios para listar.");
+    }
+
+    //Método para listar los métodos de un grupo y saber qué edificios se pueden construir
+    public void listarEdificiosGrupo(String colorGrupo) {
+        int countSolares = 0, countCasas = 0, countHoteles = 0, countPiscina = 0, countPista = 0; //Variables para llevar cuenta de los edificios construidos
+        for (Map.Entry entry : tablero.getGrupos().entrySet()) {
+            if (entry.getKey().toString().toLowerCase().equals(colorGrupo)) { //Iteramos en el hashmap para encontrar el grupo
+                for (Casilla solar : (ArrayList<Casilla>) entry.getValue()) { //Iteramos sobre el arraylist de casillas del grupo
+                    System.out.println(solar.infoEdificios());
+                    countSolares++;
+                    countCasas = solar.getNumCasas();
+                    if (solar.getHotel()) countHoteles++;
+                    if (solar.getPiscina()) countPiscina++;
+                    if (solar.getPistaDeporte()) countPista++;
+                }
+                return;
+            }
+        }
+        if  (countSolares == 3) //Puede tener hasta 12 casas, 3 hoteles, 3 piscinas y 3 pistas de deporte
+            System.out.println("Se pueden edificar " + (12 - countCasas) + " casas, " + (3 - countHoteles) + " hoteles, "
+                + (3 - countPiscina) + " piscinas y " + (3 - countPista) + " pistas.");
+
+        else if (countSolares == 2) //Puede tener hasta 8 casas, 2 hoteles, 2 piscinas y 2 pistas de deporte
+            System.out.println("Se pueden edificar " + (8 - countCasas) + " casas, " + (2 - countHoteles) + " hoteles, "
+                    + (2 - countPiscina) + " piscinas y " + (2 - countPista) + " pistas.");
     }
 }

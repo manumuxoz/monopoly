@@ -26,6 +26,9 @@ public class Tablero {
     public ArrayList<ArrayList<Casilla>> getPosiciones() {
         return posiciones;
     }
+    public HashMap<String, Grupo> getGrupos() {
+        return grupos;
+    }
 
     //Método para crear todas las casillas del tablero. Formado a su vez por cuatro métodos (1/lado).
     private void generarCasillas() {

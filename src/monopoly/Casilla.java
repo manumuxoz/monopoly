@@ -1,6 +1,8 @@
 package monopoly;
 
 import partida.*;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
@@ -34,6 +36,7 @@ public class Casilla {
     private boolean hotel;
     private boolean piscina;
     private boolean pistaDeporte;
+    private ArrayList<Edificio> edificios;
 
     //Constructores:
     public Casilla() {
@@ -133,6 +136,21 @@ public class Casilla {
     }
     public float getAlquilerPistaDeporte() {
         return alquilerPistaDeporte;
+    }
+    public ArrayList<Edificio> getEdificios() {
+        return edificios;
+    }
+    public int  getNumCasas() {
+        return numCasas;
+    }
+    public boolean getHotel() {
+        return hotel;
+    }
+    public boolean getPiscina() {
+        return piscina;
+    }
+    public boolean getPistaDeporte() {
+        return pistaDeporte;
     }
 
     //Setters:
@@ -435,7 +453,7 @@ public class Casilla {
 
         solicitante.sumarGastos(valorCasa); //Sumamos gastos y restamos fortuna
         solicitante.sumarFortuna(-valorCasa);
-        new Edificio(solicitante, this, "casa", edificiosCreados); //Creamos una casa
+        edificios.add(new Edificio(solicitante, this, "casa", edificiosCreados)); //Creamos una casa
         numCasas++; //Sumamos una casa al contador
         incrementarAlquiler(); //Incrementamos alquiler
 
@@ -465,7 +483,7 @@ public class Casilla {
         solicitante.sumarGastos(valorHotel); //Sumamos gastos y restamos fortuna
         solicitante.sumarFortuna(-valorHotel);
         eliminarCasas(edificiosCreados); //Eliminamos las casas
-        new Edificio(solicitante, this, "hotel", edificiosCreados); //Creamos hotel
+        edificios.add(new Edificio(solicitante, this, "hotel", edificiosCreados)); //Creamos hotel
         hotel = true;
         incrementarAlquiler(); //Incrementamos alquiler
 
@@ -494,7 +512,7 @@ public class Casilla {
 
         solicitante.sumarGastos(valorPiscina); //Sumamos gastos y restamos fortuna
         solicitante.sumarFortuna(-valorPiscina);
-        new Edificio(solicitante, this, "piscina", edificiosCreados); //Creamos una piscina
+        edificios.add(new Edificio(solicitante, this, "piscina", edificiosCreados)); //Creamos una piscina
         piscina = true; //Cambiamos bandera
         incrementarAlquiler(); //Incrementamos alquiler
 
@@ -502,7 +520,7 @@ public class Casilla {
                 " se reduce en " + valorPiscina + "$.");
     }
 
-    //Método paara edificar una pista de deporte
+    //Método para edificar una pista de deporte
     public void edificarPista(Jugador solicitante, ArrayList<Edificio> edificiosCreados) {
         if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
             System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
@@ -523,12 +541,23 @@ public class Casilla {
 
         solicitante.sumarGastos(valorPistaDeporte); //Sumamos gastos y restamos fortuna
         solicitante.sumarFortuna(-valorPistaDeporte);
-        new Edificio(solicitante, this, "pista", edificiosCreados); //Creamos una pista de deporte
+        edificios.add(new Edificio(solicitante, this, "pista", edificiosCreados)); //Creamos una pista de deporte
         pistaDeporte = true; //Cambiamos bandera
         incrementarAlquiler(); //Incrementamos alquiler
 
         System.out.println("Se ha edificado una pista de deporte en " + nombre + ". La fortuna de " + solicitante.getNombre() +
                 " se reduce en " + valorPistaDeporte + "$.");
+    }
+
+    //Método que devuelve información sobre los edificios construidos en una casilla
+    public String infoEdificios() {
+        return "{\npropiedad: " + nombre +
+                ",\n\thotel: " +
+                ",\n\tcasas: " +
+                ",\n\tpiscina: " +
+                ",\n\tpistaDeporte: " +
+                ",\n\talquiler: " + impuesto +
+                "\n}";
     }
 
     @Override //Sobreescritura del método equals
