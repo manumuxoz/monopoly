@@ -2,6 +2,7 @@ package monopoly;
 
 import partida.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class Edificio { //Nueva clase edificio
@@ -49,5 +50,12 @@ public class Edificio { //Nueva clase edificio
     }
     public String getTipo() {
         return tipo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Edificio edificio = (Edificio) o;
+        return Objects.equals(ID, edificio.ID);
     }
 }

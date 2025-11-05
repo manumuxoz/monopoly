@@ -125,18 +125,13 @@ public class Menu {
             if (jugador.getNombre().equals(partes[2])) { //Si existe su nombre imprimimos datos del jugador
                 System.out.print("{\n\tnombre: " + jugador.getNombre() +
                         ",\n\tavatar: " + jugador.getAvatar().getId() +
-                        ",\n\tfortuna: " + jugador.getFortuna() +
+                        ",\n\tfortuna: " + (int) jugador.getFortuna() +
                         ",\n\tpropiedades: [");
-
-                if (!jugador.getPropiedades().isEmpty()) { //Imprimimos lista de propiedades si no está vacía
-                    for (int i = 0; i < jugador.getPropiedades().size() - 1; i++) {
-                        System.out.print(jugador.getPropiedades().get(i).getNombre() + ", ");
-                    }
-                    System.out.print(jugador.getPropiedades().getLast().getNombre());
-                }
+                imprimirPropiedades(jugador);
                 System.out.print("],\n\thipotecas: [],\n\tedificios: [");
-
+                imprimirEdificios(jugador);
                 System.out.print("]\n}\n");
+                return; //Salimos del bucle
             }
         }
     }
@@ -238,15 +233,9 @@ public class Menu {
                         ",\n\tavatar: " + jugador.getAvatar().getId() +
                         ",\n\tfortuna: " + jugador.getFortuna() +
                         ",\n\tpropiedades: [");
-
-                if (!jugador.getPropiedades().isEmpty()) { //Imprimimos lista de propiedades si no está vacía
-                    for (int i = 0; i < jugador.getPropiedades().size() - 1; i++) {
-                        System.out.print(jugador.getPropiedades().get(i).getNombre() + ", ");
-                    }
-                    System.out.print(jugador.getPropiedades().getLast().getNombre());
-                }
+                imprimirPropiedades(jugador); //Imprimimos las propiedades
                 System.out.print("],\n\thipotecas: [],\n\tedificios: [");
-
+                imprimirEdificios(jugador); //Imprimimos los edificios
                 System.out.print("]\n}\n");
             }
         } else
@@ -275,6 +264,16 @@ public class Menu {
     }
 
     //Nuevos métodos:
+
+    //Método para imprimir las propiedades d eun jugador dado
+    public void imprimirPropiedades(Jugador jugador) {
+        for (Casilla propiedad : jugador.getPropiedades()) {
+            if (!propiedad.equals(jugador.getPropiedades().getLast()))
+                System.out.print(propiedad.getNombre() + ", ");
+            else
+                System.out.print(propiedad.getNombre());
+        }
+    }
 
     // Método para mostrar por pantalla información de la posición de cada jugador
     private void repintarTablero() {
@@ -361,6 +360,7 @@ public class Menu {
         repintarTablero();
     }
 
+    //Método para edificar un tipo de edificio dado
     private void edificar(String tipoEdificio) {
         Jugador jugadorActual =  jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
@@ -374,6 +374,18 @@ public class Menu {
         else if (tipoEdificio.equals("pista")) casillaActual.edificarPista(jugadorActual, edificios);
 
         else System.out.println("Error: Nombre de edificación inválido. Usa: casa, hotel, piscina o pista");
+    }
+
+    //Método para imprimir los IDs de los edificios de un jugador
+    public void imprimirEdificios(Jugador jugador) {
+        for (Edificio edificio : edificios) {
+            if (edificio.getDuenho().equals(jugador)) {
+                if (!edificio.equals(edificios.getLast()))
+                    System.out.print(edificio.getID() + ", ");
+                else
+                    System.out.print(edificio.getID());
+            }
+        }
     }
 
     private void listarEdificios() {}
