@@ -350,28 +350,30 @@ public class Casilla {
                         "\n\ttipo: " + tipo +
                         ",\n\tapagar: " + impuesto +
                         "\n}";
-            case "Especiales":
-                if (nombre.equals("Parking")) {
-                    System.out.print("{\n\tbote: " + impuesto + "\n\tjugadores: [");
-                    for (Avatar avatar : avatares) {
-                        if (!avatar.equals(avatares.getLast()))
-                            System.out.print(avatar.getJugador().getNombre() + ", ");
-                        else
-                            System.out.print(avatar.getJugador().getNombre());
-                    }
-                    System.out.println("]\n}");
-                }
-                if (nombre.equals("Carcel")) {
-                    System.out.print("{\n\tsalir: 500000,\n\tjugadores: ");
-                    if (!avatares.isEmpty())
-                        for (Avatar av : avatares) //Recorremos avatares
-                            System.out.print("[" + av.getJugador().getNombre() + ", " + av.getJugador().getTiradasCarcel() + "] ");
-                    System.out.println("\n}");
-                }
-                return "";
-            default:
-                return "";
+            case "Especiales": return imprimirEspeciales(nombre);
+            default: return "";
         }
+    }
+
+    public String imprimirEspeciales(String nombre) {
+        StringBuilder sb = new StringBuilder().append("[");
+        String separador = "";
+        if  (nombre.equals("Parking")) {
+            for (Avatar avatar : avatares) {
+                sb.append(separador).append(avatar.getJugador().getNombre());
+                separador = ", ";
+            }
+            return "{\n\tbote: " + impuesto + "\n\tjugadores: " +  sb + "]\n}";
+        } else if (nombre.equals("Carcel")) {
+            for (Avatar av : avatares) {
+                if (av.getJugador().getEnCarcel()) {
+                    sb.append(separador).append(av.getJugador().getNombre()).append(", ").append(av.getJugador().getTiradasCarcel());
+                    separador = "], [";
+                }
+            }
+            return "{\n\tsalir: 500000,\n\tjugadores: " +  sb + "]\n}";
+        }
+        return "";
     }
 
     /* Método para mostrar información de una casilla en venta.

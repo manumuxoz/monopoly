@@ -191,7 +191,8 @@ public class Menu {
 
         manejarDobles(sonDobles);
 
-        manejarAvatar(valorTirada);
+        if (!jugadorActual.getEnCarcel()) //Comprobamos que no haya sido encarcelado
+            manejarAvatar(valorTirada);
     }
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
@@ -404,6 +405,11 @@ public class Menu {
     public void listarEdificiosGrupo(String colorGrupo) {
         int countSolares = 0, countCasas = 0, countHoteles = 0, countPiscina = 0, countPista = 0; //Variables para llevar cuenta de los edificios construidos
         String color = Character.toUpperCase(colorGrupo.charAt(0)) + colorGrupo.substring(1); //Formatemamos el color pasado por comando
+
+        if (tablero.getGrupos().get(color) == null) { //Comprobamos que exista el color
+            System.out.println("Error: No existe el grupo de color " + color + ".");
+            return;
+        }
 
         for (Casilla solar : tablero.getGrupos().get(color).getMiembros()) { //Iteramos sobre el arraylist de casillas del grupo
             System.out.println(solar.infoEdificios());
