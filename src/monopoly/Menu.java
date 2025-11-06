@@ -117,7 +117,9 @@ public class Menu {
 
             else if (partes.length == 2 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificios();
 
+            else if (partes.length == 2 && partes[0].equals("hipotecar")) hipotecar(partes[1]);
 
+            else if (partes.length == 2 && partes[0].equals("deshipotecar")) deshipotecar(partes[1]);
         }
     }
 
@@ -202,7 +204,7 @@ public class Menu {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casilla = tablero.encontrar_casilla(nombre);
         if (casilla == null) {
-            System.out.println("Error: La casilla '" + nombre + "' no existe");
+            System.out.println("Error: La casilla " + nombre + " no existe.");
             return;
         }
         for (Avatar av : casilla.getAvatares())
@@ -367,15 +369,19 @@ public class Menu {
         Jugador jugadorActual =  jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
 
-        if (tipoEdificio.equals("casa")) casillaActual.edificarCasa(jugadorActual, edificios);
+         for (Casilla solar : casillaActual.getGrupo().getMiembros()) //Comprobamos que ningún miembro del grupo esté hipotecado
+             if (solar.getHipotecado()) {
+                 System.out.println("No se puede edificar en " + casillaActual.getNombre() + ". " + solar.getNombre() + " está hipotecado.");
+                 return;
+             }
 
-        else if (tipoEdificio.equals("hotel")) casillaActual.edificarHotel(jugadorActual, edificios);
-
-        else if (tipoEdificio.equals("piscina")) casillaActual.edificarPiscina(jugadorActual, edificios);
-
-        else if (tipoEdificio.equals("pista")) casillaActual.edificarPista(jugadorActual, edificios);
-
-        else System.out.println("Error: Nombre de edificación inválido. Usa: casa, hotel, piscina o pista");
+        switch (tipoEdificio) {
+            case "casa" -> casillaActual.edificarCasa(jugadorActual, edificios);
+            case "hotel" -> casillaActual.edificarHotel(jugadorActual, edificios);
+            case "piscina" -> casillaActual.edificarPiscina(jugadorActual, edificios);
+            case "pista" -> casillaActual.edificarPista(jugadorActual, edificios);
+            default -> System.out.println("Error: Nombre de edificación inválido. Usa: casa, hotel, piscina o pista");
+        }
     }
 
     //Método para imprimir los IDs de los edificios de un jugador
@@ -426,5 +432,91 @@ public class Menu {
         else if (countSolares == 2) //Puede tener hasta 8 casas, 2 hoteles, 2 piscinas y 2 pistas de deporte
             System.out.println("Se pueden edificar " + (8 - countCasas) + " casas, " + (2 - countHoteles) + " hoteles, "
                     + (2 - countPiscina) + " piscinas y " + (2 - countPista) + " pistas.");
+    }
+
+    //Método para hipotecar una casilla
+    public void hipotecar(String nombreCasilla) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Casilla hipoteca = null;
+
+        for (ArrayList<Casilla> lado : tablero.getPosiciones()) //Buscamos la casilla a hipotecar
+            for (Casilla casilla : lado)
+                if (casilla.getNombre().equals(nombreCasilla)) {
+                    hipoteca = casilla;
+                    break;
+                }
+
+        if (hipoteca == null) { //Si no se ha asignado, es que no existe
+            System.out.println("Error: No existe la casilla " + nombreCasilla + ".");
+            return;
+        }
+
+        if (!hipoteca.getDuenho().equals(jugadorActual)) { //Comprobamos que sea el jugador actual el dueño de la casilla
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() +
+                    ". Esta casilla pertenece a " + hipoteca.getDuenho().getNombre() + ".");
+            return;
+        }
+
+        if (hipoteca.getHipotecado()) { //Comprobamos que no esté hipotecada
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() + ". Ya está hipotecada.");
+            return;
+        }
+
+        if (!hipoteca.getEdificios().isEmpty()) { //Comprobamos que no tenga edificios la casilla a hipotecar
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() + ". Debe vender todos los edificios del solar");
+            return;
+        }
+
+        hipoteca.setHipotecado(true); //Indicamos que la propiedad está hipotecada
+        jugadorActual.sumarFortuna(hipoteca.getHipoteca()); //Sumamos la hipoteca
+        jugadorActual.getHipotecas().add(hipoteca); //Añadimos a las propiedades hipotecadas del jugador
+
+        StringBuilder sb = new StringBuilder();
+        if (hipoteca.getTipo().equals("Solar")) //Si es solar añadimos mensaje de aviso
+            sb.append(" No puede recibir alquileres ni edificar en el grupo ").append(hipoteca.color(hipoteca.getGrupo().getColorGrupo())).append(".");
+
+        System.out.println(jugadorActual.getNombre() + " recibe " + hipoteca.getHipoteca() + "$ por la hipoteca de " +
+                hipoteca.getNombre() + "." + sb);
+    }
+
+    //Método para deshipotecar una casilla
+    public void deshipotecar(String nombreCasilla) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Casilla hipoteca = null;
+
+        for (ArrayList<Casilla> lado : tablero.getPosiciones()) //Buscamos la casilla a hipotecar
+            for (Casilla casilla : lado)
+                if (casilla.getNombre().equals(nombreCasilla)) {
+                    hipoteca = casilla;
+                    break;
+                }
+
+        if (hipoteca == null) { //Si no se ha asignado, es que no existe
+            System.out.println("Error: No existe la casilla " + nombreCasilla + ".");
+            return;
+        }
+
+        if (!hipoteca.getDuenho().equals(jugadorActual)) { //Comprobamos que sea el jugador actual el dueño de la casilla
+            System.out.println(jugadorActual.getNombre() + " no puede deshipotecar " + hipoteca.getNombre() +
+                    ". Esta casilla pertenece a " + hipoteca.getDuenho().getNombre() + ".");
+            return;
+        }
+
+        if (!hipoteca.getHipotecado()) { //Comprobamos que no esté hipotecada
+            System.out.println(jugadorActual.getNombre() + " no puede deshipotecar " + hipoteca.getNombre() + ". No está hipotecada.");
+            return;
+        }
+
+        hipoteca.setHipotecado(false); //Indicamos que la propiedad no está hipotecada
+        jugadorActual.sumarGastos(hipoteca.getHipoteca());
+        jugadorActual.sumarFortuna(-hipoteca.getHipoteca()); //Restamos la hipoteca
+        jugadorActual.getHipotecas().remove(hipoteca); //Eliminamos de las propiedades hipotecadas del jugador
+
+        StringBuilder sb = new StringBuilder();
+        if (hipoteca.getTipo().equals("Solar")) //Si es solar añadimos mensaje de aviso
+            sb.append(" Ahora puede recibir alquileres y edificar en el grupo ").append(hipoteca.color(hipoteca.getGrupo().getColorGrupo())).append(".");
+
+        System.out.println(jugadorActual.getNombre() + " paga " + hipoteca.getHipoteca() + "$ por deshipotecar " +
+                hipoteca.getNombre() + "." + sb);
     }
 }

@@ -19,6 +19,9 @@ public class Jugador {
     private int vueltas; //Cuenta las vueltas dadas al tablero.
     private ArrayList<Casilla> propiedades;//Propiedades que posee el jugador.
 
+    //Atributos nuevos:
+    private ArrayList<Casilla> hipotecas;
+
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
         this.nombre = "Banca";
@@ -40,6 +43,7 @@ public class Jugador {
             tiradasCarcel = 0;
             vueltas = 0;
             propiedades = new ArrayList<>();
+            hipotecas = new ArrayList<>();
         }
     }
 
@@ -64,6 +68,11 @@ public class Jugador {
     }
     public ArrayList<Casilla> getPropiedades() {
         return propiedades;
+    }
+
+    //Getters atributos nuevos:
+    public ArrayList<Casilla> getHipotecas() {
+        return hipotecas;
     }
 
     //Setters:

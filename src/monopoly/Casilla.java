@@ -37,6 +37,7 @@ public class Casilla {
     private boolean piscina;
     private boolean pistaDeporte;
     private ArrayList<Edificio> edificios;
+    private boolean hipotecado;
 
     //Constructores:
     public Casilla() {
@@ -153,6 +154,9 @@ public class Casilla {
     public boolean getPistaDeporte() {
         return pistaDeporte;
     }
+    public boolean getHipotecado() {
+        return hipotecado;
+    }
 
     //Setters:
     public void setDuenho(Jugador duenho) {
@@ -181,6 +185,9 @@ public class Casilla {
     public void setValorPistaDeporte(float valorPistaDeporte) {
         this.valorPistaDeporte = valorPistaDeporte;
     }
+    public void setHipotecado(boolean hipotecado) {
+        this.hipotecado = hipotecado;
+    }
 
     //Método utilizado para añadir un avatar al array de avatares en casilla.
     public void anhadirAvatar(Avatar av) {
@@ -202,7 +209,7 @@ public class Casilla {
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
         switch (tipo) {
             case "Solar":
-                if (!duenho.equals(banca) && !duenho.equals(actual)) {
+                if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
                     float alquiler = impuesto;
                     if (actual.getFortuna() >= alquiler) {
                         actual.sumarGastos(alquiler);
@@ -219,7 +226,7 @@ public class Casilla {
                 break;
 
             case "Servicios":
-                if (!duenho.equals(banca) && !duenho.equals(actual)) {
+                if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
                     int valorImpuesto = tirada * 4 * 50000;
                     if (actual.getFortuna() >= valorImpuesto) {
                         actual.sumarGastos(valorImpuesto);
@@ -236,7 +243,7 @@ public class Casilla {
                 break;
 
             case "Transporte":
-                if (!duenho.equals(banca) && !duenho.equals(actual)) {
+                if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
                     if (actual.getFortuna() >= impuesto) {
                         actual.sumarGastos(impuesto);
                         actual.sumarFortuna(-impuesto);
