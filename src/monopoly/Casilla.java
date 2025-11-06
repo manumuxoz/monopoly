@@ -559,7 +559,7 @@ public class Casilla {
     }
 
     private String imprimirEdificios() {
-        StringBuilder sbCasas = new StringBuilder().append("[");
+        StringBuilder sbCasas = new StringBuilder().append("["); //Creamos stringbuilders independientes para luego unirlos
         StringBuilder sbHotel = new StringBuilder().append("[");
         StringBuilder sbPiscina = new StringBuilder().append("[");
         StringBuilder sbPista = new StringBuilder().append("[");
@@ -570,10 +570,10 @@ public class Casilla {
                 case "piscina": sbPiscina.append(edificio.getID()); break;
                 case "pista": sbPista.append(edificio.getID()); break;
                 case "hotel": sbHotel.append(edificio.getID()); break;
-                case "casa": sbCasas.append(separador).append(edificio.getID()); separador = ", "; break;
+                case "casa": sbCasas.append(separador).append(edificio.getID()); separador = ", "; break; //Si hay varias casas las separamos por comas
             }
         }
-        return "casas: " + sbCasas + "],\n\thotel: " + sbHotel + "],\n\tpiscina: " + sbPiscina + "],\n\tpista: " + sbPista + "]";
+        return "casas: " + sbCasas + "],\n\thotel: " + sbHotel + "],\n\tpiscina: " + sbPiscina + "],\n\tpista: " + sbPista + "]"; //Unimos
     }
 
     @Override //Sobreescritura del método equals
