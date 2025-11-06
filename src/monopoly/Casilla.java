@@ -430,6 +430,7 @@ public class Casilla {
     //Método para eliminar las casas de una casilla
     private void eliminarCasas(ArrayList<Edificio> edificiosCreados) {
         edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("casa"));
+        edificios.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("casa"));
     }
 
     //Método para edificar una casa
@@ -551,13 +552,28 @@ public class Casilla {
 
     //Método que devuelve información sobre los edificios construidos en una casilla
     public String infoEdificios() {
-        return "{\npropiedad: " + nombre +
-                ",\n\thotel: " +
-                ",\n\tcasas: " +
-                ",\n\tpiscina: " +
-                ",\n\tpistaDeporte: " +
+        return "{\n\tpropiedad: " + nombre +
+                ",\n\t" + imprimirEdificios() +
                 ",\n\talquiler: " + impuesto +
                 "\n}";
+    }
+
+    private String imprimirEdificios() {
+        StringBuilder sbCasas = new StringBuilder().append("[");
+        StringBuilder sbHotel = new StringBuilder().append("[");
+        StringBuilder sbPiscina = new StringBuilder().append("[");
+        StringBuilder sbPista = new StringBuilder().append("[");
+        String separador = "";
+
+        for (Edificio edificio : edificios) {
+            switch (edificio.getTipo()) {
+                case "piscina": sbPiscina.append(edificio.getID()); break;
+                case "pista": sbPista.append(edificio.getID()); break;
+                case "hotel": sbHotel.append(edificio.getID()); break;
+                case "casa": sbCasas.append(separador).append(edificio.getID()); separador = ", "; break;
+            }
+        }
+        return "casas: " + sbCasas + "],\n\thotel: " + sbHotel + "],\n\tpiscina: " + sbPiscina + "],\n\tpista: " + sbPista + "]";
     }
 
     @Override //Sobreescritura del método equals

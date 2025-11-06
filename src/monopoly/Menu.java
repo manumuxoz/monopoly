@@ -1,9 +1,7 @@
 package monopoly;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+
 import partida.*;
 import  static monopoly.Valor.*;
 import java.io.BufferedReader;
@@ -405,18 +403,15 @@ public class Menu {
     //Método para listar los métodos de un grupo y saber qué edificios se pueden construir
     public void listarEdificiosGrupo(String colorGrupo) {
         int countSolares = 0, countCasas = 0, countHoteles = 0, countPiscina = 0, countPista = 0; //Variables para llevar cuenta de los edificios construidos
-        for (String claveGrupo : tablero.getGrupos().keySet()) {
-            if (claveGrupo.toLowerCase().equals(colorGrupo)) { //Iteramos en el hashmap para encontrar el grupo
-                for (Casilla solar : tablero.getGrupos().get(claveGrupo).getMiembros()) { //Iteramos sobre el arraylist de casillas del grupo
-                    System.out.println(solar.infoEdificios());
-                    countSolares++;
-                    countCasas += solar.getNumCasas();
-                    if (solar.getHotel()) countHoteles++;
-                    if (solar.getPiscina()) countPiscina++;
-                    if (solar.getPistaDeporte()) countPista++;
-                }
-                break;
-            }
+        String color = Character.toUpperCase(colorGrupo.charAt(0)) + colorGrupo.substring(1); //Formatemamos el color pasado por comando
+
+        for (Casilla solar : tablero.getGrupos().get(color).getMiembros()) { //Iteramos sobre el arraylist de casillas del grupo
+            System.out.println(solar.infoEdificios());
+            countSolares++;
+            countCasas += solar.getNumCasas();
+            if (solar.getHotel()) countHoteles++;
+            if (solar.getPiscina()) countPiscina++;
+            if (solar.getPistaDeporte()) countPista++;
         }
 
         if  (countSolares == 3) //Puede tener hasta 12 casas, 3 hoteles, 3 piscinas y 3 pistas de deporte
