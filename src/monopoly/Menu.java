@@ -475,7 +475,7 @@ public class Menu {
 
         StringBuilder sb = new StringBuilder();
         if (hipoteca.getTipo().equals("Solar")) //Si es solar añadimos mensaje de aviso
-            sb.append("No puede recibir alquileres ni edificar en el grupo ").append(hipoteca.color(hipoteca.getGrupo().getColorGrupo())).append(".");
+            sb.append(" No puede recibir alquileres ni edificar en el grupo ").append(hipoteca.color(hipoteca.getGrupo().getColorGrupo())).append(".");
 
         System.out.println(jugadorActual.getNombre() + " recibe " + hipoteca.getHipoteca() + "$ por la hipoteca de " +
                 hipoteca.getNombre() + "." + sb);
@@ -516,7 +516,7 @@ public class Menu {
 
         StringBuilder sb = new StringBuilder();
         if (hipoteca.getTipo().equals("Solar")) //Si es solar añadimos mensaje de aviso
-            sb.append("Ahora puede recibir alquileres y edificar en el grupo ").append(hipoteca.color(hipoteca.getGrupo().getColorGrupo())).append(".");
+            sb.append(" Ahora puede recibir alquileres y edificar en el grupo ").append(hipoteca.color(hipoteca.getGrupo().getColorGrupo())).append(".");
 
         System.out.println(jugadorActual.getNombre() + " paga " + hipoteca.getHipoteca() + "$ por deshipotecar " +
                 hipoteca.getNombre() + "." + sb);
