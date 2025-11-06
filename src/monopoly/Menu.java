@@ -89,12 +89,13 @@ public class Menu {
 
         else if (partes.length == 2 && partes[0].equals("listar") && partes[1].equals("jugadores")) listarJugadores();
 
-        else if (partes.length == 3 && partes[0].equals("describir") && partes[1].equals("jugador"))
-            descJugador(partes);
+        else if (partes.length == 3 && partes[0].equals("describir") && partes[1].equals("jugador")) descJugador(partes);
 
         else if (partes.length == 2 && partes[0].equals("describir")) descCasilla(partes[1]);
 
         else if (partes[0].equals("listar") && partes[1].equals("enventa")) listarVenta();
+
+        else if (partes.length == 3 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificiosGrupo(partes[2]);
 
         else if (partes[0].equals("ver") && partes[1].equals("tablero")) System.out.println(tablero.toString());
 
@@ -116,7 +117,7 @@ public class Menu {
 
             else if (partes.length == 2 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificios();
 
-            else if (partes.length == 3 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificiosGrupo(partes[2]);
+
         }
     }
 
