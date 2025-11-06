@@ -405,17 +405,17 @@ public class Menu {
     //Método para listar los métodos de un grupo y saber qué edificios se pueden construir
     public void listarEdificiosGrupo(String colorGrupo) {
         int countSolares = 0, countCasas = 0, countHoteles = 0, countPiscina = 0, countPista = 0; //Variables para llevar cuenta de los edificios construidos
-        for (Map.Entry entry : tablero.getGrupos().entrySet()) {
-            if (entry.getKey().toString().toLowerCase().equals(colorGrupo)) { //Iteramos en el hashmap para encontrar el grupo
-                for (Casilla solar : (ArrayList<Casilla>) entry.getValue()) { //Iteramos sobre el arraylist de casillas del grupo
+        for (String claveGrupo : tablero.getGrupos().keySet()) {
+            if (claveGrupo.toLowerCase().equals(colorGrupo)) { //Iteramos en el hashmap para encontrar el grupo
+                for (Casilla solar : tablero.getGrupos().get(claveGrupo).getMiembros()) { //Iteramos sobre el arraylist de casillas del grupo
                     System.out.println(solar.infoEdificios());
                     countSolares++;
-                    countCasas = solar.getNumCasas();
+                    countCasas += solar.getNumCasas();
                     if (solar.getHotel()) countHoteles++;
                     if (solar.getPiscina()) countPiscina++;
                     if (solar.getPistaDeporte()) countPista++;
                 }
-                return;
+                break;
             }
         }
 
