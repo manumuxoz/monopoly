@@ -120,6 +120,8 @@ public class Menu {
             else if (partes.length == 2 && partes[0].equals("hipotecar")) hipotecar(partes[1]);
 
             else if (partes.length == 2 && partes[0].equals("deshipotecar")) deshipotecar(partes[1]);
+
+            else if (partes.length == 2 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
         }
     }
 
@@ -520,5 +522,36 @@ public class Menu {
 
         System.out.println(jugadorActual.getNombre() + " paga " + hipoteca.getHipoteca() + "$ por deshipotecar " +
                 hipoteca.getNombre() + "." + sb);
+    }
+
+    //Método para vender una casilla
+    public void vender(String tipoEdificio, String nombreCasilla, int cantidad) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Casilla casilla = null;
+
+        for (ArrayList<Casilla> lado : tablero.getPosiciones())
+            for (Casilla propiedad : lado)
+                if (propiedad.getNombre().equals(nombreCasilla)) {
+                    casilla = propiedad;
+                    break; //Salimos del bucle para no recorrer casillas innecesarias
+                }
+
+        if (casilla == null) {
+            System.out.println("Error: No existe la casilla " + nombreCasilla + ".");
+            return;
+        }
+
+        if (!tipoEdificio.equals("casas") || !tipoEdificio.equals("hotel") || !tipoEdificio.equals("piscina") || !tipoEdificio.equals("pista")) {
+            System.out.println("Error: No existe el tipo de edificio '" + tipoEdificio + "'.");
+            return;
+        }
+
+        if (!casilla.getDuenho().equals(jugadorActual)) { //Comprobamos que sea el jugador actual el dueño de la casilla
+            System.out.println("No se pueden vender " + tipoEdificio + " en " + casilla.getNombre() +
+                    ". Esta casilla pertenece a " + casilla.getDuenho().getNombre() + ".");
+            return;
+        }
+
+        casilla.venderEdificios(tipoEdificio, cantidad);
     }
 }

@@ -567,6 +567,7 @@ public class Casilla {
                 "\n}";
     }
 
+    //Método que devuelve un String de los edificios que se encuentran en la casilla
     private String imprimirEdificios() {
         StringBuilder sbCasas = new StringBuilder().append("["); //Creamos stringbuilders independientes para luego unirlos
         StringBuilder sbHotel = new StringBuilder().append("[");
@@ -583,6 +584,44 @@ public class Casilla {
             }
         }
         return "casas: " + sbCasas + "],\n\thotel: " + sbHotel + "],\n\tpiscina: " + sbPiscina + "],\n\tpista: " + sbPista + "]"; //Unimos
+    }
+
+    //Método para vender edificios
+    public void venderEdificios(String tipoEdificio, int cantidad) {
+        StringBuilder sb = new StringBuilder();
+        float venta = 0;
+        if (!edificios.isEmpty()) {
+            switch (tipoEdificio) {
+                case "casas":
+
+
+
+
+                    break;
+                case "hotel":
+
+
+
+                    break;
+                case "piscina":
+
+
+                    break;
+                case "pista":
+
+
+                    break;
+                case "default": break;
+            }
+            System.out.println(sb + ", recibiendo " + venta + "$. En la propiedad queda " + imprimirEdificiosRestantes());
+        } else
+            System.out.println("No hay edificios para vender en " + nombre + ".");
+    }
+
+    //Método para imprimir edificios restantes después de una venta
+    private String imprimirEdificiosRestantes() {
+        StringBuilder sb = new StringBuilder();
+        for (Edificio edificio : edificios) {}
     }
 
     @Override //Sobreescritura del método equals
