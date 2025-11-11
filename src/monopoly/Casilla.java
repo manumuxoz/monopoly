@@ -599,8 +599,8 @@ public class Casilla {
                         sb.append("No se pueden vender casas en ").append(nombre).append(". Antes hay que vender el hotel");
                         break;
                     }
-                    if (cantidad > 4 ) {
-                        sb.append("Solamente se pueden vender 4 casas");
+                    if (cantidad > numCasas) {
+                        sb.append("Solamente se pueden vender" + numCasas + "casas");
                         cantidad = numCasas;
                     } else
                         sb.append(duenho.getNombre()).append(" ha vendido ").append(cantidad).append(" casas en ").append(nombre);
