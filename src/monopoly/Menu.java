@@ -190,10 +190,9 @@ public class Menu {
 
         // Verificar si el jugador está en la cárcel
         if (jugadorActual.getEnCarcel()) {
-            manejarCarcel(jugadorActual);
+            manejarCarcel(jugadorActual, sonDobles);
             return;
         }
-
         manejarDobles(sonDobles);
 
         if (!jugadorActual.getEnCarcel()) //Comprobamos que no haya sido encarcelado
@@ -299,11 +298,10 @@ public class Menu {
     * Método para manejar situaciones cuando un jugador está en la cárcel.
     * Parámetro: jugador que está en la cárcel.
     * */
-    private void manejarCarcel(Jugador jugador) {
+    private void manejarCarcel(Jugador jugador, boolean dobles) {
         jugador.setTiradasCarcel(jugador.getTiradasCarcel() + 1);
         lanzamientos = -1;
-
-        if (jugador.getTiradasCarcel() >= 3) {
+        if (jugador.getTiradasCarcel() >= 3 || dobles) {
             jugador.setenCarcel(false);
             jugador.setTiradasCarcel(0);
             System.out.println(jugador.getNombre() + " sale de la cárcel.");
