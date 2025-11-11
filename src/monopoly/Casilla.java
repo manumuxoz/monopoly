@@ -588,7 +588,8 @@ public class Casilla {
     }
 
     //Método para vender edificios
-    public void venderEdificios(String tipoEdificio, int cantidad) {
+    public void venderEdificios(String tipoEdificio, int cantidad, ArrayList<Edificio> edificiosCreados) {
+        StringBuilder sb = new StringBuilder();
         float venta = 0;
         if (!edificios.isEmpty()) {
             switch (tipoEdificio) {
@@ -599,21 +600,75 @@ public class Casilla {
 
                     break;
                 case "hotel":
+                    if (!hotel) {
+                        sb.append(nombre).append(" no tiene ningún hotel construido");
+                        break;
+                    }
 
+                    if (piscina) {
+                        sb.append("No se puede vender el hotel en ").append(nombre).append(". Antes hay que vender la piscina.");
+                        break;
+                    }
 
+                    if (cantidad > 0) {
+                        venta = valorHotel;
+                        duenho.sumarFortuna(valorHotel);
+                        edificios.removeIf(edificio -> edificio.getTipo().equals(tipoEdificio));
+                        edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals(tipoEdificio));
+                        hotel = false;
 
+                        if (cantidad > 1)
+                            sb.append("Solamente se puede vender 1 hotel");
+                        else
+                            sb.append(duenho.getNombre()).append(" ha vendido 1 hotel en ").append(nombre);
+                    }
                     break;
                 case "piscina":
+                    if (!piscina) {
+                        sb.append(nombre).append(" no tiene ninguna piscina construida");
+                        break;
+                    }
 
+                    if (pistaDeporte) {
+                        sb.append("No se puede vender la piscina en ").append(nombre).append(". Antes hay que vender la pista de deporte.");
+                        break;
+                    }
 
+                    if (cantidad > 0) {
+                        venta = valorPiscina;
+                        duenho.sumarFortuna(valorPiscina);
+                        edificios.removeIf(edificio -> edificio.getTipo().equals(tipoEdificio));
+                        edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals(tipoEdificio));
+                        piscina = false;
+
+                        if (cantidad > 1)
+                            sb.append("Solamente se puede vender 1 piscina");
+                        else
+                            sb.append(duenho.getNombre()).append(" ha vendido 1 piscina en ").append(nombre);
+                    }
                     break;
                 case "pista":
+                    if (!pistaDeporte) {
+                        sb.append(nombre).append(" no tiene ninguna pista de deporte construida");
+                        break;
+                    }
 
+                    if (cantidad > 0) {
+                        venta = valorPistaDeporte;
+                        duenho.sumarFortuna(valorPistaDeporte);
+                        edificios.removeIf(edificio -> edificio.getTipo().equals(tipoEdificio));
+                        edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals(tipoEdificio));
+                        piscina = false;
 
+                        if (cantidad > 1)
+                            sb.append("Solamente se puede vender 1 pita de deporte");
+                        else
+                            sb.append(duenho.getNombre()).append(" ha vendido 1 pista de deporte en ").append(nombre);
+                    }
                     break;
                 case "default": break;
             }
-            System.out.println(sb + ", recibiendo " + venta + "$. En la propiedad queda " + imprimirEdificiosRestantes());
+            System.out.println(sb + ", recibiendo " + venta + "$. En la propiedad quedan " + imprimirEdificiosRestantes() + ".");
         } else
             System.out.println("No hay edificios para vender en " + nombre + ".");
     }
@@ -621,8 +676,11 @@ public class Casilla {
     //Método para imprimir edificios restantes después de una venta
     private String imprimirEdificiosRestantes() {
         StringBuilder sb = new StringBuilder();
-        for (Edificio edificio : edificios) {}
-        return "";
+        if (numCasas > 0) sb.append(numCasas).append(" casas");
+        if (hotel) sb.append(", 1 hotel");
+        if (piscina) sb.append(", 1 piscina");
+        if (pistaDeporte) sb.append(", 1 pista de deporte");
+        return sb.toString();
     }
 
     @Override //Sobreescritura del método equals

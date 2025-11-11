@@ -546,6 +546,6 @@ public class Menu {
             return;
         }
 
-        casilla.venderEdificios(tipoEdificio, cantidad);
+        casilla.venderEdificios(tipoEdificio, cantidad, edificios);
     }
 }
