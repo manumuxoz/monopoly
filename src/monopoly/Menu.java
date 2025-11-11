@@ -121,7 +121,7 @@ public class Menu {
 
             else if (partes.length == 2 && partes[0].equals("deshipotecar")) deshipotecar(partes[1]);
 
-            else if (partes.length == 2 && partes[0].equals("estadisticas")) mostrarEstadisticas(partes);
+            else if (partes.length == 4 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
         }
     }
 
@@ -356,7 +356,6 @@ public class Menu {
         // Si evaluarCasilla retorna false (para IrCarcel), manejar el encarcelamiento
         if (!solvente && nuevaCasilla.getNombre().equals("IrCarcel")) {
             jugadorActual.encarcelar(tablero.getPosiciones());
-            jugadorActual.sumarVecesCarcel(1);
         }
         // Si no es solvente por otras razones (falta de dinero)
         else if (!solvente) {
@@ -371,6 +370,11 @@ public class Menu {
     private void edificar(String tipoEdificio) {
         Jugador jugadorActual =  jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
+
+        if (!casillaActual.getTipo().equals("Solar")) {
+            System.out.println("Error: solo se puede edificar en una casilla de tipo 'Solar'.");
+            return;
+        }
 
          for (Casilla solar : casillaActual.getGrupo().getMiembros()) //Comprobamos que ningún miembro del grupo esté hipotecado
              if (solar.getHipotecado()) {
@@ -411,7 +415,7 @@ public class Menu {
 
     //Método para listar los métodos de un grupo y saber qué edificios se pueden construir
     public void listarEdificiosGrupo(String colorGrupo) {
-        int countSolares = 0, countCasas = 0, countHoteles = 0, countPiscina = 0, countPista = 0; //Variables para llevar cuenta de los edificios construidos
+        int countCasas = 0, countHoteles = 0, countPiscina = 0, countPista = 0; //Variables para llevar cuenta de los edificios construidos
         String color = Character.toUpperCase(colorGrupo.charAt(0)) + colorGrupo.substring(1); //Formatemamos el color pasado por comando
 
         if (tablero.getGrupos().get(color) == null) { //Comprobamos que exista el color
@@ -421,20 +425,16 @@ public class Menu {
 
         for (Casilla solar : tablero.getGrupos().get(color).getMiembros()) { //Iteramos sobre el arraylist de casillas del grupo
             System.out.println(solar.infoEdificios());
-            countSolares++;
             countCasas += solar.getNumCasas();
             if (solar.getHotel()) countHoteles++;
             if (solar.getPiscina()) countPiscina++;
             if (solar.getPistaDeporte()) countPista++;
         }
 
-        if  (countSolares == 3) //Puede tener hasta 12 casas, 3 hoteles, 3 piscinas y 3 pistas de deporte
-            System.out.println("Se pueden edificar " + (12 - countCasas) + " casas, " + (3 - countHoteles) + " hoteles, "
-                + (3 - countPiscina) + " piscinas y " + (3 - countPista) + " pistas.");
-
-        else if (countSolares == 2) //Puede tener hasta 8 casas, 2 hoteles, 2 piscinas y 2 pistas de deporte
-            System.out.println("Se pueden edificar " + (8 - countCasas) + " casas, " + (2 - countHoteles) + " hoteles, "
-                    + (2 - countPiscina) + " piscinas y " + (2 - countPista) + " pistas.");
+        int numSolares = tablero.getGrupos().get(color).getMiembros().size(); //Número de solares
+        System.out.println("Se pueden edificar " + (numSolares * 4 - countCasas) + " casas, " +
+                (numSolares - countHoteles) + " hoteles, " + (numSolares - countPiscina) + " piscinas y " +
+                (numSolares - countPista) + " pistas.");
     }
 
     //Método para hipotecar una casilla
@@ -523,58 +523,39 @@ public class Menu {
                 hipoteca.getNombre() + "." + sb);
     }
 
-    private Casilla buscarMaximo(int modo){
-        switch(modo){
-            case 1:
-                float alquilerMaximo= 0;
-                Casilla casillaRentable = null;
-                for (ArrayList<Casilla> lado : tablero.getPosiciones()){
-                    for(Casilla casilla : lado){
-                        if (casilla.getAlquilerAcumulado() > alquilerMaximo){
-                            alquilerMaximo = casilla.getAlquilerAcumulado();
-                            casillaRentable = casilla;
-                        }
-                    }
+    //Método para vender una casilla
+    public void vender(String tipoEdificio, String nombreCasilla, int cantidad) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Casilla casilla = null;
+
+        for (ArrayList<Casilla> lado : tablero.getPosiciones())
+            for (Casilla propiedad : lado)
+                if (propiedad.getNombre().equals(nombreCasilla)) {
+                    casilla = propiedad;
+                    break; //Salimos del bucle para no recorrer casillas innecesarias
                 }
-                return casillaRentable;
-            case 2:
-                float alquilerGrupo = 0;
-                float alquilerGrupoMaximo = 0;
-                Grupo grupoRentable = null;
-                for (String color : tablero.getGrupos().keySet()){
-                    for (Casilla casilla : tablero.getGrupos().get(color).getMiembros()){
-                        alquilerGrupo += casilla.getAlquilerAcumulado();
-                    }
-                    if (alquilerGrupoMaximo > alquilerGrupo){
-                        alquilerGrupoMaximo = alquilerGrupo;
-                    }
-            }
+
+        if (casilla == null) {
+            System.out.println("Error: No existe la casilla " + nombreCasilla + ".");
+            return;
         }
 
-    }
-
-    private void mostrarEstadisticas(String[] string){
-        for (Jugador jugador: jugadores){
-            if(jugador.getNombre().equals(string[1])){
-                System.out.println("{\n\tdineroInvertido: " + jugador.getGastos() + "," +
-                        "\n\tpagoTasasEImpuestos: " + jugador.getTasasImpuestos() + "," +
-                        "\n\tpagoDeAlquileres " + jugador.getPagoAlquileres() + "," +
-                        "\n\tcobroDeAlquileres " + jugador.getCobroAlquileres() + "," +
-                        "\n\tpasarPorCasillaDeSalida " + jugador.getVueltas()*2000000 + "," +
-                        "\n\tpremiosInversionesOBote " + jugador.getPremios() +"," +
-                        "\n\tvecesEnLaCarcel: " + jugador.getVecesCarcel() +
-                        "\n}");
-            }
+        if (!(tipoEdificio.equals("casa") || tipoEdificio.equals("hotel") || tipoEdificio.equals("piscina") || tipoEdificio.equals("pista"))) {
+            System.out.println("Error: No existe el tipo de edificio '" + tipoEdificio + "'.");
+            return;
         }
-    }
 
+        if (!casilla.getDuenho().equals(jugadorActual)) { //Comprobamos que sea el jugador actual el dueño de la casilla
+            System.out.println("No se pueden vender " + tipoEdificio + " en " + casilla.getNombre() +
+                    ". Esta casilla pertenece a " + casilla.getDuenho().getNombre() + ".");
+            return;
+        }
 
-    private void mostrarEstadisticasGlobales(){
-        System.out.println("{\n\tcasillaMasRentable: " + casillaMasRentable().getNombre() + "," +
-                "\n\tgrupoMasRentable: " + "" + "," +
-                "\n\tcasillaMasFrecuentada: " + "" + "," +
-                "\n\tjugadorMasVueltas: " + "" + "," +
-                "\n\tjugadorEnCabeza: " + "" + "," +
-                "\n}");
+        if (cantidad < 1) {
+            System.out.println("Error: no se pueden vender " + cantidad + " edificaciones.");
+            return;
+        }
+
+        casilla.venderEdificios(tipoEdificio, cantidad, edificios);
     }
 }

@@ -384,6 +384,7 @@ public class Casilla {
         }
     }
 
+    //Método que devuelve la descripción de las casillas 'Especiales'
     public String imprimirEspeciales(String nombre) {
         StringBuilder sb = new StringBuilder().append("[");
         String separador = "";
@@ -460,6 +461,7 @@ public class Casilla {
 
     //Método para eliminar las casas de una casilla
     private void eliminarCasas(ArrayList<Edificio> edificiosCreados) {
+        numCasas = 0;
         edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("casa"));
         edificios.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("casa"));
     }
@@ -589,6 +591,7 @@ public class Casilla {
                 "\n}";
     }
 
+    //Método que devuelve un String de los edificios que se encuentran en la casilla
     private String imprimirEdificios() {
         StringBuilder sbCasas = new StringBuilder().append("["); //Creamos stringbuilders independientes para luego unirlos
         StringBuilder sbHotel = new StringBuilder().append("[");
@@ -605,6 +608,139 @@ public class Casilla {
             }
         }
         return "casas: " + sbCasas + "],\n\thotel: " + sbHotel + "],\n\tpiscina: " + sbPiscina + "],\n\tpista: " + sbPista + "]"; //Unimos
+    }
+
+    //Método para vender edificios
+    public void venderEdificios(String tipoEdificio, int cantidad, ArrayList<Edificio> edificiosCreados) {
+        StringBuilder sb = new StringBuilder();
+        float venta = 0;
+
+        if (!edificios.isEmpty()) {
+            switch (tipoEdificio) {
+                case "casa":
+                    if (hotel) {
+                        sb.append("No se pueden vender casas en ").append(nombre).append(". Antes hay que vender el hotel");
+                        break;
+                    }
+                    if (cantidad > numCasas) {
+                        sb.append("Solamente se pueden vender " + numCasas + " casas");
+                        cantidad = numCasas;
+                    } else
+                        sb.append(duenho.getNombre()).append(" ha vendido ").append(cantidad).append(" casas en ").append(nombre);
+
+                    venta = venderCasas(cantidad, edificiosCreados);
+                    break;
+
+                case "hotel":
+                    if (!hotel) {
+                        sb.append(nombre).append(" no tiene ningún hotel construido");
+                        break;
+                    }
+                    if (piscina) {
+                        sb.append("No se puede vender el hotel en ").append(nombre).append(". Antes hay que vender la piscina");
+                        break;
+                    }
+                    if (cantidad > 1)
+                        sb.append("Solamente se puede vender 1 hotel");
+                    else
+                        sb.append(duenho.getNombre()).append(" ha vendido 1 hotel en ").append(nombre);
+
+                    venta = venderHotel(edificiosCreados);
+                    break;
+
+                case "piscina":
+                    if (!piscina) {
+                        sb.append(nombre).append(" no tiene ninguna piscina construida");
+                        break;
+                    }
+                    if (pistaDeporte) {
+                        sb.append("No se puede vender la piscina en ").append(nombre).append(". Antes hay que vender la pista de deporte");
+                        break;
+                    }
+                    if (cantidad > 1)
+                        sb.append("Solamente se puede vender 1 piscina");
+                    else
+                        sb.append(duenho.getNombre()).append(" ha vendido 1 piscina en ").append(nombre);
+
+                    venta = venderPiscina(edificiosCreados);
+                    break;
+
+                case "pista":
+                    if (!pistaDeporte) {
+                        sb.append(nombre).append(" no tiene ninguna pista de deporte construida");
+                        break;
+                    }
+                    if (cantidad > 1)
+                        sb.append("Solamente se puede vender 1 pita de deporte");
+                    else
+                        sb.append(duenho.getNombre()).append(" ha vendido 1 pista de deporte en ").append(nombre);
+
+                    venta = venderPista(edificiosCreados);
+                    break;
+
+                case "default": break;
+            }
+            System.out.println(sb + ", recibiendo " + venta + "$. En la propiedad quedan " + imprimirEdificiosRestantes() + ".");
+        } else
+            System.out.println("No hay edificios para vender en " + nombre + ".");
+    }
+
+    //Método para vender casas
+    private float venderCasas(int cantidad, ArrayList<Edificio> edificiosCreados) {
+        int numCasasInicial = numCasas;
+        float venta = cantidad * valorCasa;
+        duenho.sumarFortuna(venta);
+        eliminarCasas(edificiosCreados);
+        for (int i = 0; i < (numCasasInicial - cantidad); i++) {
+            numCasas++;
+            edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
+        }
+        return venta;
+    }
+
+    //Método para vender hoteles
+    private float venderHotel(ArrayList<Edificio> edificiosCreados) {
+        float venta = valorHotel;
+        duenho.sumarFortuna(venta);
+        edificios.removeIf(edificio -> edificio.getTipo().equals("hotel"));
+        edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("hotel"));
+        hotel = false;
+        edificios.add(new Edificio(duenho, this, "casa", edificiosCreados)); //Volvemos a edificar las 4 casas
+        edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
+        edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
+        edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
+        numCasas = 4;
+        return venta;
+    }
+
+    //Método para vender piscinas
+    private float venderPiscina(ArrayList<Edificio> edificiosCreados) {
+        float venta = valorPiscina;
+        duenho.sumarFortuna(venta);
+        edificios.removeIf(edificio -> edificio.getTipo().equals("piscina"));
+        edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("piscina"));
+        piscina = false;
+        return venta;
+    }
+
+    //Método para vender pistas
+    private float venderPista(ArrayList<Edificio> edificiosCreados) {
+        float venta = valorPistaDeporte;
+        duenho.sumarFortuna(venta);
+        edificios.removeIf(edificio -> edificio.getTipo().equals("pista"));
+        edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("pista"));
+        piscina = false;
+        return venta;
+    }
+
+    //Método para imprimir edificios restantes después de una venta
+    private String imprimirEdificiosRestantes() {
+        StringBuilder sb = new StringBuilder();
+        if (numCasas > -1) sb.append(numCasas).append(" casas");
+        if (hotel) sb.append(", 1 hotel");
+        if (piscina) sb.append(", 1 piscina");
+        if (pistaDeporte) sb.append(", 1 pista de deporte");
+        return sb.toString();
     }
 
     @Override //Sobreescritura del método equals
