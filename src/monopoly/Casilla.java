@@ -594,13 +594,13 @@ public class Casilla {
         float venta = 0;
         if (!edificios.isEmpty()) {
             switch (tipoEdificio) {
-                case "casas":
+                case "casa":
                     if (hotel) {
                         sb.append("No se pueden vender casas en ").append(nombre).append(". Antes hay que vender el hotel");
                         break;
                     }
                     if (cantidad > numCasas) {
-                        sb.append("Solamente se pueden vender" + numCasas + " casas");
+                        sb.append("Solamente se pueden vender " + numCasas + " casas");
                         cantidad = numCasas;
                     } else
                         sb.append(duenho.getNombre()).append(" ha vendido ").append(cantidad).append(" casas en ").append(nombre);
@@ -615,6 +615,7 @@ public class Casilla {
                     }
 
                     break;
+
                 case "hotel":
                     if (!hotel) {
                         sb.append(nombre).append(" no tiene ningún hotel construido");
@@ -630,11 +631,11 @@ public class Casilla {
                     edificios.removeIf(edificio -> edificio.getTipo().equals(tipoEdificio));
                     edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals(tipoEdificio));
                     hotel = false;
-                    numCasas = 4;
                     edificios.add(new Edificio(duenho, this, "casa", edificiosCreados)); //Volvemos a edificar las 4 casas
                     edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
                     edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
                     edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
+                    numCasas = 4;
 
                     if (cantidad > 1)
                         sb.append("Solamente se puede vender 1 hotel");
@@ -693,7 +694,7 @@ public class Casilla {
     //Método para imprimir edificios restantes después de una venta
     private String imprimirEdificiosRestantes() {
         StringBuilder sb = new StringBuilder();
-        if (numCasas > 0) sb.append(numCasas).append(" casas");
+        if (numCasas > -1) sb.append(numCasas).append(" casas");
         if (hotel) sb.append(", 1 hotel");
         if (piscina) sb.append(", 1 piscina");
         if (pistaDeporte) sb.append(", 1 pista de deporte");
