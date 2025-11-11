@@ -53,9 +53,6 @@ public class Edificio { //Nueva clase edificio
     public String getTipo() {
         return tipo;
     }
-    public Grupo getGrupo() {
-        return grupo;
-    }
 
     /*Método para mostrar información sobre un edificio.
      * Devuelve una cadena con información específica de cada tipo de edificio.*/
