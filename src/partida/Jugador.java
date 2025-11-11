@@ -21,6 +21,13 @@ public class Jugador {
 
     //Atributos nuevos:
     private ArrayList<Casilla> hipotecas;
+    private float tasasImpuestos;
+    private float pagoAlquileres;
+    private float cobroAlquileres;
+    private float premios;
+    private int vecesCarcel;
+
+
 
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
@@ -74,6 +81,12 @@ public class Jugador {
     public ArrayList<Casilla> getHipotecas() {
         return hipotecas;
     }
+    public float getPagoAlquileres() {return pagoAlquileres;}
+    public float getCobroAlquileres() {return cobroAlquileres;}
+    public float getTasasImpuestos(){return tasasImpuestos;}
+    public float getPremios() {return premios;}
+    public int getVueltas() {return vueltas;}
+    public int getVecesCarcel(){return vecesCarcel;}
 
     //Setters:
     public void setNombre(String nombre) {
@@ -88,7 +101,6 @@ public class Jugador {
     public void setTiradasCarcel(int tiradasCarcel) {
         this.tiradasCarcel = tiradasCarcel;
     }
-
     //Otros métodos:
 
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
@@ -114,6 +126,14 @@ public class Jugador {
     public void sumarGastos(float valor) {
         gastos += valor;
     }
+
+    public void sumarVueltas(int valor) {vueltas += valor;}
+    public void sumarTasasImpuestos(float valor) {tasasImpuestos += valor;}
+    public void sumarPagoAlquileres(float valor) {pagoAlquileres += valor;}
+    public void sumarCobroAlquileres(float valor) {cobroAlquileres += valor;}
+    public void sumarPremios(float valor) {premios += valor;}
+    public void sumarVecesCarcel(int valor) {vecesCarcel += valor;}
+
 
     /*Método para establecer al jugador en la cárcel. 
     * Se requiere disponer de las casillas del tablero para ello (por eso se pasan como parámetro).*/

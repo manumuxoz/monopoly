@@ -83,6 +83,12 @@ public class Avatar {
         casillaActual.eliminarAvatar(this);
         this.setLugar(nuevaCasilla);
         nuevaCasilla.anhadirAvatar(this);
+
+        if (nuevaPosicion < posicionActual && !getJugador().getEnCarcel()){
+            getJugador().sumarFortuna(2000000);
+            getJugador().sumarVueltas(1);
+            System.out.println("\nEl jugador " + getJugador().getNombre() + " pasa por la casilla de salida y recibe 2000000$\n");
+        }
     }
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).

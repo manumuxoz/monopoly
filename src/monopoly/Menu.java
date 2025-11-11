@@ -120,6 +120,8 @@ public class Menu {
             else if (partes.length == 2 && partes[0].equals("hipotecar")) hipotecar(partes[1]);
 
             else if (partes.length == 2 && partes[0].equals("deshipotecar")) deshipotecar(partes[1]);
+
+            else if (partes.length == 2 && partes[0].equals("estadisticas")) mostrarEstadisticas(partes);
         }
     }
 
@@ -354,6 +356,7 @@ public class Menu {
         // Si evaluarCasilla retorna false (para IrCarcel), manejar el encarcelamiento
         if (!solvente && nuevaCasilla.getNombre().equals("IrCarcel")) {
             jugadorActual.encarcelar(tablero.getPosiciones());
+            jugadorActual.sumarVecesCarcel(1);
         }
         // Si no es solvente por otras razones (falta de dinero)
         else if (!solvente) {
@@ -518,5 +521,60 @@ public class Menu {
 
         System.out.println(jugadorActual.getNombre() + " paga " + hipoteca.getHipoteca() + "$ por deshipotecar " +
                 hipoteca.getNombre() + "." + sb);
+    }
+
+    private Casilla buscarMaximo(int modo){
+        switch(modo){
+            case 1:
+                float alquilerMaximo= 0;
+                Casilla casillaRentable = null;
+                for (ArrayList<Casilla> lado : tablero.getPosiciones()){
+                    for(Casilla casilla : lado){
+                        if (casilla.getAlquilerAcumulado() > alquilerMaximo){
+                            alquilerMaximo = casilla.getAlquilerAcumulado();
+                            casillaRentable = casilla;
+                        }
+                    }
+                }
+                return casillaRentable;
+            case 2:
+                float alquilerGrupo = 0;
+                float alquilerGrupoMaximo = 0;
+                Grupo grupoRentable = null;
+                for (String color : tablero.getGrupos().keySet()){
+                    for (Casilla casilla : tablero.getGrupos().get(color).getMiembros()){
+                        alquilerGrupo += casilla.getAlquilerAcumulado();
+                    }
+                    if (alquilerGrupoMaximo > alquilerGrupo){
+                        alquilerGrupoMaximo = alquilerGrupo;
+                    }
+            }
+        }
+
+    }
+
+    private void mostrarEstadisticas(String[] string){
+        for (Jugador jugador: jugadores){
+            if(jugador.getNombre().equals(string[1])){
+                System.out.println("{\n\tdineroInvertido: " + jugador.getGastos() + "," +
+                        "\n\tpagoTasasEImpuestos: " + jugador.getTasasImpuestos() + "," +
+                        "\n\tpagoDeAlquileres " + jugador.getPagoAlquileres() + "," +
+                        "\n\tcobroDeAlquileres " + jugador.getCobroAlquileres() + "," +
+                        "\n\tpasarPorCasillaDeSalida " + jugador.getVueltas()*2000000 + "," +
+                        "\n\tpremiosInversionesOBote " + jugador.getPremios() +"," +
+                        "\n\tvecesEnLaCarcel: " + jugador.getVecesCarcel() +
+                        "\n}");
+            }
+        }
+    }
+
+
+    private void mostrarEstadisticasGlobales(){
+        System.out.println("{\n\tcasillaMasRentable: " + casillaMasRentable().getNombre() + "," +
+                "\n\tgrupoMasRentable: " + "" + "," +
+                "\n\tcasillaMasFrecuentada: " + "" + "," +
+                "\n\tjugadorMasVueltas: " + "" + "," +
+                "\n\tjugadorEnCabeza: " + "" + "," +
+                "\n}");
     }
 }
