@@ -121,7 +121,7 @@ public class Menu {
 
             else if (partes.length == 2 && partes[0].equals("deshipotecar")) deshipotecar(partes[1]);
 
-            else if (partes.length == 2 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
+            else if (partes.length == 4 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
         }
     }
 
@@ -543,6 +543,11 @@ public class Menu {
         if (!casilla.getDuenho().equals(jugadorActual)) { //Comprobamos que sea el jugador actual el dueño de la casilla
             System.out.println("No se pueden vender " + tipoEdificio + " en " + casilla.getNombre() +
                     ". Esta casilla pertenece a " + casilla.getDuenho().getNombre() + ".");
+            return;
+        }
+
+        if (cantidad < 1) {
+            System.out.println("Error: no se pueden vender " + cantidad + " edificaciones.");
             return;
         }
 

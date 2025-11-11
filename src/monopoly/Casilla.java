@@ -439,6 +439,7 @@ public class Casilla {
 
     //Método para eliminar las casas de una casilla
     private void eliminarCasas(ArrayList<Edificio> edificiosCreados) {
+        numCasas = 0;
         edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("casa"));
         edificios.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("casa"));
     }
@@ -594,9 +595,23 @@ public class Casilla {
         if (!edificios.isEmpty()) {
             switch (tipoEdificio) {
                 case "casas":
+                    if (hotel) {
+                        sb.append("No se pueden vender casas en ").append(nombre).append(". Antes hay que vender el hotel");
+                        break;
+                    }
+                    if (cantidad > 4 ) {
+                        sb.append("Solamente se pueden vender 4 casas");
+                        cantidad = numCasas;
+                    } else
+                        sb.append(duenho.getNombre()).append(" ha vendido ").append(cantidad).append(" casas en ").append(nombre);
 
-
-
+                    venta = cantidad * valorCasa;
+                    duenho.sumarFortuna(venta);
+                    eliminarCasas(edificiosCreados);
+                    for (int i = 0; i < (4 - cantidad); i++) {
+                        numCasas++;
+                        edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
+                    }
 
                     break;
                 case "hotel":
@@ -604,24 +619,27 @@ public class Casilla {
                         sb.append(nombre).append(" no tiene ningún hotel construido");
                         break;
                     }
-
                     if (piscina) {
-                        sb.append("No se puede vender el hotel en ").append(nombre).append(". Antes hay que vender la piscina.");
+                        sb.append("No se puede vender el hotel en ").append(nombre).append(". Antes hay que vender la piscina");
                         break;
                     }
 
-                    if (cantidad > 0) {
-                        venta = valorHotel;
-                        duenho.sumarFortuna(valorHotel);
-                        edificios.removeIf(edificio -> edificio.getTipo().equals(tipoEdificio));
-                        edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals(tipoEdificio));
-                        hotel = false;
+                    venta = valorHotel;
+                    duenho.sumarFortuna(venta);
+                    edificios.removeIf(edificio -> edificio.getTipo().equals(tipoEdificio));
+                    edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals(tipoEdificio));
+                    hotel = false;
+                    numCasas = 4;
+                    edificios.add(new Edificio(duenho, this, "casa", edificiosCreados)); //Volvemos a edificar las 4 casas
+                    edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
+                    edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
+                    edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
 
-                        if (cantidad > 1)
-                            sb.append("Solamente se puede vender 1 hotel");
-                        else
-                            sb.append(duenho.getNombre()).append(" ha vendido 1 hotel en ").append(nombre);
-                    }
+                    if (cantidad > 1)
+                        sb.append("Solamente se puede vender 1 hotel");
+                    else
+                        sb.append(duenho.getNombre()).append(" ha vendido 1 hotel en ").append(nombre);
+
                     break;
                 case "piscina":
                     if (!piscina) {
@@ -630,22 +648,21 @@ public class Casilla {
                     }
 
                     if (pistaDeporte) {
-                        sb.append("No se puede vender la piscina en ").append(nombre).append(". Antes hay que vender la pista de deporte.");
+                        sb.append("No se puede vender la piscina en ").append(nombre).append(". Antes hay que vender la pista de deporte");
                         break;
                     }
 
-                    if (cantidad > 0) {
-                        venta = valorPiscina;
-                        duenho.sumarFortuna(valorPiscina);
-                        edificios.removeIf(edificio -> edificio.getTipo().equals(tipoEdificio));
-                        edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals(tipoEdificio));
-                        piscina = false;
+                    venta = valorPiscina;
+                    duenho.sumarFortuna(venta);
+                    edificios.removeIf(edificio -> edificio.getTipo().equals(tipoEdificio));
+                    edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals(tipoEdificio));
+                    piscina = false;
 
-                        if (cantidad > 1)
-                            sb.append("Solamente se puede vender 1 piscina");
-                        else
-                            sb.append(duenho.getNombre()).append(" ha vendido 1 piscina en ").append(nombre);
-                    }
+                    if (cantidad > 1)
+                        sb.append("Solamente se puede vender 1 piscina");
+                    else
+                        sb.append(duenho.getNombre()).append(" ha vendido 1 piscina en ").append(nombre);
+
                     break;
                 case "pista":
                     if (!pistaDeporte) {
@@ -653,18 +670,17 @@ public class Casilla {
                         break;
                     }
 
-                    if (cantidad > 0) {
-                        venta = valorPistaDeporte;
-                        duenho.sumarFortuna(valorPistaDeporte);
-                        edificios.removeIf(edificio -> edificio.getTipo().equals(tipoEdificio));
-                        edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals(tipoEdificio));
-                        piscina = false;
+                    venta = valorPistaDeporte;
+                    duenho.sumarFortuna(venta);
+                    edificios.removeIf(edificio -> edificio.getTipo().equals(tipoEdificio));
+                    edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals(tipoEdificio));
+                    piscina = false;
 
-                        if (cantidad > 1)
-                            sb.append("Solamente se puede vender 1 pita de deporte");
-                        else
-                            sb.append(duenho.getNombre()).append(" ha vendido 1 pista de deporte en ").append(nombre);
-                    }
+                    if (cantidad > 1)
+                        sb.append("Solamente se puede vender 1 pita de deporte");
+                    else
+                        sb.append(duenho.getNombre()).append(" ha vendido 1 pista de deporte en ").append(nombre);
+
                     break;
                 case "default": break;
             }
