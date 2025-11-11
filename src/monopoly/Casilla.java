@@ -600,15 +600,16 @@ public class Casilla {
                         break;
                     }
                     if (cantidad > numCasas) {
-                        sb.append("Solamente se pueden vender" + numCasas + "casas");
+                        sb.append("Solamente se pueden vender" + numCasas + " casas");
                         cantidad = numCasas;
                     } else
                         sb.append(duenho.getNombre()).append(" ha vendido ").append(cantidad).append(" casas en ").append(nombre);
 
+                    int numCasasInicial = numCasas;
                     venta = cantidad * valorCasa;
                     duenho.sumarFortuna(venta);
                     eliminarCasas(edificiosCreados);
-                    for (int i = 0; i < (4 - cantidad); i++) {
+                    for (int i = 0; i < (numCasasInicial - cantidad); i++) {
                         numCasas++;
                         edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
                     }
