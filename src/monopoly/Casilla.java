@@ -589,7 +589,6 @@ public class Casilla {
 
     //Método para vender edificios
     public void venderEdificios(String tipoEdificio, int cantidad) {
-        StringBuilder sb = new StringBuilder();
         float venta = 0;
         if (!edificios.isEmpty()) {
             switch (tipoEdificio) {

@@ -535,7 +535,7 @@ public class Menu {
             return;
         }
 
-        if (!tipoEdificio.equals("casas") || !tipoEdificio.equals("hotel") || !tipoEdificio.equals("piscina") || !tipoEdificio.equals("pista")) {
+        if (!(tipoEdificio.equals("casas") || tipoEdificio.equals("hotel") || tipoEdificio.equals("piscina") || tipoEdificio.equals("pista"))) {
             System.out.println("Error: No existe el tipo de edificio '" + tipoEdificio + "'.");
             return;
         }
