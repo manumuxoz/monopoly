@@ -362,6 +362,7 @@ public class Casilla {
         }
     }
 
+    //Método que devuelve la descripción de las casillas 'Especiales'
     public String imprimirEspeciales(String nombre) {
         StringBuilder sb = new StringBuilder().append("[");
         String separador = "";
@@ -622,6 +623,7 @@ public class Casilla {
     private String imprimirEdificiosRestantes() {
         StringBuilder sb = new StringBuilder();
         for (Edificio edificio : edificios) {}
+        return "";
     }
 
     @Override //Sobreescritura del método equals
