@@ -371,6 +371,11 @@ public class Menu {
         Jugador jugadorActual =  jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
 
+        if (!casillaActual.getTipo().equals("Solar")) {
+            System.out.println("Error: solo se puede edificar en una casilla de tipo 'Solar'.");
+            return;
+        }
+
          for (Casilla solar : casillaActual.getGrupo().getMiembros()) //Comprobamos que ningún miembro del grupo esté hipotecado
              if (solar.getHipotecado()) {
                  System.out.println("No se puede edificar en " + casillaActual.getNombre() + ". " + solar.getNombre() + " está hipotecado.");
