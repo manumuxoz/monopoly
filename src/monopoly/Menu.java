@@ -579,9 +579,7 @@ public class Menu {
                     }
                 }
                 return grupoRentable;
-
     }
-
 
     private Casilla buscarCasillaRentable(){
         float alquilerMaximo= 0;
@@ -596,7 +594,6 @@ public class Menu {
         }
         return casillaRentable;
     }
-
 
     private Casilla buscarCasillaMasFrecuentada(){
         Casilla casillaMasFrecuentada = null;
@@ -639,17 +636,16 @@ public class Menu {
         return jugadorEnCabeza;
     }
 
-
-
+    //Método para mostrar las estadísticas de un jugador
     private void mostrarEstadisticas(String[] string){
         for (Jugador jugador: jugadores){
             if(jugador.getNombre().equals(string[1])){
                 System.out.println("{\n\tdineroInvertido: " + jugador.getGastos() + "," +
                         "\n\tpagoTasasEImpuestos: " + jugador.getTasasImpuestos() + "," +
-                        "\n\tpagoDeAlquileres " + jugador.getPagoAlquileres() + "," +
-                        "\n\tcobroDeAlquileres " + jugador.getCobroAlquileres() + "," +
-                        "\n\tpasarPorCasillaDeSalida " + jugador.getVueltas()*2000000 + "," +
-                        "\n\tpremiosInversionesOBote " + jugador.getPremios() +"," +
+                        "\n\tpagoDeAlquileres: " + jugador.getPagoAlquileres() + "," +
+                        "\n\tcobroDeAlquileres: " + jugador.getCobroAlquileres() + "," +
+                        "\n\tpasarPorCasillaDeSalida: " + jugador.getVueltas()*2000000 + "," +
+                        "\n\tpremiosInversionesOBote: " + jugador.getPremios() +"," +
                         "\n\tvecesEnLaCarcel: " + jugador.getVecesCarcel() +
                         "\n}");
             }
