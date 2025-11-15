@@ -28,8 +28,6 @@ public class Jugador {
     private int vecesCarcel;
     private float patrimonio;
 
-
-
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
         this.nombre = "Banca";
