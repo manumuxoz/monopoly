@@ -656,32 +656,27 @@ public class Menu {
         }
     }
 
-
+    //Método para mostrar las estadísticas globales de la partida
     private void mostrarEstadisticasGlobales(){
         String casillaMasRentable = "";
-        if (buscarCasillaRentable()!=null){
+        if (buscarCasillaRentable()!=null)
             casillaMasRentable = buscarCasillaRentable().getNombre();
-        }
 
         String grupoMasRentable = "";
-        if (buscarGrupoRentable()!=null){
+        if (buscarGrupoRentable()!=null)
             grupoMasRentable = buscarGrupoRentable().getColorGrupo();
-        }
 
         String casillaMasFrecuentada = "";
-        if (buscarCasillaMasFrecuentada() !=null){
+        if (buscarCasillaMasFrecuentada() !=null)
             casillaMasFrecuentada = buscarCasillaMasFrecuentada().getNombre();
-        }
 
         String jugadorConMasVueltas = "";
-        if (buscarJugadorConMasVueltas()!=null){
+        if (buscarJugadorConMasVueltas()!=null)
             jugadorConMasVueltas = buscarJugadorConMasVueltas().getNombre();
-        }
 
         String jugadorEnCabeza = "";
-        if (buscarJugadorEnCabeza()!=null){
+        if (buscarJugadorEnCabeza()!=null)
             jugadorEnCabeza = buscarJugadorEnCabeza().getNombre();
-        }
 
         System.out.println("{\n\tcasillaMasRentable: " + casillaMasRentable + "," +
                 "\n\tgrupoMasRentable: " + grupoMasRentable + "," +
