@@ -330,6 +330,7 @@ public class Casilla {
             banca.eliminarPropiedad(this);
             solicitante.anhadirPropiedad(this);
             this.setDuenho(solicitante);
+            solicitante.sumarPatrimonio(valor);
             System.out.println("El jugador " + solicitante.getNombre() + " compra la casilla " + nombre +
                     " por " + valor + "$. Su fortuna actual es " + solicitante.getFortuna() + "$");
         }
@@ -489,6 +490,7 @@ public class Casilla {
         solicitante.sumarFortuna(-valorCasa);
         edificios.add(new Edificio(solicitante, this, "casa", edificiosCreados)); //Creamos una casa
         numCasas++; //Sumamos una casa al contador
+        solicitante.sumarPatrimonio(valorCasa);
         incrementarAlquiler(); //Incrementamos alquiler
 
         System.out.println("Se ha edificado una casa en " + nombre + ". La fortuna de " + solicitante.getNombre() +
@@ -519,6 +521,7 @@ public class Casilla {
         eliminarCasas(edificiosCreados); //Eliminamos las casas
         edificios.add(new Edificio(solicitante, this, "hotel", edificiosCreados)); //Creamos hotel
         hotel = true;
+        solicitante.sumarPatrimonio(valorHotel);
         incrementarAlquiler(); //Incrementamos alquiler
 
         System.out.println("Se ha edificado un hotel en " + nombre + ". La fortuna de " + solicitante.getNombre() +
@@ -548,6 +551,7 @@ public class Casilla {
         solicitante.sumarFortuna(-valorPiscina);
         edificios.add(new Edificio(solicitante, this, "piscina", edificiosCreados)); //Creamos una piscina
         piscina = true; //Cambiamos bandera
+        solicitante.sumarPatrimonio(valorPiscina);
         incrementarAlquiler(); //Incrementamos alquiler
 
         System.out.println("Se ha edificado una piscina en " + nombre + ". La fortuna de " + solicitante.getNombre() +
@@ -577,6 +581,7 @@ public class Casilla {
         solicitante.sumarFortuna(-valorPistaDeporte);
         edificios.add(new Edificio(solicitante, this, "pista", edificiosCreados)); //Creamos una pista de deporte
         pistaDeporte = true; //Cambiamos bandera
+        solicitante.sumarPatrimonio(valorPistaDeporte);
         incrementarAlquiler(); //Incrementamos alquiler
 
         System.out.println("Se ha edificado una pista de deporte en " + nombre + ". La fortuna de " + solicitante.getNombre() +
@@ -629,6 +634,7 @@ public class Casilla {
                         sb.append(duenho.getNombre()).append(" ha vendido ").append(cantidad).append(" casas en ").append(nombre);
 
                     venta = venderCasas(cantidad, edificiosCreados);
+
                     break;
 
                 case "hotel":
@@ -691,6 +697,7 @@ public class Casilla {
         float venta = cantidad * valorCasa;
         duenho.sumarFortuna(venta);
         eliminarCasas(edificiosCreados);
+        duenho.sumarPatrimonio(-(cantidad * valorCasa));
         for (int i = 0; i < (numCasasInicial - cantidad); i++) {
             numCasas++;
             edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
@@ -702,6 +709,7 @@ public class Casilla {
     private float venderHotel(ArrayList<Edificio> edificiosCreados) {
         float venta = valorHotel;
         duenho.sumarFortuna(venta);
+        duenho.sumarPatrimonio(-valorHotel);
         edificios.removeIf(edificio -> edificio.getTipo().equals("hotel"));
         edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("hotel"));
         hotel = false;
@@ -717,6 +725,7 @@ public class Casilla {
     private float venderPiscina(ArrayList<Edificio> edificiosCreados) {
         float venta = valorPiscina;
         duenho.sumarFortuna(venta);
+        duenho.sumarPatrimonio(-valorPiscina);
         edificios.removeIf(edificio -> edificio.getTipo().equals("piscina"));
         edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("piscina"));
         piscina = false;
@@ -727,6 +736,7 @@ public class Casilla {
     private float venderPista(ArrayList<Edificio> edificiosCreados) {
         float venta = valorPistaDeporte;
         duenho.sumarFortuna(venta);
+        duenho.sumarPatrimonio(-valorPistaDeporte);
         edificios.removeIf(edificio -> edificio.getTipo().equals("pista"));
         edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("pista"));
         piscina = false;

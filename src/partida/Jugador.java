@@ -26,6 +26,7 @@ public class Jugador {
     private float cobroAlquileres;
     private float premios;
     private int vecesCarcel;
+    private float patrimonio;
 
 
 
@@ -87,6 +88,7 @@ public class Jugador {
     public float getPremios() {return premios;}
     public int getVueltas() {return vueltas;}
     public int getVecesCarcel(){return vecesCarcel;}
+    public float getPatrimonio(){return patrimonio;}
 
     //Setters:
     public void setNombre(String nombre) {
@@ -133,6 +135,7 @@ public class Jugador {
     public void sumarCobroAlquileres(float valor) {cobroAlquileres += valor;}
     public void sumarPremios(float valor) {premios += valor;}
     public void sumarVecesCarcel(int valor) {vecesCarcel += valor;}
+    public void sumarPatrimonio(float valor) {patrimonio += valor;}
 
 
     /*Método para establecer al jugador en la cárcel. 
