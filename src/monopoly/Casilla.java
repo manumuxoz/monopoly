@@ -307,11 +307,6 @@ public class Casilla {
                 }
                 // Para IrCarcel, no hacemos nada aquí porque se maneja en lanzarDados()
                 break;
-
-            case "Suerte":
-            case "Caja":
-                // No se realiza ninguna acción - no mostrar mensaje adicional
-                break;
         }
         return true;
     }

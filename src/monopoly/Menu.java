@@ -22,6 +22,8 @@ public class Menu {
 
     //Atributos nuevos:
     private ArrayList<Edificio> edificios; //Edificios creados
+    private int countAccionesSuerte; //Método para contar las cartas de suerte
+    private int countAccionesCaja; //Método para contar las cartas de caja de comunidad
 
     // Constructor
     public Menu() {
@@ -352,7 +354,11 @@ public class Menu {
         Casilla nuevaCasilla = avatarActual.getLugar();
 
         //Sumamos bote al parking en caso de caer en una casilla de tipo 'Impuesto'
-        if (nuevaCasilla.getTipo().equals("Impuesto")) tablero.encontrar_casilla("Parking").sumarValor(nuevaCasilla.getImpuesto());
+        if (nuevaCasilla.getTipo().equals("Impuesto"))
+            tablero.encontrar_casilla("Parking").sumarValor(nuevaCasilla.getImpuesto());
+
+        if (nuevaCasilla.getTipo().equals("Suerte"));
+
 
         // USAR evaluarCasilla para TODAS las casillas
         boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
