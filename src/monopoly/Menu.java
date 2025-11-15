@@ -693,7 +693,7 @@ public class Menu {
     private void manejarAcciones(String tipo) {
         Jugador jugadorActual = jugadores.get(turno);
 
-        if (tipo.equals("Suerte")){
+        if (tipo.equals("Suerte")){ //Acciones para Suerte
             Acciones suerte = new Acciones(tipo);
             System.out.println(jugadorActual.getNombre() + " elige una carta: " + (countAccionesSuerte + 1) + ".");
             switch (countAccionesSuerte) { //Elegimos acción
@@ -707,12 +707,12 @@ public class Menu {
                 default: break;
             }
             countAccionesSuerte = (countAccionesSuerte + 1)%6; //Llevamos cuenta de las cartas
-        } else {
+        } else { //Acciones para Caja
             Acciones caja = new Acciones(tipo);
             System.out.println(jugadorActual.getNombre() + " elige una carta: " + (countAccionesCaja + 1) + ".");
             switch (countAccionesCaja) { //Elegimos acción
-                case 0: caja.balneario(jugadorActual); break;
-                case 1: caja.veCarcel(jugadorActual, tablero.encontrar_casilla("Carcel")); break;
+                case 0: caja.balneario(jugadorActual);
+                case 1: caja.veCarcel(jugadorActual, tablero.encontrar_casilla("Carcel"));
                 case 2: caja.colocateSalida(jugadorActual, tablero.encontrar_casilla("Salida")); break;
                 case 3: caja.devolucionHacienda(jugadorActual); break;
                 case 4: caja.retrocedeSolar1(jugadorActual, tablero.encontrar_casilla("Solar1")); break;
@@ -721,5 +721,6 @@ public class Menu {
             }
             countAccionesCaja = (countAccionesCaja + 1)%5;
         }
+        lanzamientos = -1;
     }
 }
