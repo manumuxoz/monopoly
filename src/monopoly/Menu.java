@@ -357,7 +357,8 @@ public class Menu {
         if (nuevaCasilla.getTipo().equals("Impuesto"))
             tablero.encontrar_casilla("Parking").sumarValor(nuevaCasilla.getImpuesto());
 
-        if (nuevaCasilla.getTipo().equals("Suerte"));
+        if (nuevaCasilla.getTipo().equals("Suerte") || nuevaCasilla.getTipo().equals("Caja"))
+            manejarAcciones(nuevaCasilla.getTipo());
 
 
         // USAR evaluarCasilla para TODAS las casillas
@@ -686,5 +687,39 @@ public class Menu {
                 "\n\tjugadorMasVueltas: " + jugadorConMasVueltas + "," +
                 "\n\tjugadorEnCabeza: " + jugadorEnCabeza +
                 "\n}");
+    }
+
+    //Método para manejar las acciones de las casillas de Suerte o Caja de Comunidad
+    private void manejarAcciones(String tipo) {
+        Jugador jugadorActual = jugadores.get(turno);
+
+        if (tipo.equals("Suerte")){
+            Acciones suerte = new Acciones(tipo);
+            System.out.println(jugadorActual.getNombre() + " elige una carta: " + countAccionesSuerte + 1 + ".");
+            switch (countAccionesSuerte) { //Elegimos acción
+                case 0: suerte.avanzaSolar(jugadorActual, tablero.encontrar_casilla("Solar19")); break;
+                case 1: suerte.veCarcel(jugadorActual, tablero.encontrar_casilla("Carcel")); break;
+                case 2: suerte.boteLoteria(jugadorActual); break;
+                case 3: suerte.elegidoPresidente(jugadorActual, jugadores); break;
+                case 4: suerte.retrocedeTres(jugadorActual, tablero.getPosiciones()); break;
+                case 5: suerte.multa(jugadorActual); break;
+                case 6: suerte.avanzaTransporte(jugadorActual, tablero.getPosiciones()); break;
+                default: break;
+            }
+            countAccionesSuerte = (countAccionesSuerte + 1)%6; //Llevamos cuenta de las cartas
+        } else {
+            Acciones caja = new Acciones(tipo);
+            System.out.println(jugadorActual.getNombre() + " elige una carta: " + countAccionesCaja + 1 + ".");
+            switch (countAccionesSuerte) { //Elegimos acción
+                case 0: caja.balneario(jugadorActual); break;
+                case 1: caja.veCarcel(jugadorActual, tablero.encontrar_casilla("Carcel")); break;
+                case 2: caja.colocateSalida(jugadorActual, tablero.encontrar_casilla("Salida")); break;
+                case 3: caja.devolucionHacienda(jugadorActual); break;
+                case 4: caja.retrocedeSolar1(jugadorActual, tablero.encontrar_casilla("Solar1")); break;
+                case 5: caja.avanzaSolar(jugadorActual, tablero.encontrar_casilla("Solar20")); break;
+                default: break;
+            }
+            countAccionesCaja = (countAccionesCaja + 1)%5;
+        }
     }
 }
