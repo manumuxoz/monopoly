@@ -698,14 +698,8 @@ public class Menu {
             System.out.println(jugadorActual.getNombre() + " elige una carta: " + (countAccionesSuerte + 1) + ".");
             switch (countAccionesSuerte) { //Elegimos acción
                 case 0: suerte.avanzaSolar(jugadorActual, tablero.encontrar_casilla("Solar19")); break;
-                case 1:
-                    suerte.veCarcel(jugadorActual, tablero.encontrar_casilla("Carcel"));
-                    lanzamientos = -1;
-                    break;
-                case 2:
-                    suerte.boteLoteria(jugadorActual);
-                    lanzamientos = -1;
-                    break;
+                case 1: suerte.veCarcel(jugadorActual, tablero.getPosiciones()); break;
+                case 2: suerte.boteLoteria(jugadorActual); break;
                 case 3:
                     System.out.println("Has sido elegido presidente de la junta directiva. Paga a cada jugador 250.000€.");
 
@@ -715,9 +709,7 @@ public class Menu {
 
                     ventaOHipoteca(cobro);
 
-                    suerte.elegidoPresidente(jugadorActual, jugadores);
-                    lanzamientos = -1;
-                    break;
+                    suerte.elegidoPresidente(jugadorActual, jugadores); break;
                 case 4: suerte.retrocedeTres(jugadorActual, tablero.getPosiciones()); break;
                 case 5:
                     System.out.println("Te multan por usar el móvil mientras conduces. Paga 150.000€.");
@@ -726,14 +718,11 @@ public class Menu {
 
                     ventaOHipoteca(150000);
 
-                    suerte.multa(jugadorActual);
-                    lanzamientos = -1;
-                    break;
+                    suerte.multa(jugadorActual); break;
                 case 6:
                     suerte.avanzaTransporte(jugadorActual, tablero.getPosiciones());
 
-                    jugadorActual.getAvatar().getLugar().evaluarCasilla(jugadorActual, banca, 0);
-                    break;
+                    jugadorActual.getAvatar().getLugar().evaluarCasilla(jugadorActual, banca, 0);break;
                 default: break;
             }
             countAccionesSuerte = (countAccionesSuerte + 1)%6; //Llevamos cuenta de las cartas
@@ -748,27 +737,20 @@ public class Menu {
 
                     ventaOHipoteca(50000);
 
-                    caja.balneario(jugadorActual);
-                    lanzamientos = -1;
-                    break;
+                    caja.balneario(jugadorActual); break;
                 case 1:
-                    caja.veCarcel(jugadorActual, tablero.encontrar_casilla("Carcel"));
-                    lanzamientos = -1;
-                    break;
+                    caja.veCarcel(jugadorActual, tablero.getPosiciones()); break;
                 case 2:
-                    caja.colocateSalida(jugadorActual, tablero.encontrar_casilla("Salida"));
-                    lanzamientos = -1;
-                    break;
+                    caja.colocateSalida(jugadorActual, tablero.encontrar_casilla("Salida")); break;
                 case 3:
-                    caja.devolucionHacienda(jugadorActual);
-                    lanzamientos = -1;
-                    break;
+                    caja.devolucionHacienda(jugadorActual); break;
                 case 4: caja.retrocedeSolar1(jugadorActual, tablero.encontrar_casilla("Solar1")); break;
                 case 5: caja.avanzaSolar(jugadorActual, tablero.encontrar_casilla("Solar20")); break;
                 default: break;
             }
             countAccionesCaja = (countAccionesCaja + 1)%5;
         }
+        lanzamientos = -1;
     }
 
     private void ventaOHipoteca(float cobro) {

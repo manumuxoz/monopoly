@@ -27,15 +27,20 @@ public class Acciones {
         Avatar avatarActual = jugadorActual.getAvatar();
 
         if (avatarActual.getLugar().getPosicion() > Solar.getPosicion()) {
+            System.out.println("\nEl jugador " + jugadorActual.getNombre() + " pasa por la casilla de salida y recibe 2000000$.\n");
             jugadorActual.setVueltas(jugadorActual.getVueltas() + 1);
             jugadorActual.sumarFortuna(2000000);
-            avatarActual.setLugar(Solar);
-        } else
-            avatarActual.setLugar(Solar);
+        }
+        // Mostrar movimiento básico
+        System.out.println("El avatar " + avatarActual.getId() + " avanza desde " + avatarActual.getLugar().getNombre() + " hasta " + Solar.getNombre() + ".");
+        // Mover avatar
+        avatarActual.getLugar().eliminarAvatar(avatarActual);
+        avatarActual.setLugar(Solar);
+        Solar.anhadirAvatar(avatarActual);
     }
 
     //Acción Suerte/Caja 2:
-    public void veCarcel(Jugador jugadorActual, Casilla Carcel) {
+    public void veCarcel(Jugador jugadorActual, ArrayList<ArrayList<Casilla>> posiciones) {
 
         if (tipo.equals("Suerte"))
             System.out.println("Los acreedores te persiguen por impago. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y sin cobrar los 2.000.000€.");
@@ -44,10 +49,7 @@ public class Acciones {
 
         Avatar avatarActual = jugadorActual.getAvatar();
 
-        avatarActual.setLugar(Carcel);
-        jugadorActual.setenCarcel(true);
-        jugadorActual.setTiradasCarcel(0);
-        jugadorActual.sumarVecesCarcel(1);
+        jugadorActual.encarcelar(posiciones);
     }
 
     //Acción Suerte 3:
@@ -108,7 +110,12 @@ public class Acciones {
     public void colocateSalida(Jugador jugadorActual, Casilla Salida) {
         System.out.println("Colócate en la casilla de Salida. Cobra 2.000.000€.");
 
-        jugadorActual.getAvatar().setLugar(Salida);
+        Avatar avatarActual = jugadorActual.getAvatar();
+
+        // Mover avatar
+        avatarActual.getLugar().eliminarAvatar(avatarActual);
+        avatarActual.setLugar(Salida);
+        Salida.anhadirAvatar(avatarActual);
     }
 
     //Acción 4 Caja:
@@ -122,7 +129,12 @@ public class Acciones {
     public void retrocedeSolar1(Jugador jugadorActual, Casilla Solar1) {
         System.out.println("Retrocede hasta Solar1 para comprar antigüedades exóticas.");
 
-        jugadorActual.getAvatar().setLugar(Solar1);
+        Avatar avatarActual = jugadorActual.getAvatar();
+
+        // Mover avatar
+        avatarActual.getLugar().eliminarAvatar(avatarActual);
+        avatarActual.setLugar(Solar1);
+        Solar1.anhadirAvatar(avatarActual);
     }
 
 }

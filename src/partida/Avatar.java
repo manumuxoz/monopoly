@@ -87,7 +87,7 @@ public class Avatar {
         if (nuevaPosicion < posicionActual && !getJugador().getEnCarcel()){
             getJugador().sumarFortuna(2000000);
             getJugador().sumarVueltas(1);
-            System.out.println("\nEl jugador " + getJugador().getNombre() + " pasa por la casilla de salida y recibe 2000000$\n");
+            System.out.println("\nEl jugador " + getJugador().getNombre() + " pasa por la casilla de salida y recibe 2000000$.\n");
         }
     }
 
