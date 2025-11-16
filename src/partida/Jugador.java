@@ -27,6 +27,7 @@ public class Jugador {
     private float premios;
     private int vecesCarcel;
     private float patrimonio;
+    private boolean enBancarrota;
 
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
@@ -87,6 +88,7 @@ public class Jugador {
     public int getVueltas() {return vueltas;}
     public int getVecesCarcel(){return vecesCarcel;}
     public float getPatrimonio(){return patrimonio;}
+    public boolean getEnBancarrota(){return enBancarrota;}
 
     //Setters:
     public void setNombre(String nombre) {
@@ -103,6 +105,9 @@ public class Jugador {
     }
     public void setVueltas(int vueltas) {
         this.vueltas = vueltas;
+    }
+    public void setEnBancarrota(boolean enBancarrota) {
+        this.enBancarrota = enBancarrota;
     }
 
     //Otros métodos:
@@ -168,12 +173,51 @@ public class Jugador {
     }
 
     //Método para saber si un jugador está en bancarrota
-    public boolean enBancarrota() {
-        if (fortuna <= 0) {
-            System.out.println(nombre + " está en bancarrota");
+    public boolean enBancarrota(float cobro, Jugador destinatario, ArrayList<Edificio> edificiosCreados) {
+        if (dineroVentas() + fortuna < cobro) {
+            System.out.println(nombre + " está en bancarrota.");
+            enBancarrota = true;
+
+            realizarBancarrota(destinatario, edificiosCreados); //Realizamos la bancarrota
+
             return true;
         }
         return false;
+    }
+
+    //Método para calcular el dinero de posibles ventas:
+    private float dineroVentas() {
+        float ventaEdificios = 0;
+        float ventaPropiedades = 0;
+
+        for (Casilla casilla : propiedades) {
+            ventaPropiedades += casilla.getHipoteca();
+            if (casilla.getTipo().equals("Solar")) {
+                ventaEdificios += (casilla.getNumCasas() * casilla.getValorCasa());
+
+                if (casilla.getHotel()) ventaEdificios += casilla.getValorHotel();
+                if (casilla.getPiscina()) ventaEdificios += casilla.getValorPiscina();
+                if (casilla.getPistaDeporte()) ventaEdificios += casilla.getValorPistaDeporte();
+            }
+        }
+
+        return ventaEdificios + ventaPropiedades;
+    }
+
+    //Método para realizar la bancarrota (ceder propiedades):
+    private void realizarBancarrota(Jugador destinatario, ArrayList<Edificio> edificiosCreados) {
+        if (!destinatario.getNombre().equals("Banca")) { //Si no es banca cedemos todos al destinatario
+            for (Casilla casilla : propiedades)
+                casilla.setDuenho(destinatario); //Cambiamos dueño
+        } else { //Si el destinatario es banca
+            for (Casilla casilla : propiedades) {
+                casilla.setDuenho(destinatario);
+                if (casilla.getTipo().equals("Solar")) { //Si es solar eliminamos los edificios
+                    edificiosCreados.removeAll(casilla.getEdificios());
+                    casilla.getEdificios().clear();
+                }
+            }
+        }
     }
 
     @Override

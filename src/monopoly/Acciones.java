@@ -58,30 +58,13 @@ public class Acciones {
 
     //Accion Suerte 4:
     public void elegidoPresidente(Jugador jugadorActual, ArrayList<Jugador> jugadores) {
-        System.out.println("Has sido elegido presidente de la junta directiva. Paga a cada jugador 250.000€.");
-
-
-        while (jugadorActual.getFortuna() < 250000 * jugadores.size()) {
-            System.out.println(jugadorActual.getNombre() + " no dispone de suficiente dinero para realizar el pago. " +
-                    "Debe vender edificios o hipotecar propiedades.");
-
-            Casilla casillaVenta =  null;
-            do {
-                System.out.print("Seleccione una de sus propiedades para continuar con la venta: ");
-                Scanner sc = new Scanner(System.in);
-                String nombre = sc.nextLine();
-
-                for (Casilla casilla : jugadorActual.getPropiedades()) {
-                    if (casilla.getNombre().equals(nombre)) {
-                        casillaVenta = casilla;
-                        break;
-                    }
-                }
-            } while(casillaVenta ==  null);
-
-            //Sin acabar
-
-        }
+        for (Jugador jugador : jugadores)
+            if (!jugador.equals(jugadorActual)) {
+                jugadorActual.sumarGastos(250000);
+                jugadorActual.sumarGastos(-250000);
+                jugador.sumarFortuna(250000);
+                System.out.println(jugador.getNombre() + " ha recibido 250.000€ de " + jugador.getNombre());
+            }
     }
 
     //Acción 5 Suerte:
@@ -95,7 +78,8 @@ public class Acciones {
 
     //Acción 6 Suerte:
     public void multa(Jugador jugadorActual) {
-        System.out.println("Te multan por usar el móvil mientras conduces. Paga 150.000€.");
+        jugadorActual.sumarGastos(150000);
+        jugadorActual.sumarFortuna(-150000);
     }
 
     //Acción 7 Suerte:
@@ -107,7 +91,8 @@ public class Acciones {
 
     //Acción 1 Caja:
     public void balneario(Jugador jugadorActual) {
-        System.out.println("Paga 500.000€ por un fin de semana en un balneario de 5 estrellas.");
+        jugadorActual.sumarGastos(500000);
+        jugadorActual.sumarFortuna(-500000);
     }
 
     //Acción 3 Caja:

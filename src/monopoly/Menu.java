@@ -169,7 +169,7 @@ public class Menu {
     private void lanzarDados(int tirada1, int tirada2) {
         Jugador jugadorActual = jugadores.get(turno);
 
-        if (jugadorActual.enBancarrota() || !puedeTirar()) return; //Si el jugador está en bancarrota o ya ha tirado, no puede tirar
+        if (jugadorActual.getEnBancarrota() || !puedeTirar()) return; //Si el jugador está en bancarrota o ya ha tirado, no puede tirar
 
         //Realizar tirada
         int valorTirada, dado1Valor, dado2Valor;
@@ -700,9 +700,25 @@ public class Menu {
                 case 0: suerte.avanzaSolar(jugadorActual, tablero.encontrar_casilla("Solar19")); break;
                 case 1: suerte.veCarcel(jugadorActual, tablero.encontrar_casilla("Carcel")); break;
                 case 2: suerte.boteLoteria(jugadorActual); break;
-                case 3: suerte.elegidoPresidente(jugadorActual, jugadores); break;
+                case 3:
+                    System.out.println("Has sido elegido presidente de la junta directiva. Paga a cada jugador 250.000€.");
+
+                    float cobro = 250000 * jugadores.size() - 1;
+
+                    if (jugadorActual.enBancarrota(cobro, banca, edificios)) return;
+
+                    ventaOHipoteca(cobro);
+
+                    suerte.elegidoPresidente(jugadorActual, jugadores); break;
                 case 4: suerte.retrocedeTres(jugadorActual, tablero.getPosiciones()); break;
-                case 5: suerte.multa(jugadorActual); break;
+                case 5:
+                    System.out.println("Te multan por usar el móvil mientras conduces. Paga 150.000€.");
+
+                    if (jugadorActual.enBancarrota(150000, banca, edificios)) return;
+
+                    ventaOHipoteca(150000);
+
+                    suerte.multa(jugadorActual); break;
                 case 6: suerte.avanzaTransporte(jugadorActual, tablero.getPosiciones()); break;
                 default: break;
             }
@@ -711,7 +727,14 @@ public class Menu {
             Acciones caja = new Acciones(tipo);
             System.out.println(jugadorActual.getNombre() + " elige una carta: " + (countAccionesCaja + 1) + ".");
             switch (countAccionesCaja) { //Elegimos acción
-                case 0: caja.balneario(jugadorActual);
+                case 0:
+                    System.out.println("Paga 500.000€ por un fin de semana en un balneario de 5 estrellas.");
+
+                    if (jugadorActual.enBancarrota(50000, banca, edificios)) return;
+
+                    ventaOHipoteca(50000);
+
+                    caja.balneario(jugadorActual);
                 case 1: caja.veCarcel(jugadorActual, tablero.encontrar_casilla("Carcel"));
                 case 2: caja.colocateSalida(jugadorActual, tablero.encontrar_casilla("Salida")); break;
                 case 3: caja.devolucionHacienda(jugadorActual); break;
@@ -722,5 +745,23 @@ public class Menu {
             countAccionesCaja = (countAccionesCaja + 1)%5;
         }
         lanzamientos = -1;
+    }
+
+    private void ventaOHipoteca(float cobro) {
+        Jugador jugadorActual = jugadores.get(turno);
+
+        while (jugadorActual.getFortuna() < cobro) {
+            System.out.println(jugadorActual.getNombre() + " debe vender edificios y/o hipotecar propiedades para realizar el pago.\n");
+            System.out.print("Propiedades disponibles: ");
+            imprimirPropiedades(jugadorActual);
+            System.out.println(".\n");
+
+            Scanner sc = new Scanner(System.in);
+            String comando = sc.nextLine();
+            String[] partes = comando.trim().split("[ +]+"); //Dividimos por partes el comando
+
+            if (partes.length == 2 && partes[0].equals("hipotecar")) hipotecar(partes[1]);
+            else if (partes.length == 4 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
+        }
     }
 }
