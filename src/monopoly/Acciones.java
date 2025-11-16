@@ -2,6 +2,7 @@ package monopoly;
 
 import partida.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -87,6 +88,14 @@ public class Acciones {
         System.out.println("Avanza hasta la casilla de transporte más cercana. Si no tiene dueño, puedes comprarla. Si tiene dueño, paga al dueño el doble de la operación indicada.");
 
         Avatar avatarActual = jugadorActual.getAvatar();
+
+        int posicionInicial = (int) avatarActual.getLugar().getPosicion();
+        Casilla transporteCercana = posiciones.get(posicionInicial/10).get(posicionInicial%10);
+        for (int i = posicionInicial + 1; transporteCercana.getTipo().equals("Transporte"); i = (i + 1)%40) {
+            transporteCercana = posiciones.get(i / 10).get(i % 10);
+            if (transporteCercana.getTipo().equals("Transporte"))
+                avatarActual.setLugar(transporteCercana);
+        }
     }
 
     //Acción 1 Caja:

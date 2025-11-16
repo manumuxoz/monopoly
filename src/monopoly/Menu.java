@@ -719,7 +719,11 @@ public class Menu {
                     ventaOHipoteca(150000);
 
                     suerte.multa(jugadorActual); break;
-                case 6: suerte.avanzaTransporte(jugadorActual, tablero.getPosiciones()); break;
+                case 6:
+                    suerte.avanzaTransporte(jugadorActual, tablero.getPosiciones());
+
+                    jugadorActual.getAvatar().getLugar().evaluarCasilla(jugadorActual, banca, 0);
+                    break;
                 default: break;
             }
             countAccionesSuerte = (countAccionesSuerte + 1)%6; //Llevamos cuenta de las cartas
