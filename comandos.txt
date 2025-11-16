@@ -1,12 +1,4 @@
 crear jugador Manuel pelota
 crear jugador Fabio sombrero
-lanzar dados 1+0
-comprar Solar1
-acabar turno
-acabar turno
-lanzar dados 1+1
-comprar Solar2
-edificar casa
-edificar casa
-edificar casa
-edificar casa
+crear jugador Miguel esfinge
+crear jugador Fabrizio coche
