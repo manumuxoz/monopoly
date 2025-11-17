@@ -161,6 +161,7 @@ public class Jugador {
         enCarcel = true;
         tiradasCarcel = 0;
         System.out.println(nombre + " ha sido enviado a la carcel.");
+        sumarVecesCarcel(1);
     }
 
     //Nuevos métodos:

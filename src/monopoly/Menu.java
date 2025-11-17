@@ -394,7 +394,6 @@ public class Menu {
         // Si evaluarCasilla retorna false (para IrCarcel), manejar el encarcelamiento
         if (!solvente && nuevaCasilla.getNombre().equals("IrCarcel")) {
             jugadorActual.encarcelar(tablero.getPosiciones());
-            jugadorActual.sumarVecesCarcel(1);
         }
 
         // Repintar tablero
