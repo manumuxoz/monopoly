@@ -199,10 +199,8 @@ public class Menu {
             manejarCarcel(jugadorActual, sonDobles);
             return;
         }
+        manejarAvatar(valorTirada);
         manejarDobles(sonDobles);
-
-        if (!jugadorActual.getEnCarcel()) //Comprobamos que no haya sido encarcelado
-            manejarAvatar(valorTirada);
     }
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
@@ -232,10 +230,10 @@ public class Menu {
     }
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
-    private void listarVenta() {  //Imprime las casillas que estan en venta
+    private void listarVenta() {  //Imprime las casillas que están en venta
         for (ArrayList<Casilla> lado : tablero.getPosiciones())
             for (Casilla casilla : lado)
-                System.out.println(casilla.casEnVenta());
+                System.out.print(casilla.casEnVenta());  //print y no println porque si no al hacer un return vacio ocupa una línea
     }
 
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
@@ -311,6 +309,8 @@ public class Menu {
             jugador.setenCarcel(false);
             jugador.setTiradasCarcel(0);
             System.out.println(jugador.getNombre() + " sale de la cárcel.");
+            if(dobles) lanzamientos = 0;
+
         } else {
             System.out.println(jugador.getNombre() + " está en la cárcel. Turno " +
                     jugador.getTiradasCarcel() + "/3. Use 'salir carcel' para pagar fianza.");
@@ -667,7 +667,7 @@ public class Menu {
 
         String grupoMasRentable = "";
         if (buscarGrupoRentable()!=null)
-            grupoMasRentable = buscarGrupoRentable().getColorGrupo();
+            grupoMasRentable = buscarGrupoRentable().getMiembros().getFirst().color(buscarGrupoRentable().getColorGrupo());
 
         String casillaMasFrecuentada = "";
         if (buscarCasillaMasFrecuentada() !=null)
@@ -750,7 +750,6 @@ public class Menu {
             }
             countAccionesCaja = (countAccionesCaja + 1)%5;
         }
-        lanzamientos = -1;
     }
 
     private void ventaOHipoteca(float cobro) {

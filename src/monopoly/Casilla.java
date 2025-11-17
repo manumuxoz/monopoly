@@ -226,7 +226,7 @@ public class Casilla {
                         Jugador propietario = duenho;
                         propietario.sumarFortuna(alquiler);
                         propietario.sumarCobroAlquileres(alquiler);
-                        System.out.println("Se han pagado " + alquiler + "€ de alquiler.");
+                        System.out.println("Se han pagado " + alquiler + "€ de alquiler a " + propietario.getNombre() + ".");
                         return true;
                     } else {
                         System.out.println(actual.getNombre() + " no tiene dinero suficiente para pagar el alquiler");
@@ -247,7 +247,7 @@ public class Casilla {
                         Jugador propietario = duenho;
                         propietario.sumarFortuna(valorImpuesto);
                         propietario.sumarCobroAlquileres(valorImpuesto);
-                        System.out.println("Se han pagado " + valorImpuesto + "€ de servicio.");
+                        System.out.println("Se han pagado " + valorImpuesto + "€ de servicio a " + propietario.getNombre() + ".");
                         return true;
                     } else {
                         System.out.println(actual.getNombre() + " no tiene dinero suficiente para pagar el servicio");
@@ -259,18 +259,20 @@ public class Casilla {
             case "Transporte":
                 sumarVecesEnCasilla(1);
                 if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
-                    if (actual.getFortuna() >= impuesto) {
-                        actual.sumarGastos(impuesto);
-                        actual.sumarFortuna(-impuesto);
-                        actual.sumarPagoAlquileres(impuesto);
-                        sumarAlquilerAcumulado(impuesto);
+                    int numCasillasTransporte = actual.contarCasillasTransporte();
+                    if (actual.getFortuna() >= impuesto * numCasillasTransporte) {
+                        actual.sumarGastos(impuesto * numCasillasTransporte);
+                        actual.sumarFortuna(-impuesto * numCasillasTransporte);
+                        actual.sumarPagoAlquileres(impuesto * numCasillasTransporte);
+                        sumarAlquilerAcumulado(impuesto * numCasillasTransporte);
                         Jugador propietario = duenho;
-                        propietario.sumarFortuna(impuesto);
-                        propietario.sumarCobroAlquileres(impuesto);
-                        System.out.println("Se han pagado " + (int)impuesto + "€ de transporte.");
+                        propietario.sumarFortuna(impuesto*numCasillasTransporte);
+                        propietario.sumarCobroAlquileres(impuesto*numCasillasTransporte);
+                        System.out.println("El jugador" + actual.getNombre() + " paga " +  (int)impuesto*numCasillasTransporte + "€ de transporte a " + propietario.getNombre() + ".");
                         return true;
                     } else {
                         System.out.println(actual.getNombre() + " no tiene dinero suficiente para pagar el transporte");
+
                         return false;
                     }
                 }
@@ -284,7 +286,7 @@ public class Casilla {
                     actual.sumarTasasImpuestos(impuesto);
 
                     // Añadir al bote del Parking
-                    System.out.println("El jugador paga " + (int)impuesto + "€ que se depositan en el Parking.");
+                    System.out.println("El jugador" + actual.getNombre() + " paga " + (int)impuesto + "€ que se depositan en el Parking.");
                     return true;
                 } else {
                     System.out.println(actual.getNombre() + " no tiene dinero suficiente para pagar impuestos");
@@ -297,7 +299,7 @@ public class Casilla {
                     if (impuesto > 0) {
                         actual.sumarFortuna(impuesto);
                         actual.sumarPremios(impuesto);
-                        System.out.println("El jugador " + actual.getNombre() + " recibe " + (int)impuesto + "€.");
+                        System.out.println("El jugador " + actual.getNombre() + " recibe por caer en el parking " + (int)impuesto + "€ del bote acumulado de impuestos.");
                         this.impuesto = 0;
                     }
                     return true;
@@ -364,7 +366,7 @@ public class Casilla {
                         ",\n\talquiler pista de deporte: " + alquilerPistaDeporte +
                         "\n}";
             case "Transporte":
-            case "Servicio":
+            case "Servicios":
                 return "{" +
                         "\n\ttipo: " + tipo +
                         ",\n\tvalor: " + valor +
@@ -409,14 +411,14 @@ public class Casilla {
         // Solo mostrar si el dueño es la banca (está en venta)
         if (duenho.getNombre().equals("Banca")) {
             if (this.getTipo().equals("Solar"))
-                return "{" +
+                return "\n{" +
                         "\n\tnombre: " + nombre +
                         "\n\ttipo: " + tipo +
                         ",\n\tgrupo: " + color(grupo.getColorGrupo()) +
                         ",\n\tvalor: " + valor +
                         "\n}";
             if (this.getTipo().equals("Transporte") || this.getTipo().equals("Servicios"))
-                return "{" +
+                return "\n{" +
                         "\n\tnombre: " + nombre +
                         "\n\ttipo: " + tipo +
                         ",\n\tvalor: " + valor +
@@ -747,6 +749,7 @@ public class Casilla {
         if (pistaDeporte) sb.append(", 1 pista de deporte");
         return sb.toString();
     }
+
 
     @Override //Sobreescritura del método equals
     public boolean equals(Object o) {

@@ -47,8 +47,6 @@ public class Acciones {
         else
             System.out.println("Te investigan por fraude de identidad. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y sin cobrar los 2.000.000€.");
 
-        Avatar avatarActual = jugadorActual.getAvatar();
-
         jugadorActual.encarcelar(posiciones);
     }
 
@@ -57,6 +55,7 @@ public class Acciones {
         System.out.println("¡Has ganado el bote de la lotería! Recibe 1.000.000€.");
 
         jugadorActual.sumarFortuna(1000000);
+        jugadorActual.sumarPremios(1000000);
     }
 
     //Accion Suerte 4:
@@ -66,7 +65,8 @@ public class Acciones {
                 jugadorActual.sumarGastos(250000);
                 jugadorActual.sumarGastos(-250000);
                 jugador.sumarFortuna(250000);
-                System.out.println(jugador.getNombre() + " ha recibido 250.000€ de " + jugador.getNombre());
+                System.out.println(jugador.getNombre() + " ha recibido 250.000€ de " + jugadorActual.getNombre());
+                jugador.sumarPremios(250000);
             }
     }
 
@@ -116,6 +116,7 @@ public class Acciones {
         avatarActual.getLugar().eliminarAvatar(avatarActual);
         avatarActual.setLugar(Salida);
         Salida.anhadirAvatar(avatarActual);
+        jugadorActual.sumarFortuna(2000000);
     }
 
     //Acción 4 Caja:
@@ -123,6 +124,7 @@ public class Acciones {
         System.out.println("Devolución de Hacienda. Cobra 500.000€.");
 
         jugadorActual.sumarFortuna(500000);
+        jugadorActual.sumarPremios(500000);
     }
 
     //Acción 5 Caja:
