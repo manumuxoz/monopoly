@@ -217,18 +217,22 @@ public class Casilla {
             case "Solar":
                 sumarVecesEnCasilla(1);
                 if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
-                    if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto) {
-                        actual.sumarGastos(impuesto);
-                        actual.sumarFortuna(-impuesto);
-                        actual.sumarPagoAlquileres(impuesto);
-                        sumarAlquilerAcumulado(impuesto);
-                        Jugador propietario = duenho;
-                        propietario.sumarFortuna(impuesto);
-                        propietario.sumarCobroAlquileres(impuesto);
-                        System.out.println("Se han pagado " + impuesto + "€ de alquiler a " + propietario.getNombre() + ".");
+                    float alquiler = impuesto;
+
+                    if (this.getGrupo().esDuenhoGrupo(duenho) && edificios.isEmpty()) //Si el duenho tiene el grupo y no tiene casas, paga el doble del alquiler inicila
+                        alquiler = 2 * impuesto;
+
+                    if (!actual.enBancarrota(alquiler, duenho) && actual.getFortuna() >= alquiler){
+                        actual.sumarGastos(alquiler);
+                        actual.sumarFortuna(-alquiler);
+                        actual.sumarPagoAlquileres(alquiler);
+                        sumarAlquilerAcumulado(alquiler);
+                        duenho.sumarFortuna(alquiler);
+                        duenho.sumarCobroAlquileres(alquiler);
+                        System.out.println("Se han pagado " + alquiler + "€ de alquiler a " + duenho.getNombre() + ".");
                         return true;
-                    } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto)
-                        actual.setDeudaAPagar(impuesto);
+                    } else if (!actual.getEnBancarrota() && actual.getFortuna() < alquiler)
+                        actual.setDeudaAPagar(alquiler);
 
                     return false;
                 }
