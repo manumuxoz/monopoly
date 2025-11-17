@@ -83,6 +83,7 @@ public class Acciones {
     public void multa(Jugador jugadorActual) {
         jugadorActual.sumarGastos(150000);
         jugadorActual.sumarFortuna(-150000);
+
     }
 
     //Acción 7 Suerte:

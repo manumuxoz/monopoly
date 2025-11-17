@@ -142,7 +142,9 @@ public class Menu {
                         ",\n\tfortuna: " + (int) jugador.getFortuna() +
                         ",\n\tpropiedades: [");
                 imprimirPropiedades(jugador);
-                System.out.print("],\n\thipotecas: [],\n\tedificios: [");
+                System.out.print("],\n\thipotecas: [");
+                imprimirHipotecas(jugador);
+                System.out.print("],\n\tedificios: [");
                 imprimirEdificios(jugador);
                 System.out.print("]\n}\n");
                 return; //Salimos del bucle
@@ -195,12 +197,17 @@ public class Menu {
         }
 
         // Verificar si el jugador está en la cárcel
+
+
         if (jugadorActual.getEnCarcel()) {
             manejarCarcel(jugadorActual, sonDobles);
             return;
         }
-        manejarAvatar(valorTirada);
+
         manejarDobles(sonDobles);
+
+        if(!jugadorActual.getEnCarcel())
+            manejarAvatar(valorTirada);
     }
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
@@ -276,13 +283,26 @@ public class Menu {
 
     //Nuevos métodos:
 
-    //Método para imprimir las propiedades d eun jugador dado
+    //Método para imprimir las propiedades de un jugador dado
     public void imprimirPropiedades(Jugador jugador) {
         for (Casilla propiedad : jugador.getPropiedades()) {
-            if (!propiedad.equals(jugador.getPropiedades().getLast()))
+            if(!propiedad.getHipotecado()) {
+                if (!propiedad.equals(jugador.getPropiedades().getLast()))
+                    System.out.print(propiedad.getNombre() + ", ");
+                else
+                    System.out.print(propiedad.getNombre());
+            }
+        }
+    }
+
+    //Método para imprimir las hipotecas de un jugador dado
+    public void imprimirHipotecas(Jugador jugador) {
+        for (Casilla propiedad : jugador.getHipotecas()) {
+            if (!propiedad.equals(jugador.getHipotecas().getLast()))
                 System.out.print(propiedad.getNombre() + ", ");
             else
                 System.out.print(propiedad.getNombre());
+
         }
     }
 
@@ -475,8 +495,8 @@ public class Menu {
             return;
         }
 
-        if (!hipoteca.getTipo().equals("Transporte") || hipoteca.getTipo().equals("Servicios")) {
-            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() + ". Solo se pueden hipotecar propiedades de tipo 'Solar'");
+        if (hipoteca.getTipo().equals("Transporte") || hipoteca.getTipo().equals("Servicios")) {
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() + ". Solo se pueden hipotecar propiedades de tipo 'Solar'.");
             return;
         }
 
@@ -486,7 +506,7 @@ public class Menu {
         }
 
         if (!hipoteca.getEdificios().isEmpty()) { //Comprobamos que no tenga edificios la casilla a hipotecar
-            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() + ". Debe vender todos los edificios del solar");
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() + ". Debe vender todos los edificios del solar.");
             return;
         }
 
@@ -725,6 +745,8 @@ public class Menu {
                     if (jugadorActual.enBancarrota(150000, banca)) return;
 
                     ventaOHipoteca(150000);
+
+                    tablero.encontrar_casilla("Parking").setImpuesto(tablero.encontrar_casilla("Parking").getImpuesto() + 150000);
 
                     suerte.multa(jugadorActual); break;
                 case 6:

@@ -233,6 +233,16 @@ public class Jugador {
         return i;
     }
 
+    public int contarCasillasServicio(){
+        int i=0;
+        for (Casilla casilla : propiedades){
+            if (casilla.getTipo().equals("Servicio")){
+                i++;
+            }
+        }
+        return i;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

@@ -40,6 +40,7 @@ public class Casilla {
     private boolean hipotecado;
     private float alquilerAcumulado;
     private int vecesEnCasilla;
+    private float impuestoInicial;
 
     //Constructores:
     public Casilla() {
@@ -61,6 +62,7 @@ public class Casilla {
         this.alquilerHotel = alquilerHotel;
         this.alquilerPiscina = alquilerPiscina;
         this.alquilerPistaDeporte = alquilerPistaDeporte;
+        impuestoInicial = alquiler;
         edificios = new ArrayList<>();
     }
 
@@ -236,10 +238,13 @@ public class Casilla {
 
                     return false;
                 }
+                break;
             case "Servicios":
                 sumarVecesEnCasilla(1);
                 if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
+                    int numCasillasServicio = duenho.contarCasillasServicio();
                     int valorImpuesto = tirada * 4 * 50000;
+                    if(numCasillasServicio == 2) valorImpuesto = tirada * 10 * 50000;
                     if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto) {
                         actual.sumarGastos(valorImpuesto);
                         actual.sumarFortuna(-valorImpuesto);
@@ -255,6 +260,7 @@ public class Casilla {
 
                     return false;
                 }
+                break;
             case "Transporte":
                 sumarVecesEnCasilla(1);
                 if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
@@ -273,6 +279,7 @@ public class Casilla {
 
                     return false;
                 }
+                break;
             case "Impuesto":
                 sumarVecesEnCasilla(1);
                 if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto) {
@@ -281,7 +288,7 @@ public class Casilla {
                     actual.sumarTasasImpuestos(impuesto);
 
                     // Añadir al bote del Parking
-                    System.out.println("El jugador" + actual.getNombre() + " paga " + (int)impuesto + "€ que se depositan en el Parking.");
+                    System.out.println("El jugador " + actual.getNombre() + " paga " + (int)impuesto + "€ que se depositan en el Parking.");
                     return true;
                 } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto)
                     actual.setDeudaAPagar(impuesto);
@@ -318,6 +325,7 @@ public class Casilla {
             solicitante.sumarGastos(valor);
             solicitante.sumarFortuna(-valor);
             banca.eliminarPropiedad(this);
+            banca.sumarPremios(valor); //Recauda el dinero de la propiedad (Banca)
             solicitante.anhadirPropiedad(this);
             this.setDuenho(solicitante);
             solicitante.sumarPatrimonio(valor);
@@ -439,15 +447,24 @@ public class Casilla {
 
     //Método para cambiar el valor del alquiler de las casillas de tipo 'Solar'
     private void incrementarAlquiler() {
-        if (numCasas == 0 && !hotel) impuesto += impuesto;
+        if (numCasas > 0) impuesto = alquilerCasa * numCasas;
 
         else if (hotel) impuesto = alquilerHotel;
 
         else if (piscina) impuesto = alquilerHotel + alquilerPiscina;
 
         else if (pistaDeporte) impuesto = alquilerHotel + alquilerPiscina + alquilerPistaDeporte;
+    }
 
-        else if (numCasas > 0) impuesto = alquilerCasa * numCasas;
+    //Método para cambiar el valor del alquiler de las casillas de tipo 'Solar'
+    private void decrementarAlquiler() {
+        if (pistaDeporte) impuesto = alquilerHotel + alquilerPiscina;
+
+        else if (piscina) impuesto = alquilerHotel;
+
+        else if (!hotel) impuesto = alquilerCasa * numCasas;
+
+        else if (numCasas == 0) impuesto = impuestoInicial;
     }
 
     //Método para eliminar las casas de una casilla
@@ -692,6 +709,7 @@ public class Casilla {
             numCasas++;
             edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
         }
+        decrementarAlquiler();
         return venta;
     }
 
@@ -708,6 +726,7 @@ public class Casilla {
         edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
         edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
         numCasas = 4;
+        decrementarAlquiler();
         return venta;
     }
 
@@ -719,6 +738,7 @@ public class Casilla {
         edificios.removeIf(edificio -> edificio.getTipo().equals("piscina"));
         edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("piscina"));
         piscina = false;
+        decrementarAlquiler();
         return venta;
     }
 
@@ -730,6 +750,7 @@ public class Casilla {
         edificios.removeIf(edificio -> edificio.getTipo().equals("pista"));
         edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("pista"));
         piscina = false;
+        decrementarAlquiler();
         return venta;
     }
 
