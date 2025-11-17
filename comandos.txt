@@ -1,4 +1,4 @@
 crear jugador Manuel pelota
-crear jugador Fabio sombrero
-crear jugador Miguel esfinge
-crear jugador Fabrizio coche
+crear jugador Jaime sombrero
+crear jugador Isa esfinge
+crear jugador Claudia coche

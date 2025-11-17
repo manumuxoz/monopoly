@@ -475,6 +475,11 @@ public class Menu {
             return;
         }
 
+        if (!hipoteca.getTipo().equals("Transporte") || hipoteca.getTipo().equals("Servicios")) {
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() + ". Solo se pueden hipotecar propiedades de tipo 'Solar'");
+            return;
+        }
+
         if (hipoteca.getHipotecado()) { //Comprobamos que no esté hipotecada
             System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() + ". Ya está hipotecada.");
             return;
