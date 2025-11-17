@@ -449,22 +449,22 @@ public class Casilla {
     private void incrementarAlquiler() {
         if (numCasas > 0) impuesto = alquilerCasa * numCasas;
 
-        else if (hotel) impuesto = alquilerHotel;
+        if (hotel) impuesto = alquilerHotel;
 
-        else if (piscina) impuesto = alquilerHotel + alquilerPiscina;
+        if (piscina) impuesto = alquilerHotel + alquilerPiscina;
 
-        else if (pistaDeporte) impuesto = alquilerHotel + alquilerPiscina + alquilerPistaDeporte;
+        if (pistaDeporte) impuesto = alquilerHotel + alquilerPiscina + alquilerPistaDeporte;
     }
 
     //Método para cambiar el valor del alquiler de las casillas de tipo 'Solar'
     private void decrementarAlquiler() {
-        if (pistaDeporte) impuesto = alquilerHotel + alquilerPiscina;
+        if (!pistaDeporte) impuesto = alquilerHotel + alquilerPiscina;
 
-        else if (piscina) impuesto = alquilerHotel;
+        if (!piscina) impuesto = alquilerHotel;
 
-        else if (!hotel) impuesto = alquilerCasa * numCasas;
+        if (!hotel) impuesto = alquilerCasa * numCasas;
 
-        else if (numCasas == 0) impuesto = impuestoInicial;
+        if (numCasas == 0) impuesto = impuestoInicial;
     }
 
     //Método para eliminar las casas de una casilla
