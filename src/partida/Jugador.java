@@ -28,6 +28,7 @@ public class Jugador {
     private int vecesCarcel;
     private float patrimonio;
     private boolean enBancarrota;
+    private float deudaAPagar;
 
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
@@ -89,7 +90,7 @@ public class Jugador {
     public int getVecesCarcel(){return vecesCarcel;}
     public float getPatrimonio(){return patrimonio;}
     public boolean getEnBancarrota(){return enBancarrota;}
-
+    public float getDeudaAPagar() {return deudaAPagar;}
     //Setters:
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -108,6 +109,9 @@ public class Jugador {
     }
     public void setEnBancarrota(boolean enBancarrota) {
         this.enBancarrota = enBancarrota;
+    }
+    public void setDeudaAPagar(float deudaAPagar) {
+        this.deudaAPagar = deudaAPagar;
     }
 
     //Otros métodos:
@@ -173,12 +177,12 @@ public class Jugador {
     }
 
     //Método para saber si un jugador está en bancarrota
-    public boolean enBancarrota(float cobro, Jugador destinatario, ArrayList<Edificio> edificiosCreados) {
+    public boolean enBancarrota(float cobro, Jugador destinatario) {
         if (dineroVentas() + fortuna < cobro) {
             System.out.println(nombre + " está en bancarrota.");
             enBancarrota = true;
 
-            realizarBancarrota(destinatario, edificiosCreados); //Realizamos la bancarrota
+            realizarBancarrota(destinatario); //Realizamos la bancarrota
 
             return true;
         }
@@ -205,17 +209,16 @@ public class Jugador {
     }
 
     //Método para realizar la bancarrota (ceder propiedades):
-    private void realizarBancarrota(Jugador destinatario, ArrayList<Edificio> edificiosCreados) {
+    private void realizarBancarrota(Jugador destinatario) {
         if (!destinatario.getNombre().equals("Banca")) { //Si no es banca cedemos todos al destinatario
             for (Casilla casilla : propiedades)
                 casilla.setDuenho(destinatario); //Cambiamos dueño
         } else { //Si el destinatario es banca
             for (Casilla casilla : propiedades) {
                 casilla.setDuenho(destinatario);
-                if (casilla.getTipo().equals("Solar")) { //Si es solar eliminamos los edificios
-                    edificiosCreados.removeAll(casilla.getEdificios());
+                if (casilla.getTipo().equals("Solar")) //Si es solar eliminamos los edificios
                     casilla.getEdificios().clear();
-                }
+
             }
         }
     }

@@ -92,7 +92,8 @@ public class Acciones {
         Avatar avatarActual = jugadorActual.getAvatar();
 
         int posicionInicial = (int) avatarActual.getLugar().getPosicion();
-        Casilla transporteCercana = posiciones.get(posicionInicial/10).get(posicionInicial%10);
+        Casilla transporteCercana = avatarActual.getLugar();
+
         for (int i = posicionInicial + 1; transporteCercana.getTipo().equals("Transporte"); i = (i + 1)%40) {
             transporteCercana = posiciones.get(i / 10).get(i % 10);
             if (transporteCercana.getTipo().equals("Transporte"))

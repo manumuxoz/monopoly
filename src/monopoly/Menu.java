@@ -364,14 +364,17 @@ public class Menu {
         // USAR evaluarCasilla para TODAS las casillas
         boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
 
+        eliminarEdificiosBanca();
+
+        //Si puede pagar el alquiler realizamos el bucle de venta o impoteca hasta pagarlo
+        if (!solvente && !jugadorActual.getEnBancarrota())
+            ventaOHipoteca(jugadorActual.getDeudaAPagar());
+
+
         // Si evaluarCasilla retorna false (para IrCarcel), manejar el encarcelamiento
         if (!solvente && nuevaCasilla.getNombre().equals("IrCarcel")) {
             jugadorActual.encarcelar(tablero.getPosiciones());
             jugadorActual.sumarVecesCarcel(1);
-        }
-        // Si no es solvente por otras razones (falta de dinero)
-        else if (!solvente) {
-            System.out.println(jugadorActual.getNombre() + " debe hipotecar propiedades o declararse en bancarrota");
         }
 
         // Repintar tablero
@@ -705,7 +708,7 @@ public class Menu {
 
                     float cobro = 250000 * jugadores.size() - 1;
 
-                    if (jugadorActual.enBancarrota(cobro, banca, edificios)) return;
+                    if (jugadorActual.enBancarrota(cobro, banca)) return;
 
                     ventaOHipoteca(cobro);
 
@@ -714,7 +717,7 @@ public class Menu {
                 case 5:
                     System.out.println("Te multan por usar el móvil mientras conduces. Paga 150.000€.");
 
-                    if (jugadorActual.enBancarrota(150000, banca, edificios)) return;
+                    if (jugadorActual.enBancarrota(150000, banca)) return;
 
                     ventaOHipoteca(150000);
 
@@ -733,7 +736,7 @@ public class Menu {
                 case 0:
                     System.out.println("Paga 500.000€ por un fin de semana en un balneario de 5 estrellas.");
 
-                    if (jugadorActual.enBancarrota(50000, banca, edificios)) return;
+                    if (jugadorActual.enBancarrota(50000, banca)) return;
 
                     ventaOHipoteca(50000);
 
@@ -750,6 +753,12 @@ public class Menu {
             }
             countAccionesCaja = (countAccionesCaja + 1)%5;
         }
+        eliminarEdificiosBanca();
+    }
+
+    //Método para eliminar los edificios retirados a un jugador en bancarrota
+    private void eliminarEdificiosBanca() {
+        edificios.removeIf(edificio -> edificio.getDuenho().equals(banca));
     }
 
     private void ventaOHipoteca(float cobro) {
@@ -768,5 +777,7 @@ public class Menu {
             if (partes.length == 2 && partes[0].equals("hipotecar")) hipotecar(partes[1]);
             else if (partes.length == 4 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
         }
+
+        jugadorActual.setDeudaAPagar(0); //Reseteamos la deuda
     }
 }

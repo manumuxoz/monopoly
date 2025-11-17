@@ -217,29 +217,26 @@ public class Casilla {
             case "Solar":
                 sumarVecesEnCasilla(1);
                 if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
-                    float alquiler = impuesto;
-                    if (actual.getFortuna() >= alquiler) {
-                        actual.sumarGastos(alquiler);
-                        actual.sumarFortuna(-alquiler);
-                        actual.sumarPagoAlquileres(alquiler);
-                        sumarAlquilerAcumulado(alquiler);
+                    if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto) {
+                        actual.sumarGastos(impuesto);
+                        actual.sumarFortuna(-impuesto);
+                        actual.sumarPagoAlquileres(impuesto);
+                        sumarAlquilerAcumulado(impuesto);
                         Jugador propietario = duenho;
-                        propietario.sumarFortuna(alquiler);
-                        propietario.sumarCobroAlquileres(alquiler);
-                        System.out.println("Se han pagado " + alquiler + "€ de alquiler a " + propietario.getNombre() + ".");
+                        propietario.sumarFortuna(impuesto);
+                        propietario.sumarCobroAlquileres(impuesto);
+                        System.out.println("Se han pagado " + impuesto + "€ de alquiler a " + propietario.getNombre() + ".");
                         return true;
-                    } else {
-                        System.out.println(actual.getNombre() + " no tiene dinero suficiente para pagar el alquiler");
-                        return false;
-                    }
-                }
-                break;
+                    } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto)
+                        actual.setDeudaAPagar(impuesto);
 
+                    return false;
+                }
             case "Servicios":
                 sumarVecesEnCasilla(1);
                 if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
                     int valorImpuesto = tirada * 4 * 50000;
-                    if (actual.getFortuna() >= valorImpuesto) {
+                    if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto) {
                         actual.sumarGastos(valorImpuesto);
                         actual.sumarFortuna(-valorImpuesto);
                         actual.sumarPagoAlquileres(valorImpuesto);
@@ -249,18 +246,16 @@ public class Casilla {
                         propietario.sumarCobroAlquileres(valorImpuesto);
                         System.out.println("Se han pagado " + valorImpuesto + "€ de servicio a " + propietario.getNombre() + ".");
                         return true;
-                    } else {
-                        System.out.println(actual.getNombre() + " no tiene dinero suficiente para pagar el servicio");
-                        return false;
-                    }
-                }
-                break;
+                    } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto)
+                        actual.setDeudaAPagar(impuesto);
 
+                    return false;
+                }
             case "Transporte":
                 sumarVecesEnCasilla(1);
                 if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
                     int numCasillasTransporte = actual.contarCasillasTransporte();
-                    if (actual.getFortuna() >= impuesto * numCasillasTransporte) {
+                    if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto * numCasillasTransporte) {
                         actual.sumarGastos(impuesto * numCasillasTransporte);
                         actual.sumarFortuna(-impuesto * numCasillasTransporte);
                         actual.sumarPagoAlquileres(impuesto * numCasillasTransporte);
@@ -270,17 +265,13 @@ public class Casilla {
                         propietario.sumarCobroAlquileres(impuesto*numCasillasTransporte);
                         System.out.println("El jugador" + actual.getNombre() + " paga " +  (int)impuesto*numCasillasTransporte + "€ de transporte a " + propietario.getNombre() + ".");
                         return true;
-                    } else {
-                        System.out.println(actual.getNombre() + " no tiene dinero suficiente para pagar el transporte");
+                    } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto * numCasillasTransporte) actual.setDeudaAPagar(impuesto);
 
-                        return false;
-                    }
+                    return false;
                 }
-                break;
-
             case "Impuesto":
                 sumarVecesEnCasilla(1);
-                if (actual.getFortuna() >= impuesto) {
+                if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto) {
                     actual.sumarGastos(impuesto);
                     actual.sumarFortuna(-impuesto);
                     actual.sumarTasasImpuestos(impuesto);
@@ -288,11 +279,10 @@ public class Casilla {
                     // Añadir al bote del Parking
                     System.out.println("El jugador" + actual.getNombre() + " paga " + (int)impuesto + "€ que se depositan en el Parking.");
                     return true;
-                } else {
-                    System.out.println(actual.getNombre() + " no tiene dinero suficiente para pagar impuestos");
-                    return false;
-                }
+                } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto)
+                    actual.setDeudaAPagar(impuesto);
 
+                return false;
             case "Especiales":
                 sumarVecesEnCasilla(1);
                 if (this.nombre.equals("Parking")) {
@@ -308,7 +298,6 @@ public class Casilla {
                     return false;
                 }
                 // Para IrCarcel, no hacemos nada aquí porque se maneja en lanzarDados()
-                break;
         }
         return true;
     }
