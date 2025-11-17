@@ -59,7 +59,7 @@ public class Tablero {
         Casilla solar16 = new Casilla("Solar16", "Solar", 27, 2600000, banca, 220000, 1300000, 2450000, 11500000, 2300000, 2300000);
         casillasNorte.add(7, solar16);
         casillasNorte.add(8, new Casilla("Serv2", "Servicios", 28, 500000, banca, 50000, 0, 0, 0, 0, 0));
-        Casilla solar17 = new Casilla("Solar17", "Solar", 29, 2800000, banca, 240000, 14000000, 2600000, 12000000, 2400000, 2400000);
+        Casilla solar17 = new Casilla("Solar17", "Solar", 29, 2800000, banca, 240000, 1400000, 2600000, 12000000, 2400000, 2400000);
         casillasNorte.add(9, solar17);
 
         posiciones.add(2, casillasNorte); //Añadimos al arraylist de arraylist de casillas del tablero
@@ -76,7 +76,7 @@ public class Tablero {
         Casilla solar1 = new Casilla("Solar1", "Solar", 1, 600000, banca, 20000, 300000, 400000, 2500000, 500000, 500000);
         casillasSur.add(1, solar1);
         casillasSur.add(2, new Casilla("Caja", "Caja", 2, banca));
-        Casilla solar2 = new Casilla("Solar2", "Solar", 3, 600000, banca, 40000, 300000, 800000, 4500000, 900000, 90000);
+        Casilla solar2 = new Casilla("Solar2", "Solar", 3, 600000, banca, 40000, 300000, 800000, 4500000, 900000, 900000);
         casillasSur.add(3, solar2);
         casillasSur.add(4, new Casilla("Imp1", 4, 2000000, banca));
         casillasSur.add(5, new Casilla("Trans1", "Transporte", 5, 500000, banca, 250000, 0, 0, 0, 0, 0));
