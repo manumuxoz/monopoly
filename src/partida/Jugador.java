@@ -211,10 +211,14 @@ public class Jugador {
 
     //Método para realizar la bancarrota (ceder propiedades):
     private void realizarBancarrota(Jugador destinatario) {
-        if (!destinatario.getNombre().equals("Banca")) { //Si no es banca cedemos todos al destinatario
+        if (!destinatario.getNombre().equals("Banca")) {//Si no es banca cedemos todos al destinatario
+            destinatario.sumarFortuna(fortuna);
+            fortuna = 0;
             for (Casilla casilla : propiedades)
                 casilla.setDuenho(destinatario); //Cambiamos dueño
         } else { //Si el destinatario es banca
+            destinatario.sumarFortuna(fortuna);
+            fortuna = 0;
             for (Casilla casilla : propiedades) {
                 casilla.setDuenho(destinatario);
                 if (casilla.getTipo().equals("Solar")) //Si es solar eliminamos los edificios
