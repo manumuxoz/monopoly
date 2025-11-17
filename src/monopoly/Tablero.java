@@ -102,7 +102,7 @@ public class Tablero {
         Casilla solar6 = new Casilla("Solar6", "Solar", 11, 1400000, banca, 100000, 700000, 1500000, 7500000, 1500000, 1500000);
         casillasOeste.add(1, solar6);
         casillasOeste.add(2, new Casilla("Serv1", "Servicios", 12, 500000, banca, 50000, 0, 0, 0, 0, 0));
-        Casilla solar7 = new Casilla("Solar7", "Solar", 13, 1400000, banca, 100000, 700000, 1750000, 9000000, 1800000, 1800000);
+        Casilla solar7 = new Casilla("Solar7", "Solar", 13, 1400000, banca, 100000, 700000, 1500000, 7500000, 1500000, 1500000);
         casillasOeste.add(3, solar7);
         Casilla solar8 = new Casilla("Solar8", "Solar", 14, 1600000, banca, 120000, 800000, 1750000, 9000000, 1800000, 1800000);
         casillasOeste.add(4, solar8);

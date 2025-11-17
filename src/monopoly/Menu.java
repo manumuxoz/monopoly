@@ -171,7 +171,12 @@ public class Menu {
     private void lanzarDados(int tirada1, int tirada2) {
         Jugador jugadorActual = jugadores.get(turno);
 
-        if (jugadorActual.getEnBancarrota() || !puedeTirar()) return; //Si el jugador está en bancarrota o ya ha tirado, no puede tirar
+        if (jugadorActual.getEnBancarrota()) {
+            System.out.println(jugadorActual.getNombre() + " está en banccarrota. No puede realizar la tirada.");
+            return;
+        } //Si el jugador está en bancarrota o ya ha tirado, no puede tirar
+
+        if (!puedeTirar()) return;
 
         //Realizar tirada
         int valorTirada, dado1Valor, dado2Valor;
