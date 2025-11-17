@@ -210,7 +210,8 @@ public class Jugador {
     }
 
     //Método para realizar la bancarrota (ceder propiedades):
-    private void realizarBancarrota(Jugador destinatario) {
+    private void
+    realizarBancarrota(Jugador destinatario) {
         if (!destinatario.getNombre().equals("Banca")) {//Si no es banca cedemos todos al destinatario
             destinatario.sumarFortuna(fortuna);
             fortuna = 0;
