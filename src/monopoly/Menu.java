@@ -243,6 +243,8 @@ public class Menu {
             jugadorActual.setenCarcel(false);
             jugadorActual.sumarGastos(500000);
             jugadorActual.sumarFortuna(-500000);
+            jugadorActual.sumarTasasImpuestos(500000);
+            tablero.encontrar_casilla("Parking").sumarValor(500000);
             System.out.println(jugadorActual.getNombre() + " paga 500.000$ y sale de la carcel. Puede lanzar los dados.");
         }
     }
