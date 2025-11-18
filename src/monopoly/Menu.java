@@ -479,14 +479,7 @@ public class Menu {
     //Método para hipotecar una casilla
     public void hipotecar(String nombreCasilla) {
         Jugador jugadorActual = jugadores.get(turno);
-        Casilla hipoteca = null;
-
-        for (ArrayList<Casilla> lado : tablero.getPosiciones()) //Buscamos la casilla a hipotecar
-            for (Casilla casilla : lado)
-                if (casilla.getNombre().equals(nombreCasilla)) {
-                    hipoteca = casilla;
-                    break;
-                }
+        Casilla hipoteca = tablero.encontrar_casilla(nombreCasilla);
 
         if (hipoteca == null) { //Si no se ha asignado, es que no existe
             System.out.println("Error: No existe la casilla " + nombreCasilla + ".");
@@ -529,14 +522,7 @@ public class Menu {
     //Método para deshipotecar una casilla
     public void deshipotecar(String nombreCasilla) {
         Jugador jugadorActual = jugadores.get(turno);
-        Casilla hipoteca = null;
-
-        for (ArrayList<Casilla> lado : tablero.getPosiciones()) //Buscamos la casilla a hipotecar
-            for (Casilla casilla : lado)
-                if (casilla.getNombre().equals(nombreCasilla)) {
-                    hipoteca = casilla;
-                    break;
-                }
+        Casilla hipoteca = tablero.encontrar_casilla(nombreCasilla);
 
         if (hipoteca == null) { //Si no se ha asignado, es que no existe
             System.out.println("Error: No existe la casilla " + nombreCasilla + ".");
@@ -570,14 +556,7 @@ public class Menu {
     //Método para vender una casilla
     public void vender(String tipoEdificio, String nombreCasilla, int cantidad) {
         Jugador jugadorActual = jugadores.get(turno);
-        Casilla casilla = null;
-
-        for (ArrayList<Casilla> lado : tablero.getPosiciones())
-            for (Casilla propiedad : lado)
-                if (propiedad.getNombre().equals(nombreCasilla)) {
-                    casilla = propiedad;
-                    break; //Salimos del bucle para no recorrer casillas innecesarias
-                }
+        Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
 
         if (casilla == null) {
             System.out.println("Error: No existe la casilla " + nombreCasilla + ".");
