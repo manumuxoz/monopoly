@@ -322,7 +322,6 @@ public class Casilla {
             return;
         }
 
-
         if (!duenho.equals(banca) && !duenho.equals(solicitante)) {
             System.out.println("Esta casilla ya tiene dueño: " + duenho.getNombre() + ".");
             return;
