@@ -561,7 +561,7 @@ public class Menu {
 
         StringBuilder sb = new StringBuilder();
         if (hipoteca.getTipo().equals("Solar")) //Si es solar añadimos mensaje de aviso
-            sb.append(" Ahora puede recibir alquileres y edificar en el grupo ").append(hipoteca.color(hipoteca.getGrupo().getColorGrupo())).append(".");
+            sb.append(" Ahora puede recibir alquileres en ").append(hipoteca.getNombre()).append(".");
 
         System.out.println(jugadorActual.getNombre() + " paga " + hipoteca.getHipoteca() + "$ por deshipotecar " +
                 hipoteca.getNombre() + "." + sb);
