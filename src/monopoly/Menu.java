@@ -592,7 +592,7 @@ public class Menu {
                 float alquilerGrupoMaximo = 0;
                 Grupo grupoRentable = null;
                 for (String color : tablero.getGrupos().keySet()){
-                    for (Casilla casilla : tablero.getGrupos().get(color).getMiembros()){
+                    for (Casilla casilla : tablero.getGrupos().get(color).getMiembros()) {
                         alquilerGrupo += casilla.getAlquilerAcumulado();
                     }
                     if (alquilerGrupo > alquilerGrupoMaximo){
