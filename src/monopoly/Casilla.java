@@ -641,7 +641,7 @@ public class Casilla {
 
         if (!edificios.isEmpty()) {
             switch (tipoEdificio) {
-                case "casa":
+                case "casa": case "casas":
                     if (hotel) {
                         sb.append("No se pueden vender casas en ").append(nombre).append(". Antes hay que vender el hotel");
                         break;

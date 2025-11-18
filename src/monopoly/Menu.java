@@ -101,7 +101,7 @@ public class Menu {
 
         else if (partes[0].equals("ver") && partes[1].equals("tablero")) System.out.println(tablero.toString());
 
-        if (jugadores.size() > 1) { //Funcionalidades que requieren más de un jugador
+        else if (jugadores.size() > 1) { //Funcionalidades que requieren más de un jugador
             if (partes.length == 1 && partes[0].equals("jugador")) indicarTurnoJugador();
 
             else if (partes.length == 2 && partes[0].equals("acabar") && partes[1].equals("turno")) acabarTurno();
@@ -128,9 +128,8 @@ public class Menu {
             else if (partes.length == 2 && partes[0].equals("estadisticas")) mostrarEstadisticas(partes);
 
             else if (partes.length == 1 && partes[0].equals("estadisticas")) mostrarEstadisticasGlobales();
-        } else {
+        } else
             System.out.println("Error: comando '" + comando + "' incorrecto.");
-        }
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
@@ -565,7 +564,7 @@ public class Menu {
             return;
         }
 
-        if (!(tipoEdificio.equals("casa") || tipoEdificio.equals("hotel") || tipoEdificio.equals("piscina") || tipoEdificio.equals("pista"))) {
+        if (!(tipoEdificio.equals("casa") || tipoEdificio.equals("casas") || tipoEdificio.equals("hotel") || tipoEdificio.equals("piscina") || tipoEdificio.equals("pista"))) {
             System.out.println("Error: No existe el tipo de edificio '" + tipoEdificio + "'.");
             return;
         }
