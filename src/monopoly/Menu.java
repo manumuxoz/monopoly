@@ -291,24 +291,21 @@ public class Menu {
 
     //Método para imprimir las propiedades de un jugador dado
     public void imprimirPropiedades(Jugador jugador) {
+        String separador = "";
         for (Casilla propiedad : jugador.getPropiedades()) {
             if(!propiedad.getHipotecado()) {
-                if (!propiedad.equals(jugador.getPropiedades().getLast()))
-                    System.out.print(propiedad.getNombre() + ", ");
-                else
-                    System.out.print(propiedad.getNombre());
+                System.out.print(separador + propiedad.getNombre());
+                separador = ", ";
             }
         }
     }
 
     //Método para imprimir las hipotecas de un jugador dado
     public void imprimirHipotecas(Jugador jugador) {
+        String separador = "";
         for (Casilla propiedad : jugador.getHipotecas()) {
-            if (!propiedad.equals(jugador.getHipotecas().getLast()))
-                System.out.print(propiedad.getNombre() + ", ");
-            else
-                System.out.print(propiedad.getNombre());
-
+            System.out.print(separador + propiedad.getNombre());
+            separador = ", ";
         }
     }
 
