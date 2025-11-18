@@ -221,13 +221,13 @@ public class Menu {
     private void comprar(String nombre) {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casilla = tablero.encontrar_casilla(nombre);
+
         if (casilla == null) {
-            System.out.println("Error: La casilla " + nombre + " no existe.");
+            System.out.println("Error: La casilla '" + nombre + "' no existe.");
             return;
         }
-        for (Avatar av : casilla.getAvatares())
-            if (av.getJugador().getNombre().equals(jugadorActual.getNombre()))
-                casilla.comprarCasilla(jugadorActual, banca);
+
+        casilla.comprarCasilla(jugadorActual, banca);
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'. 
