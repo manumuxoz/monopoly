@@ -117,6 +117,7 @@ public class Acciones {
         // Mover avatar
         avatarActual.getLugar().eliminarAvatar(avatarActual);
         avatarActual.setLugar(Salida);
+        jugadorActual.sumarVueltas(1);
         Salida.anhadirAvatar(avatarActual);
         jugadorActual.sumarFortuna(2000000);
     }
