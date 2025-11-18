@@ -791,6 +791,8 @@ public class Menu {
             else if (partes.length == 4 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
         }
 
+        System.out.println(jugadorActual.getNombre() + " ha pagado la deuda: " + cobro + "$.");
+
         jugadorActual.setDeudaAPagar(0); //Reseteamos la deuda
     }
 }
