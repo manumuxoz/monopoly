@@ -87,7 +87,9 @@ public class Menu {
                 System.out.println("{\n\tnombre: " + nuevoJugador.getNombre() + ",\n\tavatar: " + nuevoJugador.getAvatar().getId() + "\n}");
             }
 
-        } else if (partes.length == 1 && partes[0].equals("comandos")) leerComandos();
+        }
+
+        else if (partes.length == 1 && partes[0].equals("comandos")) leerComandos();
 
         else if (partes.length == 2 && partes[0].equals("listar") && partes[1].equals("jugadores")) listarJugadores();
 
@@ -128,6 +130,9 @@ public class Menu {
             else if (partes.length == 2 && partes[0].equals("estadisticas")) mostrarEstadisticas(partes);
 
             else if (partes.length == 1 && partes[0].equals("estadisticas")) mostrarEstadisticasGlobales();
+
+            else
+                System.out.println("Error: comando '" + comando + "' incorrecto.");
         } else
             System.out.println("Error: comando '" + comando + "' incorrecto.");
     }
