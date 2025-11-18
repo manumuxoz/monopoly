@@ -3,6 +3,7 @@ package partida;
 import monopoly.*;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Avatar {
 
@@ -107,5 +108,12 @@ public class Avatar {
         } while (idCreados.contains(nuevoId)); //Damos mayúsculas hasta que no se encuentre el id
 
         id = nuevoId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Avatar avatar = (Avatar) o;
+        return Objects.equals(id, avatar.id);
     }
 }
