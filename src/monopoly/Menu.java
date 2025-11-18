@@ -128,6 +128,8 @@ public class Menu {
             else if (partes.length == 2 && partes[0].equals("estadisticas")) mostrarEstadisticas(partes);
 
             else if (partes.length == 1 && partes[0].equals("estadisticas")) mostrarEstadisticasGlobales();
+        } else {
+            System.out.println("Error: comando '" + comando + "' incorrecto.");
         }
     }
 
