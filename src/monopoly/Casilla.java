@@ -322,7 +322,7 @@ public class Casilla {
             return;
         }
 
-        if (tipo.equals("Especiales") || tipo.equals("Suerte") || !tipo.equals("Caja")) { //Comprobamos tipo
+        if (tipo.equals("Especiales") || tipo.equals("Suerte") || tipo.equals("Caja")) { //Comprobamos tipo
             System.out.println("Error: Esta casilla es de tipo '" + tipo + "'. Solo se pueden comprar casillas de tipo 'Solar', 'Transporte' o 'Servicios'.");
             return;
         }
