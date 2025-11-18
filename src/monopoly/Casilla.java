@@ -317,11 +317,17 @@ public class Casilla {
      * - Jugador que solicita la compra de la casilla.
      * - Banca del monopoly (es el dueño de las casillas no compradas aún).*/
     public void comprarCasilla(Jugador solicitante, Jugador banca) {
-        if (!duenho.equals(banca)){
-            System.out.println("Esta casilla ya tiene dueño: " + duenho.getNombre());
+        if (!duenho.equals(banca) && !duenho.equals(solicitante)) {
+            System.out.println("Esta casilla ya tiene dueño: " + duenho.getNombre() + ".");
             return;
         }
-        if (solicitante.getFortuna() >= valor && !tipo.equals("Especiales") && !tipo.equals("Suerte") && !tipo.equals("Caja")) {
+
+        if (tipo.equals("Especiales") || tipo.equals("Suerte") || tipo.equals("Caja")) { //Comprobamos tipo
+            System.out.println("Error: Esta casilla es de tipo '" + tipo + "'. Solo se pueden comprar casillas de tipo 'Solar', 'Transporte' o 'Servicios'.");
+            return;
+        }
+
+        if (solicitante.getFortuna() >= valor) { //Comprobamos fortuna
             solicitante.sumarGastos(valor);
             solicitante.sumarFortuna(-valor);
             banca.eliminarPropiedad(this);
@@ -330,8 +336,9 @@ public class Casilla {
             this.setDuenho(solicitante);
             solicitante.sumarPatrimonio(valor);
             System.out.println("El jugador " + solicitante.getNombre() + " compra la casilla " + nombre +
-                    " por " + valor + "$. Su fortuna actual es " + solicitante.getFortuna() + "$");
-        }
+                    " por " + valor + "$. Su fortuna actual es " + solicitante.getFortuna() + "$.");
+        } else
+            System.out.println(solicitante.getNombre() + " no dispone de suficiente fortuna para comprar " + nombre);
 
     }
 
