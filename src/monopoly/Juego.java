@@ -9,8 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Juego {
-
-    //Atributos
+    //Atributos:
     private ArrayList<Jugador> jugadores; //Jugadores de la partida.
     private ArrayList<Avatar> avatares; //Avatares en la partida.
     private int turno = 0; //Índice correspondiente a la posición en el arrayList del jugador (y el avatar) que tienen el turno
@@ -37,23 +36,13 @@ public class Juego {
         while (true) {
             Scanner sc = new Scanner(System.in);
             String comando = sc.nextLine();
+
             analizarComando(comando);
+
+            if (comando.equals("salir"))
+                break;
         }
     }
-
-    // Método para leer los comandos de un archivo
-    private void leerComandos() {
-        String ruta = System.getProperty("user.dir") + "/comandos.txt"; //Buscamos el directorio de trabajo y añadimos el archivo
-        try (BufferedReader br = (new BufferedReader(new FileReader(ruta)))) {
-            String comando;
-            while ((comando = br.readLine()) != null) { //Leemos cada línea y analizamos comando
-                analizarComando(comando);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     // Método para inciar una partida: crea los jugadores y avatares.
     private void iniciarPartida() {
         banca = new Jugador();
@@ -135,6 +124,20 @@ public class Juego {
                 System.out.println("Error: comando '" + comando + "' incorrecto.");
         } else
             System.out.println("Error: comando '" + comando + "' incorrecto.");
+    }
+
+    //Método para leer los comandos de un archivo
+    private void leerComandos() {
+        String ruta = System.getProperty("user.dir") + "/comandos.txt"; //Buscamos el directorio de trabajo y añadimos el archivo
+        try (BufferedReader br = (new BufferedReader(new FileReader(ruta)))) {
+            String comando;
+            while ((comando = br.readLine()) != null) { //Leemos cada línea y analizamos comando
+                System.out.println("Comando: " + comando);
+                analizarComando(comando);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
