@@ -21,30 +21,14 @@ public class Casilla {
     private Grupo grupo; //Grupo al que pertenece la casilla (si es solar).
     private float impuesto; //Cantidad a pagar por caer en la casilla: el alquiler en solares/servicios/transportes o impuestos.
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
-
-    //Atributos nuevos (Edificaciones):
-    private float valorCasa;
-    private float valorHotel;
-    private float valorPiscina;
-    private float valorPistaDeporte;
-    private float alquilerCasa;
-    private float alquilerHotel;
-    private float alquilerPiscina;
-    private float alquilerPistaDeporte;
-    private int numCasas = 0;
-    private boolean hotel;
-    private boolean piscina;
-    private boolean pistaDeporte;
-    private ArrayList<Edificio> edificios;
-    private boolean hipotecado;
-    private float alquilerAcumulado;
     private int vecesEnCasilla;
 
     //Constructores:
-    public Casilla() {
-    }//Parámetros vacíos
+    public Casilla() {}//Parámetros vacíos
 
-    //Propiedad
+    /*Constructur utilizado para inicializar las casillas de tipo PROPIEDAD.
+     * Parámetros: nombre, tipo, posicion, valor, duenho, alquiler
+     */
     public Casilla(String nombre, String tipo, int posicion, float valor, Jugador duenho, float alquiler) {
         this.nombre = nombre;
         this.tipo = tipo;
@@ -67,7 +51,7 @@ public class Casilla {
         avatares = new ArrayList<>();
     }
 
-    /*Constructor utilizado para crear las otras casillas (Suerte, Caja de comunidad y Especiales):
+    /*Constructor utilizado para crear ESPECIAL y ACCION:
      * Parámetros: nombre, tipo de la casilla (será uno de los que queda), posición en el tablero y dueño.
      */
     public Casilla(String nombre, String tipo, int posicion, Jugador duenho) {
@@ -115,9 +99,7 @@ public class Casilla {
     public void setGrupo(Grupo grupo) {
         this.grupo = grupo;
     }
-    public void setImpuesto(float impuesto) {
-        this.impuesto = impuesto;
-    }
+    public void setImpuesto(float impuesto) {this.impuesto = impuesto;}
     public void setAvatares(ArrayList<Avatar> avatares) {
         this.avatares = avatares;
     }
@@ -241,40 +223,6 @@ public class Casilla {
         return true;
     }
 
-    /*Método usado para comprar una casilla determinada. Parámetros:
-     * - Jugador que solicita la compra de la casilla.
-     * - Banca del monopoly (es el dueño de las casillas no compradas aún).*/
-    public void comprarCasilla(Jugador solicitante, Jugador banca) {
-        if (!avatares.contains(solicitante.getAvatar())) {
-            System.out.println("Error: El avatar " + solicitante.getAvatar().getId() + " no se encuentra en " + nombre + ".");
-            return;
-        }
-
-        if (!duenho.equals(banca) && !duenho.equals(solicitante)) {
-            System.out.println("Esta casilla ya tiene dueño: " + duenho.getNombre() + ".");
-            return;
-        }
-
-        if (tipo.equals("Especiales") || tipo.equals("Suerte") || tipo.equals("Caja")) { //Comprobamos tipo
-            System.out.println("Error: Esta casilla es de tipo '" + tipo + "'. Solo se pueden comprar casillas de tipo 'Solar', 'Transporte' o 'Servicios'.");
-            return;
-        }
-
-        if (solicitante.getFortuna() >= valor) { //Comprobamos fortuna
-            solicitante.sumarGastos(valor);
-            solicitante.sumarFortuna(-valor);
-            banca.eliminarPropiedad(this);
-            banca.sumarPremios(valor); //Recauda el dinero de la propiedad (Banca)
-            solicitante.anhadirPropiedad(this);
-            this.setDuenho(solicitante);
-            solicitante.sumarPatrimonio(valor);
-            System.out.println("El jugador " + solicitante.getNombre() + " compra la casilla " + nombre +
-                    " por " + valor + "$. Su fortuna actual es " + solicitante.getFortuna() + "$.");
-        } else
-            System.out.println(solicitante.getNombre() + " no dispone de suficiente fortuna para comprar " + nombre);
-
-    }
-
     /*Método para añadir valor a una casilla. Utilidad:
      * - Sumar valor a la casilla de parking.
      * - Sumar valor a las casillas de solar al no comprarlas tras cuatro vueltas de todos los jugadores.
@@ -345,28 +293,6 @@ public class Casilla {
         return "";
     }
 
-    /* Método para mostrar información de una casilla en venta.
-     * Valor devuelto: texto con esa información.
-     */
-    public String casEnVenta() {
-        // Solo mostrar si el dueño es la banca (está en venta)
-        if (duenho.getNombre().equals("Banca")) {
-            if (this.getTipo().equals("Solar"))
-                return "\n{" +
-                        "\n\tnombre: " + nombre +
-                        "\n\ttipo: " + tipo +
-                        ",\n\tgrupo: " + color(grupo.getColorGrupo()) +
-                        ",\n\tvalor: " + valor +
-                        "\n}";
-            if (this.getTipo().equals("Transporte") || this.getTipo().equals("Servicios"))
-                return "\n{" +
-                        "\n\tnombre: " + nombre +
-                        "\n\ttipo: " + tipo +
-                        ",\n\tvalor: " + valor +
-                        "\n}";
-        }
-        return "";
-    }
 
     //Métodos nueos:
 

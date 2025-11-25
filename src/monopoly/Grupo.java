@@ -3,7 +3,7 @@ package monopoly;
 import partida.*;
 import java.util.ArrayList;
 
-class Grupo {
+class Grupo extends Casilla {
 
     //Atributos
     private ArrayList<Casilla> miembros; //Casillas miembros del grupo.
