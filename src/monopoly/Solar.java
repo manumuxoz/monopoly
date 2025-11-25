@@ -28,6 +28,7 @@ public class Solar extends Propiedad {
     private boolean hipotecado;
     private float hipoteca; //Valor otorgado por hipotecar una casilla
     private float impuestoInicial;
+    private Grupo grupo;
 
     public Solar() {}
 
@@ -103,43 +104,28 @@ public class Solar extends Propiedad {
     public void setHipotecado(boolean hipotecado) {
         this.hipotecado = hipotecado;
     }
-    public void sumarAlquilerAcumulado(float valor){alquilerAcumulado+=valor;}
-    public void sumarVecesEnCasilla(int valor){vecesEnCasilla+=valor;}
+
 
     //Método para cambiar el valor del alquiler de las casillas de tipo 'Solar'
     private void incrementarAlquiler() {
-        if (numCasas > 0) impuesto = alquilerCasa * numCasas;
+        if (numCasas > 0) setImpuesto(alquilerCasa * numCasas);
 
-        if (hotel) impuesto = alquilerHotel;
+        if (hotel) setImpuesto(alquilerHotel);
 
-        if (piscina) impuesto = alquilerHotel + alquilerPiscina;
+        if (piscina) setImpuesto(alquilerHotel + alquilerPiscina);
 
-        if (pistaDeporte) impuesto = alquilerHotel + alquilerPiscina + alquilerPistaDeporte;
+        if (pistaDeporte) setImpuesto(alquilerHotel + alquilerPiscina + alquilerPistaDeporte);
     }
 
     //Método para cambiar el valor del alquiler de las casillas de tipo 'Solar'
     private void decrementarAlquiler() {
-        if (!pistaDeporte) impuesto = alquilerHotel + alquilerPiscina;
+        if (!pistaDeporte) setImpuesto(alquilerHotel + alquilerPiscina);
 
-        if (!piscina) impuesto = alquilerHotel;
+        if (!piscina) setImpuesto(alquilerHotel);
 
-        if (!hotel) impuesto = alquilerCasa * numCasas;
+        if (!hotel) setImpuesto(alquilerCasa * numCasas);
 
-        if (numCasas == 0) impuesto = impuestoInicial;
-    }
-    //Método que devuelve el nombre del color de un grupo pasado por argumento
-    public String color(String colorGrupo) {
-        return switch (colorGrupo) {
-            case BLACK -> "Negro";
-            case CYAN -> "Cian";
-            case PURPLE -> "Morado";
-            case WHITE -> "Blanco";
-            case RED -> "Rojo";
-            case YELLOW -> "Amarillo";
-            case GREEN -> "Verde";
-            case BLUE -> "Azul";
-            default -> "";
-        };
+        if (numCasas == 0) setImpuesto(impuestoInicial);
     }
 
 
@@ -152,8 +138,8 @@ public class Solar extends Propiedad {
     }
     //Método para edificar una casa
     public void edificarCasa(Jugador solicitante, ArrayList<Edificio> edificiosCreados) {
-        if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
-            System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
+        if (!getDuenho().equals(solicitante)) { //Comprobamos que sea el dueño
+            System.out.println("Esta casilla pertenece a " + getDuenho().getNombre() + ".");
             return;
         }
         if (!grupo.esDuenhoGrupo(solicitante)){ //Para comprar tiene que ser dueño de todas las propiedades del grupo
@@ -176,14 +162,14 @@ public class Solar extends Propiedad {
         solicitante.sumarPatrimonio(valorCasa);
         incrementarAlquiler(); //Incrementamos alquiler
 
-        System.out.println("Se ha edificado una casa en " + nombre + ". La fortuna de " + solicitante.getNombre() +
+        System.out.println("Se ha edificado una casa en " + getNombre() + ". La fortuna de " + solicitante.getNombre() +
                 " se reduce en " + valorCasa + "$.");
     }
 
     //Método para edificar un hotel
     public void edificarHotel(Jugador solicitante, ArrayList<Edificio> edificiosCreados) {
-        if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
-            System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
+        if (!getDuenho().equals(solicitante)) { //Comprobamos que sea el dueño
+            System.out.println("Esta casilla pertenece a " + getDuenho().getNombre() + ".");
             return;
         }
         if (!grupo.esDuenhoGrupo(solicitante)){ //Para comprar tiene que ser dueño de todas las propiedades del grupo
@@ -207,14 +193,14 @@ public class Solar extends Propiedad {
         solicitante.sumarPatrimonio(valorHotel);
         incrementarAlquiler(); //Incrementamos alquiler
 
-        System.out.println("Se ha edificado un hotel en " + nombre + ". La fortuna de " + solicitante.getNombre() +
+        System.out.println("Se ha edificado un hotel en " + getNombre() + ". La fortuna de " + solicitante.getNombre() +
                 " se reduce en " + valorHotel + "$.");
     }
 
     //Método para edificar una piscina
     public void edificarPiscina(Jugador solicitante, ArrayList<Edificio> edificiosCreados) {
-        if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
-            System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
+        if (!getDuenho().equals(solicitante)) { //Comprobamos que sea el dueño
+            System.out.println("Esta casilla pertenece a " + getDuenho().getNombre() + ".");
             return;
         }
         if (!grupo.esDuenhoGrupo(solicitante)){ //Para comprar tiene que ser dueño de todas las propiedades del grupo
@@ -237,14 +223,14 @@ public class Solar extends Propiedad {
         solicitante.sumarPatrimonio(valorPiscina);
         incrementarAlquiler(); //Incrementamos alquiler
 
-        System.out.println("Se ha edificado una piscina en " + nombre + ". La fortuna de " + solicitante.getNombre() +
+        System.out.println("Se ha edificado una piscina en " + getNombre() + ". La fortuna de " + solicitante.getNombre() +
                 " se reduce en " + valorPiscina + "$.");
     }
 
     //Método para edificar una pista de deporte
     public void edificarPista(Jugador solicitante, ArrayList<Edificio> edificiosCreados) {
-        if (!duenho.equals(solicitante)) { //Comprobamos que sea el dueño
-            System.out.println("Esta casilla pertenece a " + duenho.getNombre() + ".");
+        if (!getDuenho().equals(solicitante)) { //Comprobamos que sea el dueño
+            System.out.println("Esta casilla pertenece a " + getDuenho().getNombre() + ".");
             return;
         }
         if (!grupo.esDuenhoGrupo(solicitante)){ //Para comprar tiene que ser dueño de todas las propiedades del grupo
@@ -267,15 +253,15 @@ public class Solar extends Propiedad {
         solicitante.sumarPatrimonio(valorPistaDeporte);
         incrementarAlquiler(); //Incrementamos alquiler
 
-        System.out.println("Se ha edificado una pista de deporte en " + nombre + ". La fortuna de " + solicitante.getNombre() +
+        System.out.println("Se ha edificado una pista de deporte en " + getNombre() + ". La fortuna de " + solicitante.getNombre() +
                 " se reduce en " + valorPistaDeporte + "$.");
     }
 
     //Método que devuelve información sobre los edificios construidos en una casilla
     public String infoEdificios() {
-        return "{\n\tpropiedad: " + nombre +
+        return "{\n\tpropiedad: " + getNombre() +
                 ",\n\t" + imprimirEdificios() +
-                ",\n\talquiler: " + impuesto +
+                ",\n\talquiler: " + getImpuesto() +
                 "\n}";
     }
 
@@ -307,14 +293,14 @@ public class Solar extends Propiedad {
             switch (tipoEdificio) {
                 case "casa": case "casas":
                     if (hotel) {
-                        sb.append("No se pueden vender casas en ").append(nombre).append(". Antes hay que vender el hotel");
+                        sb.append("No se pueden vender casas en ").append(getNombre()).append(". Antes hay que vender el hotel");
                         break;
                     }
                     if (cantidad > numCasas) {
                         sb.append("Solamente se pueden vender " + numCasas + " casas");
                         cantidad = numCasas;
                     } else
-                        sb.append(duenho.getNombre()).append(" ha vendido ").append(cantidad).append(" casas en ").append(nombre);
+                        sb.append(getDuenho().getNombre()).append(" ha vendido ").append(cantidad).append(" casas en ").append(getNombre());
 
                     venta = venderCasas(cantidad, edificiosCreados);
 
@@ -322,47 +308,47 @@ public class Solar extends Propiedad {
 
                 case "hotel":
                     if (!hotel) {
-                        sb.append(nombre).append(" no tiene ningún hotel construido");
+                        sb.append(getNombre()).append(" no tiene ningún hotel construido");
                         break;
                     }
                     if (piscina) {
-                        sb.append("No se puede vender el hotel en ").append(nombre).append(". Antes hay que vender la piscina");
+                        sb.append("No se puede vender el hotel en ").append(getNombre()).append(". Antes hay que vender la piscina");
                         break;
                     }
                     if (cantidad > 1)
                         sb.append("Solamente se puede vender 1 hotel");
                     else
-                        sb.append(duenho.getNombre()).append(" ha vendido 1 hotel en ").append(nombre);
+                        sb.append(getDuenho().getNombre()).append(" ha vendido 1 hotel en ").append(getNombre());
 
                     venta = venderHotel(edificiosCreados);
                     break;
 
                 case "piscina":
                     if (!piscina) {
-                        sb.append(nombre).append(" no tiene ninguna piscina construida");
+                        sb.append(getNombre()).append(" no tiene ninguna piscina construida");
                         break;
                     }
                     if (pistaDeporte) {
-                        sb.append("No se puede vender la piscina en ").append(nombre).append(". Antes hay que vender la pista de deporte");
+                        sb.append("No se puede vender la piscina en ").append(getNombre()).append(". Antes hay que vender la pista de deporte");
                         break;
                     }
                     if (cantidad > 1)
                         sb.append("Solamente se puede vender 1 piscina");
                     else
-                        sb.append(duenho.getNombre()).append(" ha vendido 1 piscina en ").append(nombre);
+                        sb.append(getDuenho().getNombre()).append(" ha vendido 1 piscina en ").append(getNombre());
 
                     venta = venderPiscina(edificiosCreados);
                     break;
 
                 case "pista":
                     if (!pistaDeporte) {
-                        sb.append(nombre).append(" no tiene ninguna pista de deporte construida");
+                        sb.append(getNombre()).append(" no tiene ninguna pista de deporte construida");
                         break;
                     }
                     if (cantidad > 1)
                         sb.append("Solamente se puede vender 1 pita de deporte");
                     else
-                        sb.append(duenho.getNombre()).append(" ha vendido 1 pista de deporte en ").append(nombre);
+                        sb.append(getDuenho().getNombre()).append(" ha vendido 1 pista de deporte en ").append(getNombre());
 
                     venta = venderPista(edificiosCreados);
                     break;
@@ -371,19 +357,19 @@ public class Solar extends Propiedad {
             }
             System.out.println(sb + ", recibiendo " + venta + "$. En la propiedad quedan " + imprimirEdificiosRestantes() + ".");
         } else
-            System.out.println("No hay edificios para vender en " + nombre + ".");
+            System.out.println("No hay edificios para vender en " + getNombre() + ".");
     }
 
     //Método para vender casas
     private float venderCasas(int cantidad, ArrayList<Edificio> edificiosCreados) {
         int numCasasInicial = numCasas;
         float venta = cantidad * valorCasa;
-        duenho.sumarFortuna(venta);
+        getDuenho().sumarFortuna(venta);
         eliminarCasas(edificiosCreados);
-        duenho.sumarPatrimonio(-(cantidad * valorCasa));
+        getDuenho().sumarPatrimonio(-(cantidad * valorCasa));
         for (int i = 0; i < (numCasasInicial - cantidad); i++) {
             numCasas++;
-            edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
+            edificios.add(new Edificio(getDuenho(), this, "casa", edificiosCreados));
         }
         decrementarAlquiler();
         return venta;
@@ -392,15 +378,15 @@ public class Solar extends Propiedad {
     //Método para vender hoteles
     private float venderHotel(ArrayList<Edificio> edificiosCreados) {
         float venta = valorHotel;
-        duenho.sumarFortuna(venta);
-        duenho.sumarPatrimonio(-valorHotel);
+        getDuenho().sumarFortuna(venta);
+        getDuenho().sumarPatrimonio(-valorHotel);
         edificios.removeIf(edificio -> edificio.getTipo().equals("hotel"));
         edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("hotel"));
         hotel = false;
-        edificios.add(new Edificio(duenho, this, "casa", edificiosCreados)); //Volvemos a edificar las 4 casas
-        edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
-        edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
-        edificios.add(new Edificio(duenho, this, "casa", edificiosCreados));
+        edificios.add(new Edificio(getDuenho(), this, "casa", edificiosCreados)); //Volvemos a edificar las 4 casas
+        edificios.add(new Edificio(getDuenho(), this, "casa", edificiosCreados));
+        edificios.add(new Edificio(getDuenho(), this, "casa", edificiosCreados));
+        edificios.add(new Edificio(getDuenho(), this, "casa", edificiosCreados));
         numCasas = 4;
         decrementarAlquiler();
         return venta;
@@ -409,8 +395,8 @@ public class Solar extends Propiedad {
     //Método para vender piscinas
     private float venderPiscina(ArrayList<Edificio> edificiosCreados) {
         float venta = valorPiscina;
-        duenho.sumarFortuna(venta);
-        duenho.sumarPatrimonio(-valorPiscina);
+        getDuenho().sumarFortuna(venta);
+        getDuenho().sumarPatrimonio(-valorPiscina);
         edificios.removeIf(edificio -> edificio.getTipo().equals("piscina"));
         edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("piscina"));
         piscina = false;
@@ -421,8 +407,8 @@ public class Solar extends Propiedad {
     //Método para vender pistas
     private float venderPista(ArrayList<Edificio> edificiosCreados) {
         float venta = valorPistaDeporte;
-        duenho.sumarFortuna(venta);
-        duenho.sumarPatrimonio(-valorPistaDeporte);
+        getDuenho().sumarFortuna(venta);
+        getDuenho().sumarPatrimonio(-valorPistaDeporte);
         edificios.removeIf(edificio -> edificio.getTipo().equals("pista"));
         edificiosCreados.removeIf(edificio -> edificio.getCasilla().equals(this) && edificio.getTipo().equals("pista"));
         piscina = false;
@@ -439,5 +425,7 @@ public class Solar extends Propiedad {
         if (pistaDeporte) sb.append(", 1 pista de deporte");
         return sb.toString();
     }
+
+    public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada);
 
 }

@@ -11,4 +11,6 @@ public class Especial extends Casilla{
     public Especial(String nombre, int posicion, Jugador duenho) {
         super(nombre, "Especiales", posicion, duenho);
     }
+
+    public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada);
 }

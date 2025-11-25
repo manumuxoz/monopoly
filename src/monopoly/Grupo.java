@@ -6,7 +6,7 @@ import java.util.ArrayList;
 class Grupo extends Casilla {
 
     //Atributos
-    private ArrayList<Casilla> miembros; //Casillas miembros del grupo.
+    private ArrayList<Solar> miembros; //Casillas miembros del grupo.
     private String colorGrupo; //Color del grupo
     private int numCasillas; //Número de casillas del grupo.
 
@@ -17,7 +17,7 @@ class Grupo extends Casilla {
     /*Constructor para cuando el grupo está formado por DOS CASILLAS:
     * Requiere como parámetros las dos casillas miembro y el color del grupo.
      */
-    public Grupo(Casilla cas1, Casilla cas2, String colorGrupo) {
+    public Grupo(Solar cas1, Solar cas2, String colorGrupo) {
         miembros = new ArrayList<>();
         cas1.setGrupo(this);
         anhadirCasilla(cas1);
@@ -29,7 +29,7 @@ class Grupo extends Casilla {
     /*Constructor para cuando el grupo está formado por TRES CASILLAS:
     * Requiere como parámetros las tres casillas miembro y el color del grupo.
      */
-    public Grupo(Casilla cas1, Casilla cas2, Casilla cas3, String colorGrupo) {
+    public Grupo(Solar cas1, Solar cas2, Solar cas3, String colorGrupo) {
             miembros = new ArrayList<>();
             cas1.setGrupo(this);
             anhadirCasilla(cas1);
@@ -41,7 +41,7 @@ class Grupo extends Casilla {
     }
 
     //Getters:
-    public ArrayList<Casilla> getMiembros() {
+    public ArrayList<Solar> getMiembros() {
         return miembros;
     }
     public String getColorGrupo() {
@@ -51,8 +51,9 @@ class Grupo extends Casilla {
     /* Método que añade una casilla al array de casillas miembro de un grupo.
     * Parámetro: casilla que se quiere añadir.
      */
-    public void anhadirCasilla(Casilla miembro) {
+    public void anhadirCasilla(Solar miembro) {
         if(!miembros.contains(miembro) && numCasillas < 3) {
+            miembro.setGrupo(this);
             miembros.add(miembro);
             numCasillas += 1;
         }

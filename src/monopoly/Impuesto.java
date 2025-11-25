@@ -10,4 +10,6 @@ public class Impuesto extends Casilla{
     public Impuesto(String nombre, int posicion, float impuesto, Jugador duenho) {
         super(nombre, posicion, impuesto, duenho);
     }
+
+    public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada);
 }

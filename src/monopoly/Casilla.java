@@ -293,9 +293,7 @@ public class Casilla {
         return "";
     }
 
-
-    //Métodos nueos:
-
+    public void sumarVecesEnCasilla(int valor){vecesEnCasilla+=valor;}
 
     @Override //Sobreescritura del método equals
     public boolean equals(Object o) {

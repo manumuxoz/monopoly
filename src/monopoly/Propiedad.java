@@ -4,6 +4,13 @@ import partida.Jugador;
 
 import java.util.ArrayList;
 
+import static monopoly.Valor.*;
+import static monopoly.Valor.BLUE;
+import static monopoly.Valor.GREEN;
+import static monopoly.Valor.RED;
+import static monopoly.Valor.WHITE;
+import static monopoly.Valor.YELLOW;
+
 public class Propiedad extends Casilla {
     private float alquilerAcumulado;
 
@@ -11,6 +18,24 @@ public class Propiedad extends Casilla {
 
     public Propiedad(String nombre, String tipo, int posicion, float valor, Jugador duenho, float alquiler) {
         super(nombre, tipo, posicion, valor, duenho, alquiler);
+    }
+
+    public void sumarAlquilerAcumulado(float valor){alquilerAcumulado+=valor;}
+
+
+    //Método que devuelve el nombre del color de un grupo pasado por argumento
+    public String color(String colorGrupo) {
+        return switch (colorGrupo) {
+            case BLACK -> "Negro";
+            case CYAN -> "Cian";
+            case PURPLE -> "Morado";
+            case WHITE -> "Blanco";
+            case RED -> "Rojo";
+            case YELLOW -> "Amarillo";
+            case GREEN -> "Verde";
+            case BLUE -> "Azul";
+            default -> "";
+        };
     }
 
     /*Método usado para comprar una casilla determinada. Parámetros:
@@ -57,14 +82,14 @@ public class Propiedad extends Casilla {
                 return "\n{" +
                         "\n\tnombre: " + getNombre() +
                         "\n\ttipo: " + getTipo() +
-                        ",\n\tgrupo: " + color(grupo.getColorGrupo()) +
-                        ",\n\tvalor: " + valor +
+                        ",\n\tgrupo: " + color(getGrupo().getColorGrupo()) +
+                        ",\n\tvalor: " + getValor() +
                         "\n}";
             if (this.getTipo().equals("Transporte") || this.getTipo().equals("Servicios"))
                 return "\n{" +
-                        "\n\tnombre: " + nombre +
-                        "\n\ttipo: " + tipo +
-                        ",\n\tvalor: " + valor +
+                        "\n\tnombre: " + getNombre() +
+                        "\n\ttipo: " + getTipo() +
+                        ",\n\tvalor: " + getValor() +
                         "\n}";
         }
         return "";
