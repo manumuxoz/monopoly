@@ -8,7 +8,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Menu {
+public class Juego {
 
     //Atributos
     private ArrayList<Jugador> jugadores; //Jugadores de la partida.
@@ -26,7 +26,7 @@ public class Menu {
     private int countAccionesCaja; //Método para contar las cartas de caja de comunidad
 
     // Constructor
-    public Menu() {
+    public Juego() {
         iniciarPartida();
         lanzamientos = 0;
         tablero = new Tablero(banca);
