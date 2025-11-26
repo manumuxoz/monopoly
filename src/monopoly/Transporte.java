@@ -43,4 +43,13 @@ public class Transporte extends Propiedad {
                 ",\n\talquiler: " + getImpuesto() +
                 "\n}";
     }
+
+    @Override
+    public String casEnVenta(){
+        return "\n{" +
+                "\n\tnombre: " + getNombre() +
+                "\n\ttipo: " + getTipo() +
+                ",\n\tvalor: " + getValor() +
+                "\n}";
+    }
 }
