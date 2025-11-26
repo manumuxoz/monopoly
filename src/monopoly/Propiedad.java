@@ -22,23 +22,6 @@ public abstract class Propiedad extends Casilla {
 
     public void sumarAlquilerAcumulado(float valor){alquilerAcumulado+=valor;}
 
-
-
-    //Método que devuelve el nombre del color de un grupo pasado por argumento
-    public String color(String colorGrupo) {
-        return switch (colorGrupo) {
-            case BLACK -> "Negro";
-            case CYAN -> "Cian";
-            case PURPLE -> "Morado";
-            case WHITE -> "Blanco";
-            case RED -> "Rojo";
-            case YELLOW -> "Amarillo";
-            case GREEN -> "Verde";
-            case BLUE -> "Azul";
-            default -> "";
-        };
-    }
-
     /*Método usado para comprar una casilla determinada. Parámetros:
      * - Jugador que solicita la compra de la casilla.
      * - Banca del monopoly (es el dueño de las casillas no compradas aún).*/
