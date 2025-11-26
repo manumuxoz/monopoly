@@ -34,4 +34,13 @@ public class Transporte extends Propiedad {
 
         return false;
     }
+
+    @Override
+    public String infoCasilla() {
+        return "{" +
+                "\n\ttipo: " + getTipo() +
+                ",\n\tvalor: " + getValor() +
+                ",\n\talquiler: " + getImpuesto() +
+                "\n}";
+    }
 }

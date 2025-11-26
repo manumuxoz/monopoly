@@ -139,42 +139,7 @@ public abstract class Casilla {
 
     /*Método para mostrar información sobre una casilla.
      * Devuelve una cadena con información específica de cada tipo de casilla.*/
-    public String infoCasilla() {
-        switch (tipo) {
-            case "Solar":
-                return "{" +
-                        "\n\ttipo: " + tipo +
-                        ",\n\tgrupo: " + color(grupo.getColorGrupo()) +
-                        ",\n\tpropietario: " + duenho.getNombre() +
-                        ",\n\tvalor: " + valor +
-                        ",\n\talquiler: " + impuesto +
-                        ",\n\tvalor hotel: " + valorHotel +
-                        ",\n\tvalor casa: " + valorCasa +
-                        ",\n\tvalor piscina: " + valorPiscina +
-                        ",\n\tvalor pista de deporte: " + valorPistaDeporte +
-                        ",\n\talquiler casa: " + alquilerCasa +
-                        ",\n\talquiler hotel: " + alquilerHotel +
-                        ",\n\talquiler piscina: " + alquilerPiscina +
-                        ",\n\talquiler pista de deporte: " + alquilerPistaDeporte +
-                        "\n}";
-            case "Transporte":
-            case "Servicios":
-                return "{" +
-                        "\n\ttipo: " + tipo +
-                        ",\n\tvalor: " + valor +
-                        ",\n\talquiler: " + impuesto +
-                        "\n}";
-            case "Impuesto":
-                return "{" +
-                        "\n\ttipo: " + tipo +
-                        ",\n\tapagar: " + impuesto +
-                        "\n}";
-            case "Especiales": return imprimirEspeciales(nombre);
-            default: return "";
-        }
-    }
-
-
+    public abstract String infoCasilla();
 
     public void sumarVecesEnCasilla(int valor){vecesEnCasilla+=valor;}
 

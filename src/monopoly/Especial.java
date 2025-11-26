@@ -5,7 +5,7 @@ import partida.Jugador;
 
 import java.util.ArrayList;
 
-public class Especial extends Casilla{
+public abstract class Especial extends Casilla{
     public Especial() {
     }
 
@@ -14,17 +14,17 @@ public class Especial extends Casilla{
     }
 
     //Método que devuelve la descripción de las casillas 'Especiales'
-    public String imprimirEspeciales(String nombre) {
+    public String imprimirEspeciales(String nombre) { //Ajustar porque PArking es hija de ACCION
         StringBuilder sb = new StringBuilder().append("[");
         String separador = "";
         if  (nombre.equals("Parking")) {
-            for (Avatar avatar : avatares) {
+            for (Avatar avatar : getAvatares()) {
                 sb.append(separador).append(avatar.getJugador().getNombre());
                 separador = ", ";
             }
-            return "{\n\tbote: " + impuesto + "\n\tjugadores: " +  sb + "]\n}";
+            return "{\n\tbote: " + getImpuesto() + "\n\tjugadores: " +  sb + "]\n}";
         } else if (nombre.equals("Carcel")) {
-            for (Avatar av : avatares) {
+            for (Avatar av : getAvatares()) {
                 if (av.getJugador().getEnCarcel()) {
                     sb.append(separador).append(av.getJugador().getNombre()).append(", ").append(av.getJugador().getTiradasCarcel());
                     separador = "], [";
@@ -33,5 +33,10 @@ public class Especial extends Casilla{
             return "{\n\tsalir: 500000,\n\tjugadores: " +  sb + "]\n}";
         }
         return "";
+    }
+
+    @Override
+    public String infoCasilla() {
+        return imprimirEspeciales(getNombre());
     }
 }

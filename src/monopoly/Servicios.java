@@ -35,4 +35,21 @@ public class Servicios extends Propiedad {
         return false;
     }
 
+    @Override
+    public String infoCasilla() {
+        return "{" +
+                "\n\ttipo: " + getTipo() +
+                ",\n\tvalor: " + getValor() +
+                ",\n\talquiler: " + getImpuesto() +
+                "\n}";
+    }
+
+    @Override
+    public String casEnVenta(){
+        return "\n{" +
+                "\n\tnombre: " + getNombre() +
+                "\n\ttipo: " + getTipo() +
+                ",\n\tvalor: " + getValor() +
+                "\n}";
+    }
 }

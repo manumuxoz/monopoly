@@ -16,7 +16,7 @@ public class Impuesto extends Casilla{
         float impuesto = getImpuesto();
 
         sumarVecesEnCasilla(1);
-        if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto) {
+        if (!actual.enBancarrota(impuesto, getDuenho()) && actual.getFortuna() >= impuesto) {
             actual.sumarGastos(impuesto);
             actual.sumarFortuna(-impuesto);
             actual.sumarTasasImpuestos(impuesto);
@@ -28,5 +28,13 @@ public class Impuesto extends Casilla{
             actual.setDeudaAPagar(impuesto);
 
         return false;
+    }
+
+    @Override
+    public String infoCasilla() {
+        return "{" +
+                "\n\ttipo: " + getTipo() +
+                ",\n\tapagar: " + getImpuesto() +
+                "\n}";
     }
 }

@@ -59,23 +59,5 @@ public abstract class Propiedad extends Casilla {
     /* Método para mostrar información de una casilla en venta.
      * Valor devuelto: texto con esa información.
      */
-    public String casEnVenta() {
-        // Solo mostrar si el dueño es la banca (está en venta)
-        if (getDuenho().getNombre().equals("Banca")) {
-            if (this.getTipo().equals("Solar"))
-                return "\n{" +
-                        "\n\tnombre: " + getNombre() +
-                        "\n\ttipo: " + getTipo() +
-                        ",\n\tgrupo: " + color(getGrupo().getColorGrupo()) +
-                        ",\n\tvalor: " + getValor() +
-                        "\n}";
-            if (this.getTipo().equals("Transporte") || this.getTipo().equals("Servicios"))
-                return "\n{" +
-                        "\n\tnombre: " + getNombre() +
-                        "\n\ttipo: " + getTipo() +
-                        ",\n\tvalor: " + getValor() +
-                        "\n}";
-        }
-        return "";
-    }
+    public abstract String casEnVenta();
 }

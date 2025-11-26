@@ -427,8 +427,8 @@ public class Solar extends Propiedad {
     }
 
     //Método que devuelve el nombre del color de un grupo pasado por argumento
-    public String color(String colorGrupo) {
-        return switch (colorGrupo) {
+    public String color() {
+        return switch (grupo.getColorGrupo()) {
             case BLACK -> "Negro";
             case CYAN -> "Cian";
             case PURPLE -> "Morado";
@@ -466,5 +466,34 @@ public class Solar extends Propiedad {
                 actual.setDeudaAPagar(alquiler);
         }
         return false;
+    }
+
+    @Override
+    public String infoCasilla() {
+        return "{" +
+                "\n\ttipo: " + getTipo() +
+                ",\n\tgrupo: " + color() +
+                ",\n\tpropietario: " + getDuenho().getNombre() +
+                ",\n\tvalor: " + getValor() +
+                ",\n\talquiler: " + getImpuesto() +
+                ",\n\tvalor hotel: " + valorHotel +
+                ",\n\tvalor casa: " + valorCasa +
+                ",\n\tvalor piscina: " + valorPiscina +
+                ",\n\tvalor pista de deporte: " + valorPistaDeporte +
+                ",\n\talquiler casa: " + alquilerCasa +
+                ",\n\talquiler hotel: " + alquilerHotel +
+                ",\n\talquiler piscina: " + alquilerPiscina +
+                ",\n\talquiler pista de deporte: " + alquilerPistaDeporte +
+                "\n}";
+    }
+
+    @Override
+    public String casEnVenta(){
+        return "\n{" +
+                "\n\tnombre: " + getNombre() +
+                "\n\ttipo: " + getTipo() +
+                ",\n\tgrupo: " + color() +
+                ",\n\tvalor: " + getValor() +
+                "\n}";
     }
 }
