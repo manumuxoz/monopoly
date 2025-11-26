@@ -236,7 +236,7 @@ public class Juego {
             return;
         }
 
-        casilla.comprarCasilla(jugadorActual, banca);
+        ((Propiedad) casilla).comprarCasilla(jugadorActual, banca);
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'. 
