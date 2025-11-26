@@ -10,7 +10,7 @@ import java.util.Objects;
 import static monopoly.Valor.*;
 
 
-public class Casilla {
+public abstract class Casilla {
 
     //Atributos:
     private String nombre; //Nombre de la casilla
@@ -124,104 +124,7 @@ public class Casilla {
      * - El valor de la tirada: para determinar impuesto a pagar en casillas de servicios.
      * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
      * en caso de no cumplirlas.*/
-    public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
-        switch (tipo) {
-            case "Solar":
-                sumarVecesEnCasilla(1);
-                if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
-                    float alquiler = impuesto;
-
-                    if (this.getGrupo().esDuenhoGrupo(duenho) && edificios.isEmpty()) //Si el duenho tiene el grupo y no tiene casas, paga el doble del alquiler inicila
-                        alquiler = 2 * impuesto;
-
-                    if (!actual.enBancarrota(alquiler, duenho) && actual.getFortuna() >= alquiler){
-                        actual.sumarGastos(alquiler);
-                        actual.sumarFortuna(-alquiler);
-                        actual.sumarPagoAlquileres(alquiler);
-                        sumarAlquilerAcumulado(alquiler);
-                        duenho.sumarFortuna(alquiler);
-                        duenho.sumarCobroAlquileres(alquiler);
-                        System.out.println("Se han pagado " + alquiler + "€ de alquiler a " + duenho.getNombre() + ".");
-                        return true;
-                    } else if (!actual.getEnBancarrota() && actual.getFortuna() < alquiler)
-                        actual.setDeudaAPagar(alquiler);
-
-                    return false;
-                }
-                break;
-            case "Servicios":
-                sumarVecesEnCasilla(1);
-                if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
-                    int numCasillasServicio = duenho.contarCasillasServicio();
-                    int valorImpuesto = tirada * 4 * 50000;
-                    if(numCasillasServicio == 2) valorImpuesto = tirada * 10 * 50000;
-                    if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto) {
-                        actual.sumarGastos(valorImpuesto);
-                        actual.sumarFortuna(-valorImpuesto);
-                        actual.sumarPagoAlquileres(valorImpuesto);
-                        sumarAlquilerAcumulado(valorImpuesto);
-                        Jugador propietario = duenho;
-                        propietario.sumarFortuna(valorImpuesto);
-                        propietario.sumarCobroAlquileres(valorImpuesto);
-                        System.out.println("Se han pagado " + valorImpuesto + "€ de servicio a " + propietario.getNombre() + ".");
-                        return true;
-                    } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto)
-                        actual.setDeudaAPagar(impuesto);
-
-                    return false;
-                }
-                break;
-            case "Transporte":
-                sumarVecesEnCasilla(1);
-                if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
-                    int numCasillasTransporte = actual.contarCasillasTransporte();
-                    if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto * numCasillasTransporte) {
-                        actual.sumarGastos(impuesto * numCasillasTransporte);
-                        actual.sumarFortuna(-impuesto * numCasillasTransporte);
-                        actual.sumarPagoAlquileres(impuesto * numCasillasTransporte);
-                        sumarAlquilerAcumulado(impuesto * numCasillasTransporte);
-                        Jugador propietario = duenho;
-                        propietario.sumarFortuna(impuesto*numCasillasTransporte);
-                        propietario.sumarCobroAlquileres(impuesto*numCasillasTransporte);
-                        System.out.println("El jugador" + actual.getNombre() + " paga " +  (int)impuesto*numCasillasTransporte + "€ de transporte a " + propietario.getNombre() + ".");
-                        return true;
-                    } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto * numCasillasTransporte) actual.setDeudaAPagar(impuesto);
-
-                    return false;
-                }
-                break;
-            case "Impuesto":
-                sumarVecesEnCasilla(1);
-                if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto) {
-                    actual.sumarGastos(impuesto);
-                    actual.sumarFortuna(-impuesto);
-                    actual.sumarTasasImpuestos(impuesto);
-
-                    // Añadir al bote del Parking
-                    System.out.println("El jugador " + actual.getNombre() + " paga " + (int)impuesto + "€ que se depositan en el Parking.");
-                    return true;
-                } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto)
-                    actual.setDeudaAPagar(impuesto);
-
-                return false;
-            case "Especiales":
-                sumarVecesEnCasilla(1);
-                if (this.nombre.equals("Parking")) {
-                    if (impuesto > 0) {
-                        actual.sumarFortuna(impuesto);
-                        actual.sumarPremios(impuesto);
-                        System.out.println("El jugador " + actual.getNombre() + " recibe por caer en el parking " + (int)impuesto + "€ del bote acumulado de impuestos.");
-                        this.impuesto = 0;
-                    }
-                    return true;
-                } else if (this.nombre.equals("IrCarcel")) {
-                    // Retornamos false para indicar que se debe manejar el encarcelamiento externamente
-                    return false;
-                }
-                // Para IrCarcel, no hacemos nada aquí porque se maneja en lanzarDados()
-        }
-        return true;
-    }
+    public abstract boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada);
 
     /*Método para añadir valor a una casilla. Utilidad:
      * - Sumar valor a la casilla de parking.

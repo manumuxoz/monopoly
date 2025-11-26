@@ -2,13 +2,36 @@ package monopoly;
 
 import partida.Jugador;
 
-import java.util.ArrayList;
-
 public class Transporte extends Propiedad {
 
     public Transporte() {}
 
     public Transporte(String nombre, int posicion, Jugador duenho) {
         super(nombre, "Transporte", posicion, 500000, duenho, 250000);
+    }
+
+
+    @Override
+    public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
+        float impuesto = getImpuesto();
+        Jugador duenho = getDuenho();
+
+        sumarVecesEnCasilla(1);
+        if (!duenho.equals(banca) && !duenho.equals(actual)) {
+            int numCasillasTransporte = actual.contarCasillasTransporte();
+            if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto * numCasillasTransporte) {
+                actual.sumarGastos(impuesto * numCasillasTransporte);
+                actual.sumarFortuna(-impuesto * numCasillasTransporte);
+                actual.sumarPagoAlquileres(impuesto * numCasillasTransporte);
+                sumarAlquilerAcumulado(impuesto * numCasillasTransporte);
+                Jugador propietario = duenho;
+                propietario.sumarFortuna(impuesto*numCasillasTransporte);
+                propietario.sumarCobroAlquileres(impuesto*numCasillasTransporte);
+                System.out.println("El jugador" + actual.getNombre() + " paga " +  (int)impuesto*numCasillasTransporte + "€ de transporte a " + propietario.getNombre() + ".");
+                return true;
+            } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto * numCasillasTransporte) actual.setDeudaAPagar(impuesto);
+        }
+
+        return false;
     }
 }

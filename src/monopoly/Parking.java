@@ -8,5 +8,15 @@ public class Parking extends Accion {
         super("Parking", posicion, duenho);
     }
 
-    public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada);
+    @Override
+    public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
+        float impuesto = getImpuesto();
+        if (impuesto > 0) {
+            actual.sumarFortuna(impuesto);
+            actual.sumarPremios(impuesto);
+            System.out.println("El jugador " + actual.getNombre() + " recibe por caer en el parking " + (int)impuesto + "€ del bote acumulado de impuestos.");
+            setImpuesto(0);
+        }
+        return true;
+    }
 }

@@ -11,7 +11,7 @@ import static monopoly.Valor.RED;
 import static monopoly.Valor.WHITE;
 import static monopoly.Valor.YELLOW;
 
-public class Propiedad extends Casilla {
+public abstract class Propiedad extends Casilla {
     private float alquilerAcumulado;
 
     public Propiedad() {}
@@ -21,6 +21,7 @@ public class Propiedad extends Casilla {
     }
 
     public void sumarAlquilerAcumulado(float valor){alquilerAcumulado+=valor;}
+
 
 
     //Método que devuelve el nombre del color de un grupo pasado por argumento
@@ -94,5 +95,4 @@ public class Propiedad extends Casilla {
         }
         return "";
     }
-
 }

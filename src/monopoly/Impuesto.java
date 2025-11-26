@@ -11,5 +11,22 @@ public class Impuesto extends Casilla{
         super(nombre, posicion, impuesto, duenho);
     }
 
-    public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada);
+    @Override
+    public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
+        float impuesto = getImpuesto();
+
+        sumarVecesEnCasilla(1);
+        if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto) {
+            actual.sumarGastos(impuesto);
+            actual.sumarFortuna(-impuesto);
+            actual.sumarTasasImpuestos(impuesto);
+
+            // Añadir al bote del Parking
+            System.out.println("El jugador " + actual.getNombre() + " paga " + (int)impuesto + "€ que se depositan en el Parking.");
+            return true;
+        } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto)
+            actual.setDeudaAPagar(impuesto);
+
+        return false;
+    }
 }
