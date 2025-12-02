@@ -8,6 +8,4 @@ public class CajaComunidad extends Accion{
     public CajaComunidad(int posicion, Jugador duenho) {
         super("CajaComunidad", posicion, duenho);
     }
-
-
 }
