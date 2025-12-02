@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 
-public class Edificio { //Nueva clase edificio
+public abstract class Edificio { //Nueva clase edificio
     private Jugador duenho; //Jugador al que pertenece
-    private Casilla casilla; //Casilla en la que está el edificio
+    private Solar solar; //Casilla en la que está el edificio
     private Grupo grupo; //Grupo en el que está el edificio
     private String ID; //ID que identifica de manera única al edificio
     private String tipo; //String para el tipo de edificio (casa, hotel, piscina o pista)
@@ -18,14 +18,12 @@ public class Edificio { //Nueva clase edificio
 
     //Constructor con argumentos (jugador al que pertenece, casilla en la que está, tipo de edificio y un arraylist
     //con los edificios ya creados
-    public Edificio(Jugador duenho, Casilla casilla, String tipo, ArrayList<Edificio> edificiosCreados) {
-        if (tipo.equals("casa") || tipo.equals("hotel") || tipo.equals("piscina") || tipo.equals("pista")) {
-            this.duenho = duenho;
-            this.casilla = casilla;
-            this.tipo = tipo;
-            grupo = casilla.getGrupo();
-            generarID(tipo,  edificiosCreados); //Creamos ID
-        }
+    public Edificio(Jugador duenho, Solar solar, String tipo, ArrayList<Edificio> edificiosCreados) {
+        this.duenho = duenho;
+        this.solar = solar;
+        this.tipo = tipo;
+        grupo = solar.getGrupo();
+        generarID(tipo,  edificiosCreados); //Creamos ID
     }
 
     //Método para generar un ID a cada nuevo edificio
@@ -44,8 +42,8 @@ public class Edificio { //Nueva clase edificio
     public Jugador getDuenho() {
         return duenho;
     }
-    public Casilla getCasilla() {
-        return casilla;
+    public Solar getSolar() {
+        return solar;
     }
     public String getID() {
         return ID;
@@ -59,22 +57,14 @@ public class Edificio { //Nueva clase edificio
     public String infoEdificio() {
         return "{\n\tid: " + ID +
                 ",\n\tpropietario: " + duenho.getNombre() +
-                ",\n\tcasilla: " + casilla.getNombre() +
-                ",\n\tgrupo: " + casilla.color(grupo.getColorGrupo()) +
-                ",\n\tcoste: " + imprimirCoste(tipo) +
+                ",\n\tsolar: " + solar.getNombre() +
+                ",\n\tgrupo: " + solar.color() +
+                ",\n\tcoste: " + imprimirCoste() +
                 "\n}";
     }
 
     //Método para imprimir el valor del alquiler de cada edificio dependiendo de su tipo
-    private String imprimirCoste(String tipo) {
-        return switch (tipo) {
-            case "casa" -> String.valueOf(casilla.getAlquilerCasa());
-            case "hotel" -> String.valueOf(casilla.getAlquilerHotel());
-            case "piscina" -> String.valueOf(casilla.getAlquilerPiscina());
-            case "pista" -> String.valueOf(casilla.getAlquilerPistaDeporte());
-            default -> "";
-        };
-    }
+    abstract String imprimirCoste();
 
     @Override
     public boolean equals(Object o) {
