@@ -8,7 +8,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Juego {
+public class Juego implements Comando {
     //Atributos:
     private ArrayList<Jugador> jugadores; //Jugadores de la partida.
     private ArrayList<Avatar> avatares; //Avatares en la partida.
@@ -143,7 +143,8 @@ public class Juego {
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
      * Parámetro: comando introducido
      */
-    private void descJugador(String[] partes) {
+    @Override
+    public void descJugador(String[] partes) {
         for (Jugador jugador : jugadores) { //Recorremos todos los jugadores
             if (jugador.getNombre().equals(partes[2])) { //Si existe su nombre imprimimos datos del jugador
                 System.out.print("{\n\tnombre: " + jugador.getNombre() +
@@ -170,14 +171,16 @@ public class Juego {
     /* Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
      * Parámetros: nombre de la casilla a describir.
      */
-    private void descCasilla(String nombre) {
+    @Override
+    public void descCasilla(String nombre) {
         Casilla casilla = tablero.encontrar_casilla(nombre); //Buscamos casilla en el tablero
         if (casilla != null) //Si no devuelve null imprimimos la información
             System.out.println(casilla.infoCasilla());
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
-    private void lanzarDados(int tirada1, int tirada2) {
+    @Override
+    public void lanzarDados(int tirada1, int tirada2) {
         Jugador jugadorActual = jugadores.get(turno);
 
         if (jugadorActual.getEnBancarrota()) {
@@ -227,7 +230,8 @@ public class Juego {
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
      * Parámetro: cadena de caracteres con el nombre de la casilla.
      */
-    private void comprar(String nombre) {
+    @Override
+    public void comprar(String nombre) {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casilla = tablero.encontrar_casilla(nombre);
 
@@ -239,8 +243,9 @@ public class Juego {
         ((Propiedad) casilla).comprarCasilla(jugadorActual, banca);
     }
 
-    //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'. 
-    private void salirCarcel() {
+    //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'.
+    @Override
+    public void salirCarcel() {
         Jugador jugadorActual = jugadores.get(turno);
         if (jugadorActual.getFortuna() >= 500000 && jugadorActual.getEnCarcel()) {
             jugadorActual.setenCarcel(false);
@@ -253,14 +258,16 @@ public class Juego {
     }
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
-    private void listarVenta() {  //Imprime las casillas que están en venta
+    @Override
+    public void listarVenta() {  //Imprime las casillas que están en venta
         for (ArrayList<Casilla> lado : tablero.getPosiciones())
             for (Casilla casilla : lado)
-                System.out.print(casilla.casEnVenta());  //print y no println porque si no al hacer un return vacio ocupa una línea
+                System.out.print(((Solar) casilla).casEnVenta());  //print y no println porque si no al hacer un return vacio ocupa una línea
     }
 
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
-    private void listarJugadores() {
+    @Override
+    public void listarJugadores() {
         if (!jugadores.isEmpty()) {
             for (Jugador jugador : jugadores) {
                 System.out.print("{\n\tnombre: " + jugador.getNombre() +
@@ -282,14 +289,16 @@ public class Juego {
     }
 
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
-    private void acabarTurno() {
+    @Override
+    public void acabarTurno() {
         turno = (turno + 1) % jugadores.size(); //Aritmética modular
         System.out.println("El jugador actual es " + jugadores.get(turno).getNombre() + ".");
         lanzamientos = 0;
     }
 
     // Muestra el jugador que está en juego en ese momento
-    private void indicarTurnoJugador() {
+    @Override
+    public void indicarTurnoJugador() {
         if (!jugadores.isEmpty()) {
             Jugador jugadorActual = jugadores.get(turno);
             Avatar avatarActual = jugadorActual.getAvatar();
@@ -300,10 +309,10 @@ public class Juego {
     //Nuevos métodos:
 
     //Método para imprimir las propiedades de un jugador dado
-    public void imprimirPropiedades(Jugador jugador) {
+    private void imprimirPropiedades(Jugador jugador) {
         String separador = "";
         for (Casilla propiedad : jugador.getPropiedades()) {
-            if(!propiedad.getHipotecado()) {
+            if(!((Solar) propiedad).getHipotecado()) {
                 System.out.print(separador + propiedad.getNombre());
                 separador = ", ";
             }
@@ -311,7 +320,7 @@ public class Juego {
     }
 
     //Método para imprimir las hipotecas de un jugador dado
-    public void imprimirHipotecas(Jugador jugador) {
+    private void imprimirHipotecas(Jugador jugador) {
         String separador = "";
         for (Casilla propiedad : jugador.getHipotecas()) {
             System.out.print(separador + propiedad.getNombre());
@@ -413,8 +422,6 @@ public class Juego {
         repintarTablero();
     }
 
-
-
     private Grupo buscarGrupoRentable(){
                 float alquilerGrupo = 0;
                 float alquilerGrupoMaximo = 0;
@@ -488,7 +495,8 @@ public class Juego {
     }
 
     //Método para mostrar las estadísticas de un jugador
-    private void mostrarEstadisticas(String[] string){
+    @Override
+    public void mostrarEstadisticas(String[] string){
         for (Jugador jugador: jugadores){
             if(jugador.getNombre().equals(string[1])){
                 System.out.println("{\n\tdineroInvertido: " + jugador.getGastos() + "," +
@@ -504,7 +512,8 @@ public class Juego {
     }
 
     //Método para mostrar las estadísticas globales de la partida
-    private void mostrarEstadisticasGlobales(){
+    @Override
+    public void mostrarEstadisticasGlobales(){
         String casillaMasRentable = "";
         if (buscarCasillaRentable()!=null)
             casillaMasRentable = buscarCasillaRentable().getNombre();
@@ -626,7 +635,8 @@ public class Juego {
         jugadorActual.setDeudaAPagar(0); //Reseteamos la deuda
     }
     //Método para edificar un tipo de edificio dado
-    private void edificar(String tipoEdificio) {
+    @Override
+    public void edificar(String tipoEdificio) {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
 
@@ -663,6 +673,7 @@ public class Juego {
     }
 
     //Método para listar todos los edificios construidos
+    @Override
     public void listarEdificios() {
         if (!edificios.isEmpty()) {
             for (Edificio edificio : edificios) {
@@ -673,6 +684,7 @@ public class Juego {
     }
 
     //Método para listar los métodos de un grupo y saber qué edificios se pueden construir
+    @Override
     public void listarEdificiosGrupo(String colorGrupo) {
         int countCasas = 0, countHoteles = 0, countPiscina = 0, countPista = 0; //Variables para llevar cuenta de los edificios construidos
         String color = Character.toUpperCase(colorGrupo.charAt(0)) + colorGrupo.substring(1); //Formatemamos el color pasado por comando
@@ -697,6 +709,7 @@ public class Juego {
     }
 
     //Método para hipotecar una casilla
+    @Override
     public void hipotecar(String nombreCasilla) {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla hipoteca = tablero.encontrar_casilla(nombreCasilla);
@@ -740,6 +753,7 @@ public class Juego {
     }
 
     //Método para deshipotecar una casilla
+    @Override
     public void deshipotecar(String nombreCasilla) {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla hipoteca = tablero.encontrar_casilla(nombreCasilla);
@@ -773,7 +787,8 @@ public class Juego {
                 hipoteca.getNombre() + "." + sb);
     }
 
-    //Método para vender una casilla
+    //Método para vender edificios de una casilla
+    @Override
     public void vender(String tipoEdificio, String nombreCasilla, int cantidad) {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
