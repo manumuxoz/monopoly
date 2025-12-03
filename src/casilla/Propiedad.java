@@ -51,4 +51,14 @@ public abstract class Propiedad extends Casilla {
      * Valor devuelto: texto con esa información.
      */
     public abstract String casEnVenta();
+
+    public boolean perteneceAJugador(Jugador jugador) {
+        return jugador.equals(getDuenho());
+    }
+
+    abstract boolean alquiler();
+
+    abstract float valor();
+
+    //estaHipoteca, hipotecar, comprar(Jugador jugador)
 }

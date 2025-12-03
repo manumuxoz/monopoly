@@ -17,7 +17,7 @@ public abstract class Casilla {
     private Grupo grupo; //Grupo al que pertenece la casilla (si es solar).
     private float impuesto; //Cantidad a pagar por caer en la casilla: el alquiler en solares/servicios/transportes o impuestos.
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
-    private int vecesEnCasilla;
+    private int frecuenciaVisita;
 
     //Constructores:
     public Casilla() {}//Parámetros vacíos
@@ -83,7 +83,7 @@ public abstract class Casilla {
     public ArrayList<Avatar> getAvatares() {
         return avatares;
     }
-    public int getVecesEnCasilla(){return vecesEnCasilla;}
+    public int getFrecuenciaVisita(){return frecuenciaVisita;}
 
     //Setters:
     public void setNombre(String nombre) {
@@ -96,9 +96,6 @@ public abstract class Casilla {
         this.grupo = grupo;
     }
     public void setImpuesto(float impuesto) {this.impuesto = impuesto;}
-    public void setAvatares(ArrayList<Avatar> avatares) {
-        this.avatares = avatares;
-    }
     public void setTipo(String tipo) {this.tipo = tipo;}
     public void setPosicion(int posicion){this.posicion = posicion;}
     public void setValor(float valor) {this.valor = valor;}
@@ -137,12 +134,21 @@ public abstract class Casilla {
      * Devuelve una cadena con información específica de cada tipo de casilla.*/
     public abstract String infoCasilla();
 
-    public void sumarVecesEnCasilla(int valor){vecesEnCasilla+=valor;}
+    public void sumarFrecuenciaVisita(){frecuenciaVisita++;}
+
+    public boolean estaAvatar() {
+        return !avatares.isEmpty();
+    }
 
     @Override //Sobreescritura del método equals
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Casilla casilla = (Casilla) o;
         return Objects.equals(nombre, casilla.nombre);
+    }
+
+    @Override
+    public String toString() {
+        return nombre;
     }
 }

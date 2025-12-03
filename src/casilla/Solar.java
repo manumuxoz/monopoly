@@ -497,4 +497,6 @@ public final class Solar extends Propiedad {
                 ",\n\tvalor: " + getValor() +
                 "\n}";
     }
+
+    //edificar
 }
