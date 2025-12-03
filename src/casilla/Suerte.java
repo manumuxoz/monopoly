@@ -2,7 +2,7 @@ package casilla;
 
 import partida.Jugador;
 
-public class Suerte extends Accion {
+public final class Suerte extends Accion {
     public Suerte(){}
 
     public Suerte(int posicion, Jugador duenho) {

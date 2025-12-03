@@ -3,7 +3,7 @@ package casilla;
 import partida.*;
 import java.util.ArrayList;
 
-class Grupo extends Casilla {
+public final class Grupo extends Casilla {
 
     //Atributos
     private ArrayList<Solar> miembros; //Casillas miembros del grupo.

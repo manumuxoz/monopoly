@@ -12,7 +12,7 @@ import static monopoly.Valor.RED;
 import static monopoly.Valor.WHITE;
 import static monopoly.Valor.YELLOW;
 
-public class Solar extends Propiedad {
+public final class Solar extends Propiedad {
     private float valorCasa;
     private float valorHotel;
     private float valorPiscina;

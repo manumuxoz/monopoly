@@ -1,7 +1,7 @@
 package casilla;
 import partida.*;
 
-public class Parking extends Accion {
+public final class Parking extends Accion {
     public Parking() {}
 
     public Parking(int posicion, Jugador duenho) {

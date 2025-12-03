@@ -2,7 +2,7 @@ package casilla;
 
 import partida.Jugador;
 
-public class Impuesto extends Casilla {
+public final class Impuesto extends Casilla {
     public Impuesto(){}
 
     public Impuesto(String nombre, int posicion, float impuesto, Jugador duenho) {

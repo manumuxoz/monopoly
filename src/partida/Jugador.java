@@ -2,7 +2,7 @@ package partida;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
+import casilla.*;
 import static monopoly.Valor.*;
 
 import casilla.Casilla;
@@ -18,8 +18,6 @@ public class Jugador {
     private int tiradasCarcel; //Cuando está en la carcel, contará las tiradas sin éxito que ha hecho allí para intentar salir (se usa para limitar el numero de intentos).
     private int vueltas; //Cuenta las vueltas dadas al tablero.
     private ArrayList<Casilla> propiedades;//Propiedades que posee el jugador.
-
-    //Atributos nuevos:
     private ArrayList<Casilla> hipotecas;
     private float tasasImpuestos;
     private float pagoAlquileres;
@@ -77,8 +75,6 @@ public class Jugador {
     public ArrayList<Casilla> getPropiedades() {
         return propiedades;
     }
-
-    //Getters atributos nuevos:
     public ArrayList<Casilla> getHipotecas() {
         return hipotecas;
     }
@@ -91,6 +87,7 @@ public class Jugador {
     public float getPatrimonio(){return patrimonio;}
     public boolean getEnBancarrota(){return enBancarrota;}
     public float getDeudaAPagar() {return deudaAPagar;}
+
     //Setters:
     public void setNombre(String nombre) {
         this.nombre = nombre;

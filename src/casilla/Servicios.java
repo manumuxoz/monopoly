@@ -2,7 +2,7 @@ package casilla;
 
 import partida.Jugador;
 
-public class Servicios extends Propiedad {
+public final class Servicios extends Propiedad {
     public Servicios() {}
 
     public Servicios(String nombre, int posicion, Jugador duenho) {

@@ -1,7 +1,7 @@
 package monopoly;
 
 import casilla.*;
-import edificio.Transporte;
+import edificio.*;
 import partida.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,9 +12,9 @@ import static monopoly.Valor.*;
 
 public class Tablero {
     //Atributos.
-    private ArrayList<ArrayList<Casilla>> posiciones; //Posiciones del tablero: se define como un arraylist de arraylists de casillas (uno por cada lado del tablero).
-    private HashMap<String, Grupo> grupos; //Grupos del tablero, almacenados como un HashMap con clave String (será el color del grupo).
-    private Jugador banca; //Un jugador que será la banca.
+    private final ArrayList<ArrayList<Casilla>> posiciones; //Posiciones del tablero: se define como un arraylist de arraylists de casillas (uno por cada lado del tablero).
+    private final HashMap<String, Grupo> grupos; //Grupos del tablero, almacenados como un HashMap con clave String (será el color del grupo).
+    private final Jugador banca; //Un jugador que será la banca.
 
     //Constructor: únicamente le pasamos el jugador banca (que se creará desde el menú).
     public Tablero(Jugador banca) {
@@ -74,7 +74,7 @@ public class Tablero {
     private void insertarLadoSur() { //Repetimos proceso de insertarLadoNorte()
         ArrayList<Casilla> casillasSur = new ArrayList<>();
 
-        casillasSur.add(0, new Casilla("Salida", "Especiales", 0, banca));
+        casillasSur.add(0, new Especial("Salida", 0, banca));
         Solar solar1 = new Solar("Solar1", 1, 600000, banca, 20000, 300000, 400000, 2500000, 500000, 500000);
         casillasSur.add(1, solar1);
         casillasSur.add(2, new CajaComunidad(2, banca));

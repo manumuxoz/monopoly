@@ -3,7 +3,7 @@ package casilla;
 import partida.Avatar;
 import partida.Jugador;
 
-public abstract class Especial extends Casilla {
+public final class Especial extends Casilla {
     public Especial() {
     }
 
