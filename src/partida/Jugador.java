@@ -17,8 +17,8 @@ public class Jugador {
     private boolean enCarcel; //Será true si el jugador está en la carcel
     private int tiradasCarcel; //Cuando está en la carcel, contará las tiradas sin éxito que ha hecho allí para intentar salir (se usa para limitar el numero de intentos).
     private int vueltas; //Cuenta las vueltas dadas al tablero.
-    private ArrayList<Casilla> propiedades;//Propiedades que posee el jugador.
-    private ArrayList<Casilla> hipotecas;
+    private ArrayList<Propiedad> propiedades;//Propiedades que posee el jugador.
+    private ArrayList<Solar> hipotecas;
     private float tasasImpuestos;
     private float pagoAlquileres;
     private float cobroAlquileres;
@@ -40,14 +40,11 @@ public class Jugador {
     * que dos avatares tengan mismo ID). Desde este constructor también se crea el avatar.
      */
     public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) {
-        if(!existeJugador(avCreados, nombre, tipoAvatar)) { //Comprobamos si ya existe el nombre
+        if(!existeJugador(avCreados, nombre)) { //Comprobamos si ya existe el nombre
             this.nombre = nombre;
             avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
             fortuna = FORTUNA_INICIAL;
-            gastos = 0;
             enCarcel = false;
-            tiradasCarcel = 0;
-            vueltas = 0;
             propiedades = new ArrayList<>();
             hipotecas = new ArrayList<>();
         }
@@ -72,10 +69,10 @@ public class Jugador {
     public int getTiradasCarcel(){
         return tiradasCarcel;
     }
-    public ArrayList<Casilla> getPropiedades() {
+    public ArrayList<Propiedad> getPropiedades() {
         return propiedades;
     }
-    public ArrayList<Casilla> getHipotecas() {
+    public ArrayList<Solar> getHipotecas() {
         return hipotecas;
     }
     public float getPagoAlquileres() {return pagoAlquileres;}
@@ -104,9 +101,6 @@ public class Jugador {
     public void setVueltas(int vueltas) {
         this.vueltas = vueltas;
     }
-    public void setEnBancarrota(boolean enBancarrota) {
-        this.enBancarrota = enBancarrota;
-    }
     public void setDeudaAPagar(float deudaAPagar) {
         this.deudaAPagar = deudaAPagar;
     }
@@ -114,15 +108,14 @@ public class Jugador {
     //Otros métodos:
 
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
-    public void anhadirPropiedad(Casilla casilla) {
-        if (!this.propiedades.contains(casilla))
-            this.propiedades.add(casilla);
+    public void anhadirPropiedad(Propiedad propiedad) {
+        if (!this.propiedades.contains(propiedad))
+            this.propiedades.add(propiedad);
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
-    public void eliminarPropiedad(Casilla casilla) {
-        if(propiedades.contains(casilla))
-            propiedades.remove(casilla);
+    public void eliminarPropiedad(Propiedad propiedad) {
+        propiedades.remove(propiedad);
     }
 
     //Método para añadir fortuna a un jugador
@@ -138,13 +131,18 @@ public class Jugador {
     }
 
     public void sumarVueltas(int valor) {vueltas += valor;}
-    public void sumarTasasImpuestos(float valor) {tasasImpuestos += valor;}
-    public void sumarPagoAlquileres(float valor) {pagoAlquileres += valor;}
-    public void sumarCobroAlquileres(float valor) {cobroAlquileres += valor;}
-    public void sumarPremios(float valor) {premios += valor;}
-    public void sumarVecesCarcel(int valor) {vecesCarcel += valor;}
-    public void sumarPatrimonio(float valor) {patrimonio += valor;}
 
+    public void sumarTasasImpuestos(float valor) {tasasImpuestos += valor;}
+
+    public void sumarPagoAlquileres(float valor) {pagoAlquileres += valor;}
+
+    public void sumarCobroAlquileres(float valor) {cobroAlquileres += valor;}
+
+    public void sumarPremios(float valor) {premios += valor;}
+
+    public void sumarVecesCarcel(int valor) {vecesCarcel += valor;}
+
+    public void sumarPatrimonio(float valor) {patrimonio += valor;}
 
     /*Método para establecer al jugador en la cárcel. 
     * Se requiere disponer de las casillas del tablero para ello (por eso se pasan como parámetro).*/
@@ -161,14 +159,10 @@ public class Jugador {
         sumarVecesCarcel(1);
     }
 
-    //Nuevos métodos:
-
-    /*Método que comprueba si ya existe el nombre de un jugador. Parámetros:
-     * - Un arraylist de los avatares ya creados.
-     */
-    private boolean existeJugador(ArrayList<Avatar> avCreados, String nombre, String  tipoAvatar) {
+    //Método para saber si ya existe un jugador
+    private boolean existeJugador(ArrayList<Avatar> avCreados, String nombre) {
         for (Avatar av : avCreados) //Recorremos el arraylist de los avatares ya creados
-            if (av.getJugador().getNombre().equals(nombre) || av.getJugador().getAvatar().getTipo().equals(tipoAvatar))
+            if (av.getJugador().getNombre().equals(nombre))
                 return true;
 
         return false; //Comprobamos si se encuentra el nombre del jugador
@@ -190,20 +184,20 @@ public class Jugador {
     //Método para calcular el dinero de posibles ventas:
     private float dineroVentas() {
         float ventaEdificios = 0;
-        float ventaPropiedades = 0;
+        float hipotecaPropiedades = 0;
 
-        for (Casilla casilla : propiedades) {
-            ventaPropiedades += casilla.getHipoteca();
-            if (casilla.getTipo().equals("Solar")) {
-                ventaEdificios += (casilla.getNumCasas() * casilla.getValorCasa());
+        for (Propiedad propiedad : propiedades) {
+            if (propiedad.getTipo().equals("Solar")) {
+                hipotecaPropiedades += ((Solar) propiedad).getHipoteca();
+                ventaEdificios += (((Solar) propiedad).getNumCasas() * ((Solar) propiedad).getValorCasa());
 
-                if (casilla.getHotel()) ventaEdificios += casilla.getValorHotel();
-                if (casilla.getPiscina()) ventaEdificios += casilla.getValorPiscina();
-                if (casilla.getPistaDeporte()) ventaEdificios += casilla.getValorPistaDeporte();
+                if (((Solar) propiedad).getHotel()) ventaEdificios += ((Solar) propiedad).getValorHotel();
+                if (((Solar) propiedad).getPiscina()) ventaEdificios += ((Solar) propiedad).getValorPiscina();
+                if (((Solar) propiedad).getPistaDeporte()) ventaEdificios += ((Solar) propiedad).getValorPistaDeporte();
             }
         }
 
-        return ventaEdificios + ventaPropiedades;
+        return ventaEdificios + hipotecaPropiedades;
     }
 
     //Método para realizar la bancarrota (ceder propiedades):
@@ -220,7 +214,7 @@ public class Jugador {
             for (Casilla casilla : propiedades) {
                 casilla.setDuenho(destinatario);
                 if (casilla.getTipo().equals("Solar")) //Si es solar eliminamos los edificios
-                    casilla.getEdificios().clear();
+                    ((Solar) casilla).getEdificios().clear();
 
             }
         }
