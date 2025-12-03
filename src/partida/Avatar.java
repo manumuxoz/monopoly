@@ -14,8 +14,7 @@ public class Avatar {
     private Casilla lugar; //Los avatares se sitúan en casillas del tablero.
 
     //Constructor vacío
-    public Avatar() {
-    }
+    public Avatar() {}
 
     /*Constructor principal. Requiere éstos parámetros:
     * Tipo del avatar, jugador al que pertenece, lugar en el que estará ubicado, y un arraylist con los

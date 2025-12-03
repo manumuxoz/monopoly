@@ -2,6 +2,13 @@ package partida;
 
 
 public class Dado {
+    public Dado() {
+    }
+
+    public Dado(int valor) {
+        this.valor = valor;
+    }
+
     //El dado solo tiene un atributo en nuestro caso: su valor.
     private int valor;
 
@@ -9,7 +16,7 @@ public class Dado {
     public int hacerTirada() {
         int min= 1;
         int max =6;
-        int numeroDados1 = (int) (Math.random()*(max-min+1)+min);
-        return  numeroDados1;
+        valor = (int) (Math.random()*(max-min+1)+min);
+        return  valor;
     }
 }
