@@ -1,15 +1,6 @@
-package monopoly;
+package casilla;
 
 import partida.Jugador;
-
-import java.util.ArrayList;
-
-import static monopoly.Valor.*;
-import static monopoly.Valor.BLUE;
-import static monopoly.Valor.GREEN;
-import static monopoly.Valor.RED;
-import static monopoly.Valor.WHITE;
-import static monopoly.Valor.YELLOW;
 
 public abstract class Propiedad extends Casilla {
     private float alquilerAcumulado;

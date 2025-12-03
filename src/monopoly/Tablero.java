@@ -1,5 +1,7 @@
 package monopoly;
 
+import casilla.*;
+import edificio.Transporte;
 import partida.*;
 import java.util.ArrayList;
 import java.util.HashMap;

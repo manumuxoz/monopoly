@@ -1,10 +1,8 @@
-package monopoly;
+package casilla;
 
 import partida.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Acciones {
     private String tipo; //Suerte o Caja

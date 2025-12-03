@@ -2,8 +2,12 @@ package monopoly;
 
 import java.util.*;
 
+import casilla.*;
+import consola.Consola;
+import edificio.Edificio;
 import partida.*;
 import  static monopoly.Valor.*;
+import consola.ConsolaNormal;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,6 +22,7 @@ public class Juego implements Comando {
     private Dado dado1; //Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
     private Jugador banca; //El jugador banca.
+    private ConsolaNormal consola;
 
     //Atributos nuevos:
     private ArrayList<Edificio> edificios; //Edificios creados

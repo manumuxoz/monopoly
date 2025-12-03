@@ -1,5 +1,7 @@
-package monopoly;
+package edificio;
 
+import monopoly.Grupo;
+import casilla.Solar;
 import partida.*;
 import java.util.ArrayList;
 import java.util.Objects;

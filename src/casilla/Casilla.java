@@ -1,13 +1,9 @@
-package monopoly;
+package casilla;
 
 import partida.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Objects;
-
-import static monopoly.Valor.*;
 
 
 public abstract class Casilla {

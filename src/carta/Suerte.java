@@ -1,7 +1,7 @@
-package cartas;
+package carta;
 
-import monopoly.Casilla;
-import monopoly.Solar;
+import casilla.Casilla;
+import casilla.Solar;
 import partida.Avatar;
 import partida.Jugador;
 

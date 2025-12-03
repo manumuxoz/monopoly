@@ -1,6 +1,6 @@
 package partida;
 
-import monopoly.*;
+import casilla.Casilla;
 
 import java.util.ArrayList;
 import java.util.Objects;

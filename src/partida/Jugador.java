@@ -1,11 +1,11 @@
 package partida;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 import static monopoly.Valor.*;
-import monopoly.*;
+
+import casilla.Casilla;
 
 public class Jugador {
 

@@ -1,11 +1,9 @@
-package monopoly;
+package casilla;
 
 import partida.Avatar;
 import partida.Jugador;
 
-import java.util.ArrayList;
-
-public abstract class Especial extends Casilla{
+public abstract class Especial extends Casilla {
     public Especial() {
     }
 

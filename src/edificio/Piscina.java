@@ -1,10 +1,11 @@
-package monopoly;
+package edificio;
 
+import casilla.Solar;
 import partida.Jugador;
 
 import java.util.ArrayList;
 
-public class Piscina extends Edificio{
+public class Piscina extends Edificio {
 
     public Piscina(){
     }

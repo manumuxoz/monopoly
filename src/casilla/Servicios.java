@@ -1,4 +1,4 @@
-package monopoly;
+package casilla;
 
 import partida.Jugador;
 

@@ -1,5 +1,6 @@
-package monopoly;
+package edificio;
 
+import casilla.Propiedad;
 import partida.Jugador;
 
 public class Transporte extends Propiedad {
