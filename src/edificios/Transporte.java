@@ -1,6 +1,6 @@
-package edificio;
+package edificios;
 
-import casilla.Propiedad;
+import casillas.Propiedad;
 import partida.Jugador;
 
 public class Transporte extends Propiedad {

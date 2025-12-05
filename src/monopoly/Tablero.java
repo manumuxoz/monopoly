@@ -1,7 +1,7 @@
 package monopoly;
 
-import casilla.*;
-import edificio.*;
+import casillas.*;
+import edificios.*;
 import partida.*;
 import java.util.ArrayList;
 import java.util.HashMap;

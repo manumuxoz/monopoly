@@ -2,9 +2,8 @@ package monopoly;
 
 import java.util.*;
 
-import casilla.*;
-import consola.Consola;
-import edificio.Edificio;
+import casillas.*;
+import edificios.Edificio;
 import partida.*;
 import  static monopoly.Valor.*;
 import consola.ConsolaNormal;

@@ -1,7 +1,7 @@
-package carta;
+package cartas;
 
-import casilla.Casilla;
-import casilla.Solar;
+import casillas.Casilla;
+import casillas.Solar;
 import partida.Avatar;
 import partida.Jugador;
 

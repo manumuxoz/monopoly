@@ -2,10 +2,10 @@ package partida;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import casilla.*;
+import casillas.*;
 import static monopoly.Valor.*;
 
-import casilla.Casilla;
+import casillas.Casilla;
 
 public class Jugador {
 

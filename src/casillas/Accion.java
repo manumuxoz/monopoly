@@ -1,4 +1,4 @@
-package casilla;
+package casillas;
 import partida.*;
 
 public final abstract class Accion extends Casilla {

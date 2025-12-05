@@ -1,6 +1,6 @@
 package partida;
 
-import casilla.Casilla;
+import casillas.Casilla;
 
 import java.util.ArrayList;
 import java.util.Objects;

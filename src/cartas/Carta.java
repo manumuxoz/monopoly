@@ -1,6 +1,6 @@
-package carta;
+package cartas;
 
-import casilla.Casilla;
+import casillas.Casilla;
 import partida.Jugador;
 
 import java.util.ArrayList;

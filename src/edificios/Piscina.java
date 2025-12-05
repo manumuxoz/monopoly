@@ -1,6 +1,6 @@
-package edificio;
+package edificios;
 
-import casilla.Solar;
+import casillas.Solar;
 import partida.Jugador;
 
 import java.util.ArrayList;

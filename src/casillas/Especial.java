@@ -1,4 +1,4 @@
-package casilla;
+package casillas;
 
 import partida.Avatar;
 import partida.Jugador;
