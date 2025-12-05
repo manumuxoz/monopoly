@@ -12,29 +12,26 @@ public final class Especial extends Casilla {
     }
 
     //Método que devuelve la descripción de las casillas 'Especiales'
-    public String imprimirEspeciales(String nombre) { //Ajustar porque PArking es hija de ACCION
+    public String imprimirEspeciales() { //Ajustar porque PArking es hija de ACCION
         StringBuilder sb = new StringBuilder().append("[");
         String separador = "";
-        if  (nombre.equals("Parking")) {
-            for (Avatar avatar : getAvatares()) {
-                sb.append(separador).append(avatar.getJugador().getNombre());
-                separador = ", ";
+        for (Avatar av : getAvatares()) {
+            if (av.getJugador().getEnCarcel()) {
+                sb.append(separador).append(av.getJugador().getNombre()).append(", ").append(av.getJugador().getTiradasCarcel());
+                separador = "], [";
             }
-            return "{\n\tbote: " + getImpuesto() + "\n\tjugadores: " +  sb + "]\n}";
-        } else if (nombre.equals("Carcel")) {
-            for (Avatar av : getAvatares()) {
-                if (av.getJugador().getEnCarcel()) {
-                    sb.append(separador).append(av.getJugador().getNombre()).append(", ").append(av.getJugador().getTiradasCarcel());
-                    separador = "], [";
-                }
-            }
-            return "{\n\tsalir: 500000,\n\tjugadores: " +  sb + "]\n}";
         }
-        return "";
+        return "{\n\tsalir: 500000,\n\tjugadores: " +  sb + "]\n}";
     }
+
 
     @Override
     public String infoCasilla() {
-        return imprimirEspeciales(getNombre());
+        return imprimirEspeciales();
+    }
+
+    @Override
+    public boolean evaluarCasilla(Jugador jugador, Jugador banca, int tirada){
+        return true;
     }
 }

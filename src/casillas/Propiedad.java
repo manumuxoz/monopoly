@@ -56,7 +56,7 @@ public abstract class Propiedad extends Casilla {
         return jugador.equals(getDuenho());
     }
 
-    abstract boolean alquiler();
+    abstract float alquiler();
 
     abstract float valor();
 

@@ -14,7 +14,8 @@ public final class Servicios extends Propiedad {
         Jugador duenho = getDuenho();
         float impuesto = getImpuesto();
 
-        sumarVecesEnCasilla(1);
+
+        sumarFrecuenciaVisita();
         if (!duenho.equals(banca) && !duenho.equals(actual)) {
             int numCasillasServicio = duenho.contarCasillasServicio();
             int valorImpuesto = tirada * 4 * 50000;
@@ -51,5 +52,13 @@ public final class Servicios extends Propiedad {
                 "\n\ttipo: " + getTipo() +
                 ",\n\tvalor: " + getValor() +
                 "\n}";
+    }
+    @Override
+    public float alquiler(){
+        return getImpuesto();
+    }
+    @Override
+    public float valor(){
+        return getValor();
     }
 }

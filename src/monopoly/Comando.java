@@ -1,37 +1,42 @@
 package monopoly;
 
+import excepciones.Excepcion;
+import excepciones.ExcepcionArgumento;
+
 public interface Comando {
-    void acabarTurno();
+    void acabarTurno(String partes[]) throws ExcepcionArgumento;
 
-    void comprar(String nombre);
+    void comprar(String nombre) throws Excepcion;
 
-    void descCasilla(String nombre);
+    void crearJugador(String partes[]) throws Excepcion;
 
-    void deshipotecar(String nombreCasilla);
+    void descCasilla(String nombre) throws Excepcion;
 
-    void descJugador(String[] partes);
+    void descJugador(String nombre) throws Excepcion;
 
-    void edificar(String tipoEdificio);
+    void deshipotecar(String nombre) throws Excepcion;
 
-    void hipotecar(String nombreCasilla);
+    void edificar(String tipo) throws Excepcion;
 
-    void indicarTurnoJugador();
+    void hipotecar(String nombreCasilla) throws Excepcion;
 
-    void lanzarDados(int tirada1, int tirada2);
+    void indicarTurnoJugador() throws Excepcion;
 
-    void listarEdificios();
+    void lanzarDados(int tirada1, int tirada2) throws Excepcion;
 
-    void listarEdificiosGrupo(String colorGrupo);
+    void listarEdificios() throws Excepcion;
 
-    void listarJugadores();
+    void listarEdificiosGrupo(String colorGrupo) throws Excepcion;
 
-    void listarVenta();
+    void listarJugadores() throws Excepcion;
 
-    void mostrarEstadisticas(String[] string);
+    void listarVenta() throws Excepcion;
 
-    void mostrarEstadisticasGlobales();
+    void mostrarEstadisticas(String[] string) throws Excepcion;
 
-    void salirCarcel();
+    void mostrarEstadisticasGlobales() throws Excepcion;
 
-    void vender(String tipoEdificio, String nombreCasilla, int cantidad);
+    void salirCarcel() throws Excepcion;
+
+    void vender(String tipoEdificio, String nombreCasilla, int cantidad) throws Excepcion;
 }

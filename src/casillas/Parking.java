@@ -8,6 +8,19 @@ public final class Parking extends Accion {
         super("Parking", posicion, duenho);
     }
 
+
+    private String jugadoresEnCasilla(){
+        StringBuilder sb = new StringBuilder().append("[");
+        String separador = "\0";
+
+        for (Avatar av : getAvatares()){
+            sb.append(separador).append(av.getJugador().getNombre());
+            separador = ", ";
+        }
+
+        return sb.append("]").toString();
+    }
+
     @Override
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
         float impuesto = getImpuesto();
@@ -19,4 +32,10 @@ public final class Parking extends Accion {
         }
         return true;
     }
+    @Override
+    public String infoCasilla(){
+        return "{\n\tbote: " + getImpuesto() +
+                "\n\tjugadores: " + jugadoresEnCasilla();
+    }
+
 }

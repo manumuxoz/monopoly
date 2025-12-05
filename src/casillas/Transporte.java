@@ -1,9 +1,8 @@
-package edificios;
+package casillas;
 
-import casillas.Propiedad;
 import partida.Jugador;
 
-public class Transporte extends Propiedad {
+public final class Transporte extends Propiedad {
 
     public Transporte() {}
 
@@ -17,7 +16,7 @@ public class Transporte extends Propiedad {
         float impuesto = getImpuesto();
         Jugador duenho = getDuenho();
 
-        sumarVecesEnCasilla(1);
+        sumarFrecuenciaVisita();
         if (!duenho.equals(banca) && !duenho.equals(actual)) {
             int numCasillasTransporte = actual.contarCasillasTransporte();
             if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto * numCasillasTransporte) {
@@ -52,5 +51,13 @@ public class Transporte extends Propiedad {
                 "\n\ttipo: " + getTipo() +
                 ",\n\tvalor: " + getValor() +
                 "\n}";
+    }
+    @Override
+    public float alquiler(){
+        return getImpuesto();
+    }
+    @Override
+    public float valor(){
+        return getValor();
     }
 }

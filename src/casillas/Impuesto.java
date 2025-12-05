@@ -13,7 +13,7 @@ public final class Impuesto extends Casilla {
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
         float impuesto = getImpuesto();
 
-        sumarVecesEnCasilla(1);
+        sumarFrecuenciaVisita();
         if (!actual.enBancarrota(impuesto, getDuenho()) && actual.getFortuna() >= impuesto) {
             actual.sumarGastos(impuesto);
             actual.sumarFortuna(-impuesto);
@@ -35,4 +35,5 @@ public final class Impuesto extends Casilla {
                 ",\n\tapagar: " + getImpuesto() +
                 "\n}";
     }
+
 }

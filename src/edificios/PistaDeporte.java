@@ -5,7 +5,7 @@ import partida.Jugador;
 
 import java.util.ArrayList;
 
-public class PistaDeporte extends Edificio {
+public final class PistaDeporte extends Edificio {
 
     public PistaDeporte(){
     }

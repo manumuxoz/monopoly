@@ -6,6 +6,8 @@ import casillas.*;
 import static monopoly.Valor.*;
 
 import casillas.Casilla;
+import edificios.Edificio;
+import excepciones.ExcepcionArgumento;
 
 public class Jugador {
 
@@ -19,6 +21,7 @@ public class Jugador {
     private int vueltas; //Cuenta las vueltas dadas al tablero.
     private ArrayList<Propiedad> propiedades;//Propiedades que posee el jugador.
     private ArrayList<Solar> hipotecas;
+    private ArrayList<Edificio> edificios;
     private float tasasImpuestos;
     private float pagoAlquileres;
     private float cobroAlquileres;
@@ -30,9 +33,6 @@ public class Jugador {
 
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
-        this.nombre = "Banca";
-        fortuna = FORTUNA_BANCA;
-        this.propiedades = new ArrayList<>();
     }
 
     /*Constructor principal. Requiere parámetros:
@@ -40,15 +40,19 @@ public class Jugador {
     * avatares creados (usado para dos propósitos: evitar que dos jugadores tengan el mismo nombre y
     * que dos avatares tengan mismo ID). Desde este constructor también se crea el avatar.
      */
-    public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) {
-        if(!existeJugador(avCreados, nombre)) { //Comprobamos si ya existe el nombre
-            this.nombre = nombre;
-            avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
-            fortuna = FORTUNA_INICIAL;
-            enCarcel = false;
-            propiedades = new ArrayList<>();
-            hipotecas = new ArrayList<>();
-        }
+    public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) throws ExcepcionArgumento {
+
+
+        for (Avatar av : avCreados)
+            if (av.getJugador().getNombre().equalsIgnoreCase(nombre))
+                throw new ExcepcionArgumento("El nombre '" + nombre + "' ya existe.");
+
+        this.nombre = nombre;
+        avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
+        fortuna = FORTUNA_INICIAL;
+        enCarcel = false;
+        propiedades = new ArrayList<>();
+        hipotecas = new ArrayList<>();
     }
 
     //Getters:
@@ -75,6 +79,9 @@ public class Jugador {
     }
     public ArrayList<Solar> getHipotecas() {
         return hipotecas;
+    }
+    public ArrayList<Edificio> getEdificios() {
+        return edificios;
     }
     public float getPagoAlquileres() {return pagoAlquileres;}
     public float getCobroAlquileres() {return cobroAlquileres;}
@@ -104,6 +111,9 @@ public class Jugador {
     }
     public void setDeudaAPagar(float deudaAPagar) {
         this.deudaAPagar = deudaAPagar;
+    }
+    public void setPropiedades(ArrayList<Propiedad> propiedades) {
+        this.propiedades = propiedades;
     }
 
     //Otros métodos:
@@ -158,15 +168,6 @@ public class Jugador {
         tiradasCarcel = 0;
         System.out.println(nombre + " ha sido enviado a la carcel.");
         sumarVecesCarcel(1);
-    }
-
-    //Método para saber si ya existe un jugador
-    private boolean existeJugador(ArrayList<Avatar> avCreados, String nombre) {
-        for (Avatar av : avCreados) //Recorremos el arraylist de los avatares ya creados
-            if (av.getJugador().getNombre().equals(nombre))
-                return true;
-
-        return false; //Comprobamos si se encuentra el nombre del jugador
     }
 
     //Método para saber si un jugador está en bancarrota

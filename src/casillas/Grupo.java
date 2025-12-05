@@ -66,4 +66,25 @@ public final class Grupo extends Casilla {
     public boolean esDuenhoGrupo(Jugador jugador) {
         return jugador.getPropiedades().containsAll(miembros);
     }
+
+    private String casillasPorGrupo(){
+        StringBuilder sb = new StringBuilder().append("[");
+        String separador = "\0";
+
+        for (Casilla casilla: getMiembros()){
+            sb.append(separador).append(casilla.getNombre());
+            separador = ", ";
+        }
+
+        return sb.append("]").toString();
+    }
+
+    @Override
+    public String infoCasilla(){
+        return "{\n\t" + casillasPorGrupo() + "\n}";
+    }
+    @Override
+    public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada){
+        return true;
+    }
 }

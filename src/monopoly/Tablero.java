@@ -1,7 +1,6 @@
 package monopoly;
 
 import casillas.*;
-import edificios.*;
 import partida.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -195,7 +194,7 @@ public class Tablero {
     }
 
     //Método usado para buscar la casilla con el nombre pasado como argumento:
-    public Casilla encontrar_casilla(String nombre) {
+    public Casilla encontrarCasilla(String nombre) {
         for (ArrayList<Casilla> lado : posiciones) { //Recorremos los lados del tablero
             for (Casilla casilla : lado) { //Recorremos las casillas de casa lado
                 if (casilla.getNombre().equals(nombre)) //Comparamos strings

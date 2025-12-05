@@ -111,14 +111,6 @@ public abstract class Casilla {
         avatares.remove(av);
     }
 
-    /*Método para evaluar qué hacer en una casilla concreta. Parámetros:
-     * - Jugador cuyo avatar está en esa casilla.
-     * - La banca (para ciertas comprobaciones).
-     * - El valor de la tirada: para determinar impuesto a pagar en casillas de servicios.
-     * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
-     * en caso de no cumplirlas.*/
-    public abstract boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada);
-
     /*Método para añadir valor a una casilla. Utilidad:
      * - Sumar valor a la casilla de parking.
      * - Sumar valor a las casillas de solar al no comprarlas tras cuatro vueltas de todos los jugadores.
@@ -139,6 +131,14 @@ public abstract class Casilla {
     public boolean estaAvatar() {
         return !avatares.isEmpty();
     }
+
+    /*Método para evaluar qué hacer en una casilla concreta. Parámetros:
+     * - Jugador cuyo avatar está en esa casilla.
+     * - La banca (para ciertas comprobaciones).
+     * - El valor de la tirada: para determinar impuesto a pagar en casillas de servicios.
+     * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
+     * en caso de no cumplirlas.*/
+    public abstract boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada);
 
     @Override //Sobreescritura del método equals
     public boolean equals(Object o) {
