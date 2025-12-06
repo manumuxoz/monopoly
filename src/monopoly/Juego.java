@@ -983,7 +983,7 @@ public class Juego implements Comando {
     }
 
     private void estadisticas(String partes[]){
-        if (!(partes[1].equalsIgnoreCase(""))) {
+        if (!((partes[1].equalsIgnoreCase("jugadores")) || (partes[1].equalsIgnoreCase("enventa") || partes[1].equalsIgnoreCase("edificios")) || (partes[2].equalsIgnoreCase("jugadores"))) && !(partes[2].equalsIgnoreCase("grupo"))) {
             throw new ExcepcionArgumento("Uso: listar jugadores/edificios/enventa");
         }
         if(partes.length == 2){
