@@ -60,18 +60,6 @@ public final class Solar extends Propiedad {
     public ArrayList<Edificio> getEdificios() {
         return edificios;
     }
-    public int  getNumCasas() {
-        return numCasas;
-    }
-    public boolean getHotel() {
-        return hotel;
-    }
-    public boolean getPiscina() {
-        return piscina;
-    }
-    public boolean getPistaDeporte() {
-        return pistaDeporte;
-    }
     public boolean getHipotecado() {
         return hipotecado;
     }
@@ -99,31 +87,30 @@ public final class Solar extends Propiedad {
 
     //Método para cambiar el valor del alquiler de las casillas de tipo 'Solar'
     private void incrementarAlquiler() {
-        if (numCasas > 0) setImpuesto(alquilerCasa * numCasas);
+        if (contarCasas() > 0) setImpuesto(alquilerCasa * contarCasas());
 
-        if (hotel) setImpuesto(alquilerHotel);
+        if (existeHotel()) setImpuesto(alquilerHotel);
 
-        if (piscina) setImpuesto(alquilerHotel + alquilerPiscina);
+        if (existePiscina()) setImpuesto(alquilerHotel + alquilerPiscina);
 
-        if (pistaDeporte) setImpuesto(alquilerHotel + alquilerPiscina + alquilerPistaDeporte);
+        if (existePistaDeporte()) setImpuesto(alquilerHotel + alquilerPiscina + alquilerPistaDeporte);
     }
 
     //Método para cambiar el valor del alquiler de las casillas de tipo 'Solar'
     private void decrementarAlquiler() {
-        if (!pistaDeporte) setImpuesto(alquilerHotel + alquilerPiscina);
+        if (!existePistaDeporte()) setImpuesto(alquilerHotel + alquilerPiscina);
 
-        if (!piscina) setImpuesto(alquilerHotel);
+        if (!existePiscina()) setImpuesto(alquilerHotel);
 
-        if (!hotel) setImpuesto(alquilerCasa * numCasas);
+        if (!existeHotel()) setImpuesto(alquilerCasa * contarCasas());
 
-        if (numCasas == 0) setImpuesto(impuestoInicial);
+        if (contarCasas() == 0) setImpuesto(impuestoInicial);
     }
 
 
 
     //Método para eliminar las casas de una casilla
     private void eliminarCasas(ArrayList<Edificio> edificiosCreados) {
-        numCasas = 0;
         edificiosCreados.removeIf(edificio -> edificio.getSolar().equals(this) && edificio.getTipo().equals("casa"));
         edificios.removeIf(edificio -> edificio.getSolar().equals(this) && edificio.getTipo().equals("casa"));
     }
@@ -171,13 +158,13 @@ public final class Solar extends Propiedad {
         if (!edificios.isEmpty()) {
             switch (tipoEdificio) {
                 case "casa": case "casas":
-                    if (hotel) {
+                    if (existeHotel()) {
                         sb.append("No se pueden vender casas en ").append(getNombre()).append(". Antes hay que vender el hotel");
                         break;
                     }
-                    if (cantidad > numCasas) {
-                        sb.append("Solamente se pueden vender " + numCasas + " casas");
-                        cantidad = numCasas;
+                    if (cantidad > contarCasas()) {
+                        sb.append("Solamente se pueden vender " + contarCasas() + " casas");
+                        cantidad = contarCasas();
                     } else
                         sb.append(getDuenho().getNombre()).append(" ha vendido ").append(cantidad).append(" casas en ").append(getNombre());
 
@@ -186,11 +173,11 @@ public final class Solar extends Propiedad {
                     break;
 
                 case "hotel":
-                    if (!hotel) {
+                    if (!existeHotel()) {
                         sb.append(getNombre()).append(" no tiene ningún hotel construido");
                         break;
                     }
-                    if (piscina) {
+                    if (existePiscina()) {
                         sb.append("No se puede vender el hotel en ").append(getNombre()).append(". Antes hay que vender la piscina");
                         break;
                     }
@@ -203,11 +190,11 @@ public final class Solar extends Propiedad {
                     break;
 
                 case "piscina":
-                    if (!piscina) {
+                    if (!existePiscina()) {
                         sb.append(getNombre()).append(" no tiene ninguna piscina construida");
                         break;
                     }
-                    if (pistaDeporte) {
+                    if (existePistaDeporte()) {
                         sb.append("No se puede vender la piscina en ").append(getNombre()).append(". Antes hay que vender la pista de deporte");
                         break;
                     }
@@ -220,7 +207,7 @@ public final class Solar extends Propiedad {
                     break;
 
                 case "pista":
-                    if (!pistaDeporte) {
+                    if (!existePistaDeporte()) {
                         sb.append(getNombre()).append(" no tiene ninguna pista de deporte construida");
                         break;
                     }
@@ -241,13 +228,12 @@ public final class Solar extends Propiedad {
 
     //Método para vender casas
     private float venderCasas(int cantidad, ArrayList<Edificio> edificiosCreados) {
-        int numCasasInicial = numCasas;
+        int numCasasInicial = contarCasas();
         float venta = cantidad * valorCasa;
         getDuenho().sumarFortuna(venta);
         eliminarCasas(edificiosCreados);
         getDuenho().sumarPatrimonio(-(cantidad * valorCasa));
         for (int i = 0; i < (numCasasInicial - cantidad); i++) {
-            numCasas++;
             edificios.add(new Casa());
         }
         decrementarAlquiler();
@@ -261,12 +247,10 @@ public final class Solar extends Propiedad {
         getDuenho().sumarPatrimonio(-valorHotel);
         edificios.removeIf(edificio -> edificio.getTipo().equals("hotel"));
         edificiosCreados.removeIf(edificio -> edificio.getSolar().equals(this) && edificio.getTipo().equals("hotel"));
-        hotel = false;
         edificios.add(new Casa()); //Volvemos a edificar las 4 casas
         edificios.add(new Casa());
         edificios.add(new Casa());
         edificios.add(new Casa());
-        numCasas = 4;
         decrementarAlquiler();
         return venta;
     }
@@ -278,7 +262,6 @@ public final class Solar extends Propiedad {
         getDuenho().sumarPatrimonio(-valorPiscina);
         edificios.removeIf(edificio -> edificio.getTipo().equals("piscina"));
         edificiosCreados.removeIf(edificio -> edificio.getSolar().equals(this) && edificio.getTipo().equals("piscina"));
-        piscina = false;
         decrementarAlquiler();
         return venta;
     }
@@ -290,7 +273,6 @@ public final class Solar extends Propiedad {
         getDuenho().sumarPatrimonio(-valorPistaDeporte);
         edificios.removeIf(edificio -> edificio.getTipo().equals("pista"));
         edificiosCreados.removeIf(edificio -> edificio.getSolar().equals(this) && edificio.getTipo().equals("pista"));
-        piscina = false;
         decrementarAlquiler();
         return venta;
     }
@@ -298,10 +280,10 @@ public final class Solar extends Propiedad {
     //Método para imprimir edificios restantes después de una venta
     private String imprimirEdificiosRestantes() {
         StringBuilder sb = new StringBuilder();
-        if (numCasas > -1) sb.append(numCasas).append(" casas");
-        if (hotel) sb.append(", 1 hotel");
-        if (piscina) sb.append(", 1 piscina");
-        if (pistaDeporte) sb.append(", 1 pista de deporte");
+        if (contarCasas() > -1) sb.append(contarCasas()).append(" casas");
+        if (existeHotel()) sb.append(", 1 hotel");
+        if (existePiscina()) sb.append(", 1 piscina");
+        if (existePistaDeporte()) sb.append(", 1 pista de deporte");
         return sb.toString();
     }
 

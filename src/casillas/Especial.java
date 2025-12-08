@@ -32,6 +32,22 @@ public final class Especial extends Casilla {
 
     @Override
     public boolean evaluarCasilla(Jugador jugador, Jugador banca, int tirada){
+        sumarFrecuenciaVisita();
+        if (getNombre().equals("Parking")) {
+            if (getImpuesto() > 0) {
+                jugador.sumarFortuna(getImpuesto());
+                jugador.sumarPremios(getImpuesto());
+                System.out.println("El jugador " + jugador.getNombre() + " recibe por caer en el parking " + (int)getImpuesto() + "€ del bote acumulado de impuestos.");
+                setImpuesto(0);
+            }
+            return true;
+        } else if (getNombre().equals("IrCarcel")) {
+            // Retornamos false para indicar que se debe manejar el encarcelamiento externamente
+            return false;
+        }
         return true;
+        // Para IrCarcel, no hacemos nada aquí porque se maneja en lanzarDados()
     }
+
+
 }
