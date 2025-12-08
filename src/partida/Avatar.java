@@ -55,8 +55,9 @@ public class Avatar {
     * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
      */
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
-        Casilla casillaActual = lugar;
-        float posicionActual = casillaActual.getPosicion();
+        lugar.eliminarAvatar(this);
+
+        float posicionActual = lugar.getPosicion();
         float nuevaPosicion = (posicionActual + valorTirada) % 40;
         Casilla nuevaCasilla = null;
 
@@ -65,29 +66,17 @@ public class Avatar {
             for (Casilla casilla : lado) {
                 if (casilla.getPosicion() == nuevaPosicion) {
                     nuevaCasilla = casilla;
+                    break;
                 }
             }
         }
 
-        if (nuevaCasilla == null){
-            System.out.println("Esta casilla no existe.");
-            return;
-        }
-
-        // Mostrar movimiento básico
-        System.out.println("El avatar " + id + " avanza " + valorTirada +
-                " posiciones, desde " + casillaActual.getNombre() + " hasta " +
-                nuevaCasilla.getNombre() + ".");
-
-        // Mover avatar
-        casillaActual.eliminarAvatar(this);
-        this.setLugar(nuevaCasilla);
+        lugar = nuevaCasilla;
         nuevaCasilla.anhadirAvatar(this);
 
         if (nuevaPosicion < posicionActual && !getJugador().getEnCarcel()){
             getJugador().sumarFortuna(2000000);
             getJugador().sumarVueltas(1);
-            System.out.println("\nEl jugador " + getJugador().getNombre() + " pasa por la casilla de salida y recibe 2000000$.\n");
         }
     }
 

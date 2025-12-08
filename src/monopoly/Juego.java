@@ -488,6 +488,8 @@ public class Juego implements Comando {
             manejarDobles(actual,tirada1 == tirada2);
             manejarAvatar(actual.getAvatar(), valorTirada);
         }
+
+        consola.imprimir(imprimirPosiciones());
     }
 
     //Método para saber si un jugador puede tirar
@@ -535,37 +537,31 @@ public class Juego implements Comando {
 
     //Método para manejar las acciones del avatar
     private void manejarAvatar(Avatar avActual, int valorTirada) {
+        Casilla anterior = avActual.getLugar();
+
         avActual.moverAvatar(tablero.getPosiciones(), valorTirada);
 
-        Casilla nuevaCasilla = avActual.getLugar();
+        Casilla nueva = avActual.getLugar();
 
-        //Sumamos bote al parking en caso de caer en una casilla de tipo 'Impuesto'
-        if (nuevaCasilla.getTipo().equals("Impuesto"))
-            tablero.encontrarCasilla("Parking").sumarValor(nuevaCasilla.getImpuesto());
+        StringBuilder sb = new StringBuilder();
+        if (anterior.getPosicion() > nueva.getPosicion())
+            sb.append(avActual.getJugador().getNombre()).append(" pasa por la casilla de salida y recibe 2000000$.");
 
-        if (nuevaCasilla.getTipo().equals("Suerte") || nuevaCasilla.getTipo().equals("Caja"))
-            manejarAcciones(nuevaCasilla.getTipo());
+        consola.imprimir("El avatar " + avActual.getId() + " avanza " + valorTirada + " posiciones, desde " +
+                anterior.getNombre() + " hasta " + nueva.getNombre() + "." + sb);
+    }
 
-
-        // USAR evaluarCasilla para TODAS las casillas
-        if(!(nuevaCasilla.getTipo().equals("Suerte") && nuevaCasilla.getTipo().equals("Caja"))){
-            boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
-            eliminarEdificiosBanca();
-
-            //Si puede pagar el alquiler realizamos el bucle de venta o impoteca hasta pagarlo
-            if (!solvente && !jugadorActual.getEnBancarrota())
-                ventaOHipoteca(jugadorActual.getDeudaAPagar());
-
-
-            // Si evaluarCasilla retorna false (para IrCarcel), manejar el encarcelamiento
-            if (!solvente && nuevaCasilla.getNombre().equals("IrCarcel")) {
-                jugadorActual.encarcelar(tablero.getPosiciones());
-            }
+    // Método para mostrar por pantalla información de la posición de cada jugador
+    private String imprimirPosiciones() {
+        StringBuilder sb = new StringBuilder().append("=== POSICIONES ACTUALES ===\n");
+        // Imprimimos las posiciones actuales para facilitar el control de los jugadores
+        for (Jugador jugador : jugadores) {
+            Avatar avatar = jugador.getAvatar();
+            sb.append(jugador.getNombre()).append(" (").append(avatar.getId()).append(") en: ").append(avatar.getLugar().getNombre()).append("\n");
         }
+        sb.append("===========================");
 
-
-        // Repintar tablero
-        repintarTablero();
+        return sb.toString();
     }
 
     //Método para leer los comandos de un archivo
@@ -782,22 +778,6 @@ public class Juego implements Comando {
 
         ((Solar)casilla).venderEdificios(tipoEdificio, cantidad, edificios);
     }
-
-    // Método para mostrar por pantalla información de la posición de cada jugador
-    private void repintarTablero() {
-        // Imprimimos las posiciones actuales para facilitar el control de los jugadores
-        consola.imprimir("=== POSICIONES ACTUALES ===");
-        for (Jugador jugador : jugadores) {
-            Avatar avatar = jugador.getAvatar();
-            consola.imprimir(jugador.getNombre() + " (" + avatar.getId() + ") en: " +
-                    avatar.getLugar().getNombre());
-        }
-        consola.imprimir("===========================");
-    }
-
-
-
-
 
 
 
