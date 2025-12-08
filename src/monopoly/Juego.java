@@ -11,6 +11,7 @@ import consola.ConsolaNormal;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import tratos.*;
 
 public class Juego implements Comando {
     //Atributos:
@@ -24,6 +25,7 @@ public class Juego implements Comando {
     private Jugador banca; //El jugador banca.
     public static ConsolaNormal consola;
     private ArrayList<Edificio> edificios; //Edificios creados
+    private ArrayList<Trato> tratos;
     public static int vueltasTotales;
 
 //    /*Método que realiza las acciones asociadas al comando 'describir avatar'.
@@ -64,9 +66,9 @@ public class Juego implements Comando {
         tablero = new Tablero(banca);
         dado1 = new Dado();
         dado2 = new Dado();
-
-        consola = new ConsolaNormal();
         edificios = new ArrayList<>();
+        tratos = new ArrayList<>();
+        consola = new ConsolaNormal();
     }
 
     //Método para inicar la banca
@@ -91,6 +93,8 @@ public class Juego implements Comando {
                     throw new ExcepcionArgumento("Uso: acabar turno");
 
                 acabarTurno();
+                break;
+            case "aceptar":
                 break;
             case "comandos":
                 if (partes.length != 1)
@@ -140,6 +144,8 @@ public class Juego implements Comando {
 
                 edificar(partes[1]);
                 break;
+            case "eliminar":
+                break;
             case "hipotecar":
                 if (!esPartidaIniciada())
                     throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
@@ -178,6 +184,10 @@ public class Juego implements Comando {
                     throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
 
                 salirCarcel();
+                break;
+            case "trato":
+                break;
+            case "tratos":
                 break;
             case "vender":
                 if (!esPartidaIniciada())
@@ -941,4 +951,53 @@ public class Juego implements Comando {
         return tablero.toString();
     }
 
+    private void proponerTrato(String partes[]) throws Excepcion{
+        Jugador solicitante = jugadores.get(turno);
+        Jugador receptor = null;
+
+        for(Jugador jugador: jugadores)
+            if (jugador.getNombre().equals(partes[1]))
+                receptor = jugador;
+
+        if(receptor == null)
+            throw new ExcepcionArgumento("Este jugador no existe");
+
+        if(partes.length==5) {
+            Casilla casillaSolicitante = tablero.encontrarCasilla(partes[3]);
+            if (solicitante.getPropiedades().contains((Propiedad) casillaSolicitante) && receptor.getFortuna() >= Integer.parseInt(partes[4])) {
+                //sabemos que es propiedad por dinero
+            }
+
+            Casilla casillaReceptor = tablero.encontrarCasilla(partes[4]);
+
+            if (casillaSolicitante == null) {
+                throw new ExcepcionArgumento("La casilla del solicitante no existe");
+            }
+            if (casillaReceptor == null){
+                throw new ExcepcionArgumento("La casilla del receptor no existe");
+            }
+
+
+            if (((Propiedad) casillaSolicitante).perteneceAJugador(solicitante) && receptor.getPropiedades().contains((Propiedad) casillaReceptor)) {
+                tratos.add(new Trato(solicitante, receptor, (Propiedad)casillaSolicitante, (Propiedad)casillaReceptor,0, 0, tratos));
+            }
+
+            if (((Propiedad) casillaReceptor).perteneceAJugador(receptor) && solicitante.getFortuna() >= Integer.parseInt(partes[4])) {
+                tratos.add(new Trato(solicitante, receptor, null, (Propiedad)casillaReceptor, Integer))
+            }
+        }
+
+
+        if(partes.length == 6){
+            Casilla casillaSolicitante = tablero.encontrarCasilla(partes[3]);
+            Casilla casillaReceptor = tablero.encontrarCasilla(partes[4]);
+            Casilla casillaReceptor2 = tablero.encontrarCasilla(partes[5]);
+            if(solicitante.getPropiedades().contains((Propiedad)casillaSolicitante) && receptor.getPropiedades().contains((Propiedad)casillaReceptor) && receptor.getFortuna()>=Integer.parseInt(partes[5])){
+                //sabemos que es propiedad por propiedad y dinero
+            }
+            if(solicitante.getPropiedades().contains((Propiedad)casillaSolicitante) && receptor.getPropiedades().contains((Propiedad)casillaReceptor2) && receptor.getFortuna()>=Integer.parseInt(partes[4])){
+                //sabemos que es propiedad por dinero y propiedad
+            }
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package casillas;
+
 import partida.*;
+import static monopoly.Juego.consola;
 
 public final class Parking extends Accion {
     private float bote;
@@ -8,10 +10,6 @@ public final class Parking extends Accion {
 
     public Parking(int posicion, Jugador duenho) {
         super("Parking", posicion, duenho);
-    }
-
-    public float getBote() {
-        return bote;
     }
 
     private String jugadoresEnCasilla(){
@@ -32,13 +30,16 @@ public final class Parking extends Accion {
 
     @Override
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
-        float impuesto = getImpuesto();
-        if (impuesto > 0) {
-            actual.sumarFortuna(impuesto);
-            actual.sumarPremios(impuesto);
-            System.out.println("El jugador " + actual.getNombre() + " recibe por caer en el parking " + (int)impuesto + "€ del bote acumulado de impuestos.");
-            setImpuesto(0);
-        }
+        sumarFrecuenciaVisita();
+
+        actual.sumarFortuna(bote);
+        actual.sumarPremios(bote);
+
+        if (bote > 0)
+            consola.imprimir("El jugador " + actual.getNombre() + " recibe por caer en el Parking " + (int)bote + "$ del bote acumulado de impuestos.");
+
+        bote = 0;
+
         return true;
     }
     @Override

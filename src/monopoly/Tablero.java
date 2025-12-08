@@ -246,4 +246,7 @@ public class Tablero {
             }
         }
     }
+
+    public Casilla encontrar() {
+    }
 }

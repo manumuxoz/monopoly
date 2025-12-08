@@ -19,8 +19,6 @@ public final class Solar extends Propiedad {
     private ArrayList<Edificio> edificios;
     private boolean hipotecado;
     private float hipoteca; //Valor otorgado por hipotecar una casilla
-    private float impuestoInicial;
-    private Grupo grupo;
 
     public Solar() {}
 
@@ -32,7 +30,6 @@ public final class Solar extends Propiedad {
         this.alquilerHotel = alquilerHotel;
         this.alquilerPiscina = alquilerPiscina;
         this.alquilerPistaDeporte = alquilerPistaDeporte;
-        impuestoInicial = alquiler;
         edificios = new ArrayList<>();
     }
 
@@ -198,9 +195,8 @@ public final class Solar extends Propiedad {
         eliminarCasas(edificiosCreados);
         getDuenho().sumarPatrimonio(-(cantidad * valorCasa));
         for (int i = 0; i < (numCasasInicial - cantidad); i++) {
-            edificios.add(new Casa());
+            edificios.add(new Casa(getDuenho(),this, edificiosCreados));
         }
-        decrementarAlquiler();
         return venta;
     }
 
@@ -211,11 +207,11 @@ public final class Solar extends Propiedad {
         getDuenho().sumarPatrimonio(-valorHotel);
         edificios.removeIf(edificio -> edificio.getTipo().equals("hotel"));
         edificiosCreados.removeIf(edificio -> edificio.getSolar().equals(this) && edificio.getTipo().equals("hotel"));
-        edificios.add(new Casa()); //Volvemos a edificar las 4 casas
-        edificios.add(new Casa());
-        edificios.add(new Casa());
-        edificios.add(new Casa());
-        decrementarAlquiler();
+        getDuenho().getEdificios().removeIf(edificio -> edificio.getSolar().equals(this) && edificio.getTipo().equals("hotel"));
+        edificios.add(new Casa(getDuenho(), this, edificiosCreados)); //Volvemos a edificar las 4 casas
+        edificios.add(new Casa(getDuenho(), this, edificiosCreados));
+        edificios.add(new Casa(getDuenho(), this, edificiosCreados));
+        edificios.add(new Casa(getDuenho(), this, edificiosCreados));
         return venta;
     }
 
@@ -226,7 +222,7 @@ public final class Solar extends Propiedad {
         getDuenho().sumarPatrimonio(-valorPiscina);
         edificios.removeIf(edificio -> edificio.getTipo().equals("piscina"));
         edificiosCreados.removeIf(edificio -> edificio.getSolar().equals(this) && edificio.getTipo().equals("piscina"));
-        decrementarAlquiler();
+        getDuenho().getEdificios().removeIf(edificio -> edificio.getSolar().equals(this) && edificio.getTipo().equals("piscina"));
         return venta;
     }
 
@@ -237,7 +233,7 @@ public final class Solar extends Propiedad {
         getDuenho().sumarPatrimonio(-valorPistaDeporte);
         edificios.removeIf(edificio -> edificio.getTipo().equals("pista"));
         edificiosCreados.removeIf(edificio -> edificio.getSolar().equals(this) && edificio.getTipo().equals("pista"));
-        decrementarAlquiler();
+        getDuenho().getEdificios().removeIf(edificio -> edificio.getSolar().equals(this) && edificio.getTipo().equals("pista"));
         return venta;
     }
 
@@ -253,7 +249,7 @@ public final class Solar extends Propiedad {
 
     //Método que devuelve el nombre del color de un grupo pasado por argumento
     public String color() {
-        return switch (grupo.getColorGrupo()) {
+        return switch (getGrupo().getColorGrupo()) {
             case BLACK -> "Negro";
             case CYAN -> "Cian";
             case PURPLE -> "Morado";
@@ -269,14 +265,10 @@ public final class Solar extends Propiedad {
     @Override
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
         Jugador duenho = getDuenho();
-        float impuesto = getImpuesto();
 
         sumarFrecuenciaVisita();
-        if (!duenho.equals(banca) && !duenho.equals(actual) && !hipotecado) {
-            float alquiler = impuesto;
-
-            if (this.getGrupo().esDuenhoGrupo(duenho) && edificios.isEmpty()) //Si el duenho tiene el grupo y no tiene casas, paga el doble del alquiler inicila
-                alquiler = 2 * impuesto;
+        if (!perteneceAJugador(banca) && !perteneceAJugador(actual) && !hipotecado) {
+            float alquiler = alquiler();
 
             if (!actual.enBancarrota(alquiler, duenho) && actual.getFortuna() >= alquiler) {
                 actual.sumarGastos(alquiler);
@@ -352,7 +344,21 @@ public final class Solar extends Propiedad {
 
     @Override
     public float alquiler(){
-        return getImpuesto();
+        float alquiler = getImpuesto();
+        int numCasas = contarCasas();
+
+        if (getGrupo().esDuenhoGrupo(getDuenho()))
+            alquiler *= 2;
+        else if (numCasas > 0)
+            alquiler = numCasas * alquilerCasa;
+        else if (existeHotel())
+            alquiler = alquilerHotel;
+        else if (existePiscina())
+            alquiler = alquilerHotel + alquilerPiscina;
+        else if (existePistaDeporte())
+            alquiler = alquilerHotel + alquilerPiscina + alquilerPistaDeporte;
+
+        return alquiler;
     }
 
     //Método para edificar un tipo de edfiicio en un solar
@@ -363,10 +369,10 @@ public final class Solar extends Propiedad {
             if (solar.estaHipotecada())
                 throw new ExcepcionReglas("No se puede edificar en " + getNombre() + ". " + solar.getNombre() + " está hipotecado.");
 
-        if (!solicitante.equals(duenho))
+        if (!perteneceAJugador(solicitante))
             throw new ExcepcionReglas("Esta casilla pertenece a " + getDuenho().getNombre() + ".");
 
-        if (!grupo.esDuenhoGrupo(solicitante))
+        if (!getGrupo().esDuenhoGrupo(solicitante))
             throw new ExcepcionReglas(solicitante.getNombre() + " no posee todas las propiedades del grupo: " + color() + ".");
 
         switch (tipo) {
