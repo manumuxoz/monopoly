@@ -23,10 +23,13 @@ public class Juego implements Comando {
     private Dado dado1; //Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
     private Jugador banca; //El jugador banca.
-    public static ConsolaNormal consola;
     private ArrayList<Edificio> edificios; //Edificios creados
     private ArrayList<Trato> tratos;
     public static int vueltasTotales;
+
+    public static ConsolaNormal consola; //Consola para imprimir/leer por pantalla
+    public static int countCajaComunidad; //Llevar cuenta de las cartas de comunidad
+    public static int countSuerte; //Llevar cuenta de las cartas de suerte
 
 //    /*Método que realiza las acciones asociadas al comando 'describir avatar'.
 //     * Parámetro: id del avatar a describir.
@@ -56,6 +59,27 @@ public class Juego implements Comando {
         }
     }
 
+    //Bucle de venta/hipoteca de bienes para pagar una deuda
+    private void ventaOHipoteca(float cobro) {
+        Jugador actual = jugadores.get(turno);
+
+        while (actual.getFortuna() < cobro) {
+            consola.imprimir("Edificios: " + imprimirPropiedades(actual));
+            consola.imprimir("Propiedades: " + imprimirPropiedades(actual));
+
+            String[] partes = consola.leer("Vender/Hipotecar: ").trim().split("[ +]+"); //Dividimos por partes el comando
+
+            if (partes.length == 2 && partes[0].equals("hipotecar")) hipotecar(partes[1]);
+            else if (partes.length == 4 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
+        }
+
+        consola.imprimir(actual.getNombre() + " ha pagado la deuda: " + cobro + "$.");
+
+        actual.sumarFortuna(-cobro);
+        actual.sumarGastos(cobro);
+        actual.setDeudaAPagar(0); //Reseteamos la deuda
+    }
+
     // Método para inciar una partida: crea la banca, los jugadores y avatares, tablero, dados y consola.
     private void iniciarPartida() {
         banca = new Jugador();
@@ -82,7 +106,7 @@ public class Juego implements Comando {
      * Parámetro: cadena de caracteres (el comando).
      */
     private void analizarComando(String comando) throws Excepcion {
-        String[] partes = comando.trim().split("[ +]+"); //Dividimos por partes el comando
+        String[] partes = comando.trim().split("[ +(),:]+"); //Dividimos por partes el comando
 
         switch (partes[0]) {
             case "acabar":
@@ -186,9 +210,13 @@ public class Juego implements Comando {
                 salirCarcel();
                 break;
             case "trato":
+                if (!esPartidaIniciada())
+                    throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
+                if(partes.length==5 || partes.length==7){
+                    proponerTrato(partes);
+                }
                 break;
-            case "tratos":
-                break;
+
             case "vender":
                 if (!esPartidaIniciada())
                     throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
@@ -497,8 +525,13 @@ public class Juego implements Comando {
 
         Casilla cas = actual.getAvatar().getLugar();
 
-        if (!cas.evaluarCasilla(actual, banca, valorTirada) && !actual.getEnBancarrota())
+        boolean solvente = cas.evaluarCasilla(actual, banca, valorTirada);
+        if (cas.getTipo().equals("Suerte") || cas.getTipo().equals("CajaComunidad"))
+            solvente = actual.getCarta().accion(actual, banca, tablero.getPosiciones(), jugadores);
+
+        if (!solvente && !actual.getEnBancarrota())
             throw new ExcepcionDineroInsuficiente(actual.getNombre() + " debe vender edificios y/o hipotecar propiedades para realizar el pago.", actual.getDeudaAPagar());
+
         else if (actual.getEnBancarrota())
             throw new ExcepcionBancarrota(actual.getNombre() + " está en bancarrota. Todas sus propiedades ahora pertenecen a " + cas.getDuenho().getNombre() + ".");
 
@@ -856,95 +889,12 @@ public class Juego implements Comando {
         return jugadorEnCabeza;
     }
 
-    //Método para manejar las acciones de las casillas de Suerte o Caja de Comunidad
-    private void manejarAcciones(String tipo) {
-        Jugador jugadorActual = jugadores.get(turno);
-
-        if (tipo.equals("Suerte")){ //Acciones para Suerte
-            cartas.Suerte suerte = new cartas.Suerte();
-            consola.imprimir(jugadorActual.getNombre() + " elige una carta: " + (countAccionesSuerte + 1) + ".");
-            switch (countAccionesSuerte) { //Elegimos acción
-                case 0: suerte.avanzaSolar(jugadorActual, (Solar)tablero.encontrarCasilla("Solar19")); break;
-                case 1: suerte.veCarcel(jugadorActual, tablero.getPosiciones()); break;
-                case 2: suerte.boteLoteria(jugadorActual); break;
-                case 3:
-                    consola.imprimir("Has sido elegido presidente de la junta directiva. Paga a cada jugador 250.000€.");
-
-                    float cobro = 250000 * jugadores.size() - 1;
-
-                    if (jugadorActual.enBancarrota(cobro, banca)) return;
-
-                    ventaOHipoteca(cobro);
-
-                    suerte.elegidoPresidente(jugadorActual, jugadores); break;
-                case 4: suerte.retrocedeTres(jugadorActual, tablero.getPosiciones()); break;
-                case 5:
-                    consola.imprimir("Te multan por usar el móvil mientras conduces. Paga 150.000€.");
-
-                    if (jugadorActual.enBancarrota(150000, banca)) return;
-
-                    ventaOHipoteca(150000);
-
-                    tablero.encontrarCasilla("Parking").setImpuesto(tablero.encontrarCasilla("Parking").getImpuesto() + 150000);
-
-                    suerte.multa(jugadorActual); break;
-                case 6:
-                    suerte.avanzaTransporte(jugadorActual, tablero.getPosiciones());
-
-                    jugadorActual.getAvatar().getLugar().evaluarCasilla(jugadorActual, banca, 0);break;
-                default: break;
-            }
-            countAccionesSuerte = (countAccionesSuerte + 1)%6; //Llevamos cuenta de las cartas
-        } else { //Acciones para Caja
-            cartas.CajaComunidad caja = new cartas.CajaComunidad();
-            consola.imprimir(jugadorActual.getNombre() + " elige una carta: " + (countAccionesCaja + 1) + ".");
-            switch (countAccionesCaja) { //Elegimos acción
-                case 0:
-                    consola.imprimir("Paga 500.000€ por un fin de semana en un balneario de 5 estrellas.");
-
-                    if (jugadorActual.enBancarrota(50000, banca)) return;
-
-                    ventaOHipoteca(50000);
-
-                    caja.balneario(jugadorActual); break;
-                case 1:
-                    caja.veCarcel(jugadorActual, tablero.getPosiciones()); break;
-                case 2:
-                    caja.colocateSalida(jugadorActual, tablero.encontrarCasilla("Salida")); break;
-                case 3:
-                    caja.devolucionHacienda(jugadorActual); break;
-                case 4: caja.retrocedeSolar1(jugadorActual, (Solar)tablero.encontrarCasilla("Solar1")); break;
-                case 5: caja.avanzaSolar(jugadorActual, (Solar)tablero.encontrarCasilla("Solar20")); break;
-                default: break;
-            }
-            countAccionesCaja = (countAccionesCaja + 1)%5;
-        }
-        eliminarEdificiosBanca();
-    }
-
-
     //Método para eliminar los edificios retirados a un jugador en bancarrota
     private void eliminarEdificiosBanca() {
         edificios.removeIf(edificio -> edificio.getDuenho().equals(banca));
     }
 
-    private void ventaOHipoteca(float cobro) {
-        Jugador actual = jugadores.get(turno);
 
-        while (actual.getFortuna() < cobro) {
-            consola.imprimir("Edificios: " + imprimirPropiedades(actual));
-            consola.imprimir("Propiedades: " + imprimirPropiedades(actual));
-
-            String[] partes = consola.leer("Vender/Hipotecar: ").trim().split("[ +]+"); //Dividimos por partes el comando
-
-            if (partes.length == 2 && partes[0].equals("hipotecar")) hipotecar(partes[1]);
-            else if (partes.length == 4 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
-        }
-
-        consola.imprimir(actual.getNombre() + " ha pagado la deuda: " + cobro + "$.");
-
-        actual.setDeudaAPagar(0); //Reseteamos la deuda
-}
 
     @Override
     public String verTablero() {
@@ -964,40 +914,72 @@ public class Juego implements Comando {
 
         if(partes.length==5) {
             Casilla casillaSolicitante = tablero.encontrarCasilla(partes[3]);
-            if (solicitante.getPropiedades().contains((Propiedad) casillaSolicitante) && receptor.getFortuna() >= Integer.parseInt(partes[4])) {
-                //sabemos que es propiedad por dinero
-            }
-
             Casilla casillaReceptor = tablero.encontrarCasilla(partes[4]);
 
-            if (casillaSolicitante == null) {
-                throw new ExcepcionArgumento("La casilla del solicitante no existe");
+            if (casillaSolicitante == null && esNumero(partes[4])) {
+                if (((Propiedad) casillaReceptor).perteneceAJugador(receptor) && solicitante.getFortuna() >= Integer.parseInt(partes[4])) {
+                    //dinero por propiedad
+                    tratos.add(new Trato(solicitante, receptor, null, (Propiedad)casillaReceptor, Integer.parseInt(partes[4]), 0, tratos));
+                    consola.imprimir(receptor.getNombre() + ", ¿te doy " +  Integer.parseInt(partes[4])   + "$ y tu me das " + casillaReceptor.getNombre() + "?");
+
+                }
             }
-            if (casillaReceptor == null){
-                throw new ExcepcionArgumento("La casilla del receptor no existe");
+
+            if (casillaReceptor == null && esNumero(partes[4]) && casillaSolicitante!=null){
+                if (((Propiedad) casillaSolicitante).perteneceAJugador(solicitante) && receptor.getFortuna() >= Integer.parseInt(partes[4])) {
+                    //propiedad por dinero
+                    tratos.add(new Trato(solicitante, receptor, (Propiedad)casillaSolicitante, null, 0, Integer.parseInt(partes[4]), tratos));
+                    consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre()  + " y tu me das " +  Integer.parseInt(partes[4]) + "$?");
+
+                }
             }
 
 
-            if (((Propiedad) casillaSolicitante).perteneceAJugador(solicitante) && receptor.getPropiedades().contains((Propiedad) casillaReceptor)) {
-                tratos.add(new Trato(solicitante, receptor, (Propiedad)casillaSolicitante, (Propiedad)casillaReceptor,0, 0, tratos));
+            if (casillaReceptor!=null && casillaSolicitante!=null) {
+                if (((Propiedad) casillaSolicitante).perteneceAJugador(solicitante) && ((Propiedad) casillaReceptor).perteneceAJugador(receptor)) {
+                    //propiedad por propiedad
+                    tratos.add(new Trato(solicitante, receptor, (Propiedad) casillaSolicitante, (Propiedad) casillaReceptor, 0, 0, tratos));
+                    consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre() + " y tu me das " + casillaReceptor.getNombre() + "?");
+                }
             }
 
-            if (((Propiedad) casillaReceptor).perteneceAJugador(receptor) && solicitante.getFortuna() >= Integer.parseInt(partes[4])) {
-                tratos.add(new Trato(solicitante, receptor, null, (Propiedad)casillaReceptor, Integer))
-            }
+
         }
 
-
-        if(partes.length == 6){
+        if(partes.length == 7){
             Casilla casillaSolicitante = tablero.encontrarCasilla(partes[3]);
             Casilla casillaReceptor = tablero.encontrarCasilla(partes[4]);
-            Casilla casillaReceptor2 = tablero.encontrarCasilla(partes[5]);
-            if(solicitante.getPropiedades().contains((Propiedad)casillaSolicitante) && receptor.getPropiedades().contains((Propiedad)casillaReceptor) && receptor.getFortuna()>=Integer.parseInt(partes[5])){
-                //sabemos que es propiedad por propiedad y dinero
+            Casilla casillaReceptor2 = tablero.encontrarCasilla(partes[6]);
+
+            if (casillaReceptor2 == null && casillaReceptor !=null && esNumero(partes[6])){
+                if(((Propiedad)casillaSolicitante).perteneceAJugador(solicitante) && ((Propiedad)casillaReceptor).perteneceAJugador(receptor) && receptor.getFortuna()>=Integer.parseInt(partes[5])){
+                    //sabemos que es propiedad por propiedad y dinero
+                    tratos.add(new Trato(solicitante, receptor, (Propiedad)casillaSolicitante, (Propiedad)casillaReceptor, 0, Integer.parseInt(partes[6]), tratos));
+                    consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre()  + " y tu me das " +  Integer.parseInt(partes[4]) + "$ y" + casillaReceptor.getNombre() + "?");
+                }
             }
-            if(solicitante.getPropiedades().contains((Propiedad)casillaSolicitante) && receptor.getPropiedades().contains((Propiedad)casillaReceptor2) && receptor.getFortuna()>=Integer.parseInt(partes[4])){
-                //sabemos que es propiedad por dinero y propiedad
+
+            if(casillaReceptor == null && casillaReceptor2 !=null && esNumero(partes[4])) {
+                if (((Propiedad) casillaSolicitante).perteneceAJugador(solicitante) && ((Propiedad) casillaReceptor2).perteneceAJugador(receptor) && receptor.getFortuna() >= Integer.parseInt(partes[4])) {
+                    //sabemos que es propiedad por dinero y propiedad
+                    tratos.add(new Trato(solicitante, receptor, (Propiedad) casillaSolicitante, (Propiedad) casillaReceptor2, 0, Integer.parseInt(partes[4]), tratos));
+                    consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre()  + " y tu me das " +  Integer.parseInt(partes[4]) + "$ y" + casillaReceptor2.getNombre() + "?");
+                }
             }
         }
+    }
+
+    private boolean esNumero(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+
+        for (int i = 0; i < str.length(); i++) {
+            if (!Character.isDigit(str.charAt(i))) {
+                return false; // Si algún carácter no es dígito, no es número
+            }
+        }
+
+        return true; // Todos los caracteres son dígitos
     }
 }

@@ -2,6 +2,8 @@ package partida;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
+import cartas.Carta;
 import casillas.*;
 import edificios.*;
 import static monopoly.Valor.*;
@@ -30,6 +32,7 @@ public class Jugador {
     private float patrimonio;
     private boolean enBancarrota;
     private float deudaAPagar;
+    private Carta carta;
 
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
@@ -93,6 +96,9 @@ public class Jugador {
     public float getPatrimonio(){return patrimonio;}
     public boolean getEnBancarrota(){return enBancarrota;}
     public float getDeudaAPagar() {return deudaAPagar;}
+    public Carta getCarta() {
+        return carta;
+    }
 
     //Setters:
     public void setNombre(String nombre) {
@@ -115,6 +121,9 @@ public class Jugador {
     }
     public void setPropiedades(ArrayList<Propiedad> propiedades) {
         this.propiedades = propiedades;
+    }
+    public void setCarta(Carta carta) {
+        this.carta = carta;
     }
 
     //Otros métodos:
@@ -244,4 +253,6 @@ public class Jugador {
         Jugador jugador = (Jugador) o;
         return Objects.equals(nombre, jugador.nombre);
     }
+
+
 }

@@ -111,7 +111,9 @@ public abstract class Casilla {
 
     /*Método para mostrar información sobre una casilla.
      * Devuelve una cadena con información específica de cada tipo de casilla.*/
-    public abstract String infoCasilla();
+    public String infoCasilla() {
+        return "";
+    }
 
     public void sumarFrecuenciaVisita(){frecuenciaVisita++;}
 

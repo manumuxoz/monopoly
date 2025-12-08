@@ -34,12 +34,10 @@ public final class Parking extends Accion {
 
         actual.sumarFortuna(bote);
         actual.sumarPremios(bote);
-
         if (bote > 0)
             consola.imprimir("El jugador " + actual.getNombre() + " recibe por caer en el Parking " + (int)bote + "$ del bote acumulado de impuestos.");
 
         bote = 0;
-
         return true;
     }
     @Override

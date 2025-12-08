@@ -6,13 +6,21 @@ import partida.Jugador;
 import java.util.ArrayList;
 
 public abstract class Carta {
-    private String tipo;
+    private Jugador duenho;
+    private String tipo; //Tipo de carta
+    private int num; //Número de carta
 
     public Carta() {}
 
-    public Carta(String tipo) {
+    public Carta(String tipo, int num, Jugador duenho) {
         this.tipo = tipo;
+        this.num = num;
+        this.duenho = duenho;
     }
 
-    protected abstract void accion(Jugador actual, Casilla casilla, ArrayList<ArrayList<Casilla>> posiciones, ArrayList<Jugador> jugadores, int numero);
+    public int getNum() {
+        return num;
+    }
+
+    public abstract boolean accion(Jugador actual, Jugador banca, ArrayList<ArrayList<Casilla>> posiciones, ArrayList<Jugador> jugadores);
 }

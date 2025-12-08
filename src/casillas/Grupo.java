@@ -67,8 +67,4 @@ public final class Grupo extends Casilla {
         return jugador.getPropiedades().containsAll(miembros);
     }
 
-    @Override
-    public String infoCasilla(){
-        return "";
-    }
 }
