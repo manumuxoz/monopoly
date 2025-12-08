@@ -22,12 +22,9 @@ public class Juego implements Comando {
     private Dado dado1; //Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
     private Jugador banca; //El jugador banca.
-    private ConsolaNormal consola;
-
-    //Atributos nuevos:
+    public static ConsolaNormal consola;
     private ArrayList<Edificio> edificios; //Edificios creados
-    private int countAccionesSuerte; //Método para contar las cartas de suerte
-    private int countAccionesCaja; //Método para contar las cartas de caja de comunidad
+    public static int vueltasTotales;
 
 //    /*Método que realiza las acciones asociadas al comando 'describir avatar'.
 //     * Parámetro: id del avatar a describir.
@@ -43,17 +40,16 @@ public class Juego implements Comando {
     public Juego() {
         iniciarPartida();
 
-        String comando;
         while (true) {
-            comando = consola.leer("Introduce un comando: ");
-            consola.imprimir("Comando: " + comando);
-
             try {
-                analizarComando(comando);
-            } catch (Excepcion e) {
+                analizarComando(consola.leer("Introduce un comando: "));
+            } catch (ExcepcionArgumento | ExcepcionReglas | ExcepcionBancarrota e) {
                 consola.imprimir(e.getMessage());
+            } catch (ExcepcionDineroInsuficiente e) {
+                consola.imprimir(e.getMessage());
+                ventaOHipoteca(e.getCobro());
             } catch (RuntimeException e) {
-                consola.imprimir("Error: " + e.getMessage());
+            consola.imprimir("Error: " + e.getMessage());
             }
         }
     }
@@ -164,7 +160,7 @@ public class Juego implements Comando {
                     throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
 
                 if (!(partes.length == 2 || partes.length == 4) || !partes[1].equals("dados"))
-                    throw new ExcepcionArgumento("Uso: lanzar  (x+y");
+                    throw new ExcepcionArgumento("Uso: lanzar  (x+y)");
 
                 if (partes.length == 2)
                     lanzarDados(-1,-1);
@@ -290,7 +286,7 @@ public class Juego implements Comando {
         ((Propiedad) casilla).comprarCasilla(actual, banca);
 
         consola.imprimir("El jugador " + actual.getNombre() + " compra la casilla " + casilla.getNombre() + " por "
-                + casilla.getValor() + "$. Su fortuna actual es " + actual.getFortuna() + "$.");
+                + ((Propiedad) casilla).valor() + "$. Su fortuna actual es " + actual.getFortuna() + "$.");
     }
 
     /* Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
@@ -334,7 +330,7 @@ public class Juego implements Comando {
         StringBuilder sb = new StringBuilder().append("[");
         String separador = "";
         for (Propiedad propiedad : jugador.getPropiedades()) {
-            if(!((Solar) propiedad).getHipotecado()) {
+            if(!((Solar) propiedad).estaHipotecada()) {
                 sb.append(separador).append(propiedad.getNombre());
                 separador = ", ";
             }
@@ -389,7 +385,7 @@ public class Juego implements Comando {
 
         StringBuilder sb = new StringBuilder();
         for (Solar s : hipoteca.getGrupo().getMiembros()) {
-            if (s.getHipotecado()) {
+            if (s.estaHipotecada()) {
                 sb.append("Aún no puede recibir alquileres en el grupo: ").append(s.color()).append(". Quedan solares sin desipotecar.");
                 break;
             }
@@ -439,7 +435,7 @@ public class Juego implements Comando {
         if (hipoteca == null)  //Si no se ha asignado, es que no existe
             throw new ExcepcionArgumento("Error: No existe la casilla " + nombreCasilla + ".");
 
-        if (!hipoteca.getDuenho().equals(actual)) //Comprobamos que sea el jugador actual el dueño de la casilla
+        if (!((Propiedad) hipoteca).perteneceAJugador(actual)) //Comprobamos que sea el jugador actual el dueño de la casilla
             throw new ExcepcionReglas(actual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() +
                     ". Esta casilla pertenece a " + hipoteca.getDuenho().getNombre() + ".");
 
@@ -485,9 +481,21 @@ public class Juego implements Comando {
         if (actual.getEnCarcel())
             manejarCarcel(actual, tirada1 == tirada2);
         else {
-            manejarDobles(actual,tirada1 == tirada2);
-            manejarAvatar(actual.getAvatar(), valorTirada);
+            manejarDobles(actual, tirada1 == tirada2);
+            actual.getAvatar().moverAvatar(tablero.getPosiciones(), valorTirada);
         }
+
+        Casilla cas = actual.getAvatar().getLugar();
+
+        if (!cas.evaluarCasilla(actual, banca, valorTirada) && !actual.getEnBancarrota())
+            throw new ExcepcionDineroInsuficiente(actual.getNombre() + " debe vender edificios y/o hipotecar propiedades para realizar el pago.", actual.getDeudaAPagar());
+        else if (actual.getEnBancarrota())
+            throw new ExcepcionBancarrota(actual.getNombre() + " está en bancarrota. Todas sus propiedades ahora pertenecen a " + cas.getDuenho().getNombre() + ".");
+
+        if (cas.equals(tablero.encontrarCasilla("Impuesto")))
+            ((Parking) tablero.encontrarCasilla("Parking")).sumarBote(cas.getImpuesto());
+        else if (cas.equals(tablero.encontrarCasilla("IrCarcel")))
+            actual.encarcelar(tablero.getPosiciones());
 
         consola.imprimir(imprimirPosiciones());
     }
@@ -533,22 +541,6 @@ public class Juego implements Comando {
             }
         } else
             lanzamientos = -1; // Resetear contador si no son dobles
-    }
-
-    //Método para manejar las acciones del avatar
-    private void manejarAvatar(Avatar avActual, int valorTirada) {
-        Casilla anterior = avActual.getLugar();
-
-        avActual.moverAvatar(tablero.getPosiciones(), valorTirada);
-
-        Casilla nueva = avActual.getLugar();
-
-        StringBuilder sb = new StringBuilder();
-        if (anterior.getPosicion() > nueva.getPosicion())
-            sb.append(avActual.getJugador().getNombre()).append(" pasa por la casilla de salida y recibe 2000000$.");
-
-        consola.imprimir("El avatar " + avActual.getId() + " avanza " + valorTirada + " posiciones, desde " +
-                anterior.getNombre() + " hasta " + nueva.getNombre() + "." + sb);
     }
 
     // Método para mostrar por pantalla información de la posición de cada jugador
@@ -742,7 +734,7 @@ public class Juego implements Comando {
     public void salirCarcel() throws Excepcion {
         Jugador jugadorActual = jugadores.get(turno);
         if (!(jugadorActual.getFortuna() >= 500000))
-            throw new ExcepcionDineroInsuficiente("El jugador " + jugadorActual.getNombre() + " no tiene suficiente dinero");
+            throw new ExcepcionDineroInsuficiente("El jugador " + jugadorActual.getNombre() + " no tiene suficiente dinero", 0);
         if (!jugadorActual.getEnCarcel())
             throw new ExcepcionReglas("El jugador no está en la carcel");
 
@@ -750,7 +742,7 @@ public class Juego implements Comando {
         jugadorActual.sumarGastos(500000);
         jugadorActual.sumarFortuna(-500000);
         jugadorActual.sumarTasasImpuestos(500000);
-        tablero.encontrarCasilla("Parking").sumarValor(500000);
+        ((Parking) tablero.encontrarCasilla("Parking")).sumarBote(500000);
         System.out.println(jugadorActual.getNombre() + " paga 500.000$ y sale de la carcel. Puede lanzar los dados.");
     }
 
@@ -767,7 +759,7 @@ public class Juego implements Comando {
         if (!(tipoEdificio.equals("casa") || tipoEdificio.equals("casas") || tipoEdificio.equals("hotel") || tipoEdificio.equals("piscina") || tipoEdificio.equals("pista")))
             throw new ExcepcionArgumento("Error: No existe el tipo de edificio '" + tipoEdificio + "'.");
 
-        if (!casilla.getDuenho().equals(jugadorActual)) { //Comprobamos que sea el jugador actual el dueño de la casilla
+        if (!((Propiedad) casilla).perteneceAJugador(jugadorActual)) { //Comprobamos que sea el jugador actual el dueño de la casilla
             throw new ExcepcionReglas("No se pueden vender " + tipoEdificio + " en " + casilla.getNombre() +
                     ". Esta casilla pertenece a " + casilla.getDuenho().getNombre() + ".");
         }
@@ -927,24 +919,21 @@ public class Juego implements Comando {
     }
 
     private void ventaOHipoteca(float cobro) {
-        Jugador jugadorActual = jugadores.get(turno);
+        Jugador actual = jugadores.get(turno);
 
-        while (jugadorActual.getFortuna() < cobro) {
-            consola.imprimir(jugadorActual.getNombre() + " debe vender edificios y/o hipotecar propiedades para realizar el pago.\n");
-            consola.imprimir("Propiedades disponibles: ");
-            imprimirPropiedades(jugadorActual);
-            consola.imprimir(".\n");
+        while (actual.getFortuna() < cobro) {
+            consola.imprimir("Edificios: " + imprimirPropiedades(actual));
+            consola.imprimir("Propiedades: " + imprimirPropiedades(actual));
 
-            String comando = consola.leer("Quiere hipotecar o vender");
-            String[] partes = comando.trim().split("[ +]+"); //Dividimos por partes el comando
+            String[] partes = consola.leer("Vender/Hipotecar: ").trim().split("[ +]+"); //Dividimos por partes el comando
 
             if (partes.length == 2 && partes[0].equals("hipotecar")) hipotecar(partes[1]);
             else if (partes.length == 4 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
         }
 
-        consola.imprimir(jugadorActual.getNombre() + " ha pagado la deuda: " + cobro + "$.");
+        consola.imprimir(actual.getNombre() + " ha pagado la deuda: " + cobro + "$.");
 
-        jugadorActual.setDeudaAPagar(0); //Reseteamos la deuda
+        actual.setDeudaAPagar(0); //Reseteamos la deuda
 }
 
     @Override

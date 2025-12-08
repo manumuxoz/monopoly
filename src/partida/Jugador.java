@@ -3,11 +3,11 @@ package partida;
 import java.util.ArrayList;
 import java.util.Objects;
 import casillas.*;
+import edificios.*;
 import static monopoly.Valor.*;
-
-import casillas.Casilla;
-import edificios.Edificio;
-import excepciones.ExcepcionArgumento;
+import static monopoly.Juego.consola;
+import casillas.*;
+import excepciones.*;
 
 public class Jugador {
 
@@ -173,11 +173,8 @@ public class Jugador {
     //Método para saber si un jugador está en bancarrota
     public boolean enBancarrota(float cobro, Jugador destinatario) {
         if (dineroVentas() + fortuna < cobro) {
-            System.out.println(nombre + " está en bancarrota.");
             enBancarrota = true;
-
             realizarBancarrota(destinatario); //Realizamos la bancarrota
-
             return true;
         }
         return false;
@@ -203,8 +200,7 @@ public class Jugador {
     }
 
     //Método para realizar la bancarrota (ceder propiedades):
-    private void
-    realizarBancarrota(Jugador destinatario) {
+    private void realizarBancarrota(Jugador destinatario) {
         if (!destinatario.getNombre().equals("Banca")) {//Si no es banca cedemos todos al destinatario
             destinatario.sumarFortuna(fortuna);
             fortuna = 0;

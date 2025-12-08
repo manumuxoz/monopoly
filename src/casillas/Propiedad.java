@@ -7,16 +7,26 @@ import excepciones.ExcepcionReglas;
 import partida.Jugador;
 
 public abstract class Propiedad extends Casilla {
+    private float valor; //Valor de esa casilla (en la mayoría será valor de compra, en la casilla parking se usará como el bote).
     private float alquilerAcumulado;
 
     public Propiedad() {}
 
     public Propiedad(String nombre, String tipo, int posicion, float valor, Jugador duenho, float alquiler) {
-        super(nombre, tipo, posicion, valor, duenho, alquiler);
+        super(nombre, tipo, posicion, duenho, alquiler);
+        this.valor = valor;
+    }
+
+    float getValor() {
+        return valor;
+    }
+    public float getAlquilerAcumulado(){return alquilerAcumulado;}
+
+    void setValor(float valor) {
+        this.valor = valor;
     }
 
     public void sumarAlquilerAcumulado(float valor){alquilerAcumulado+=valor;}
-    public float getAlquilerAcumulado(){return alquilerAcumulado;}
 
     /*Método usado para comprar una casilla determinada. Parámetros:
      * - Jugador que solicita la compra de la casilla.
@@ -25,12 +35,12 @@ public abstract class Propiedad extends Casilla {
         if (!estaAvatar(solicitante.getAvatar()))
             throw new ExcepcionReglas("El avatar " + solicitante.getAvatar().getId() + " no se encuentra en " + getNombre() + ".");
 
-        if (!getDuenho().equals(banca) && !getDuenho().equals(solicitante))
+        if (!perteneceAJugador(banca) && !perteneceAJugador(solicitante))
             throw new ExcepcionReglas("Esta casilla ya tiene dueño: " + getDuenho().getNombre() + ".");
 
         if (solicitante.getFortuna() < getValor())
             throw new ExcepcionDineroInsuficiente("El jugador " + solicitante.getNombre() + " no tiene suficiente dinero para comprar "
-                    + getNombre() + ". Su fortuna actual es de " + solicitante.getFortuna() + "$.");
+                    + getNombre() + ". Su fortuna actual es de " + solicitante.getFortuna() + "$.", 0);
 
         solicitante.sumarGastos(getValor());
         solicitante.sumarFortuna(-getValor());
@@ -52,7 +62,5 @@ public abstract class Propiedad extends Casilla {
 
     abstract float alquiler();
 
-    abstract float valor();
-
-    //estaHipoteca, hipotecar, comprar(Jugador jugador)
+    public abstract float valor();
 }

@@ -1,6 +1,7 @@
 package casillas;
 
 import partida.Jugador;
+import static monopoly.Juego.consola;
 
 public final class Impuesto extends Casilla {
     public Impuesto(){}
@@ -11,16 +12,16 @@ public final class Impuesto extends Casilla {
 
     @Override
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
-        float impuesto = getImpuesto();
-
         sumarFrecuenciaVisita();
+
+        float impuesto = getImpuesto();
         if (!actual.enBancarrota(impuesto, getDuenho()) && actual.getFortuna() >= impuesto) {
             actual.sumarGastos(impuesto);
             actual.sumarFortuna(-impuesto);
             actual.sumarTasasImpuestos(impuesto);
 
             // Añadir al bote del Parking
-            System.out.println("El jugador " + actual.getNombre() + " paga " + (int)impuesto + "€ que se depositan en el Parking.");
+            consola.imprimir("El jugador " + actual.getNombre() + " paga " + (int)impuesto + "€ que se depositan en el Parking.");
             return true;
         } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto)
             actual.setDeudaAPagar(impuesto);

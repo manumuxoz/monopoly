@@ -5,13 +5,14 @@ import partida.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static monopoly.Valor.RESET;
+
 
 public abstract class Casilla {
 
     //Atributos:
     private String nombre; //Nombre de la casilla
     private String tipo; //Tipo de casilla (Solar, Especial, Transporte, Servicios, Comunidad, Suerte y Impuesto).
-    private float valor; //Valor de esa casilla (en la mayoría será valor de compra, en la casilla parking se usará como el bote).
     private int posicion; //Posición que ocupa la casilla en el tablero (entero entre 1 y 40).
     private Jugador duenho; //Dueño de la casilla (por defecto sería la banca).
     private Grupo grupo; //Grupo al que pertenece la casilla (si es solar).
@@ -25,11 +26,10 @@ public abstract class Casilla {
     /*Constructur utilizado para inicializar las casillas de tipo PROPIEDAD.
      * Parámetros: nombre, tipo, posicion, valor, duenho, alquiler
      */
-    public Casilla(String nombre, String tipo, int posicion, float valor, Jugador duenho, float alquiler) {
+    public Casilla(String nombre, String tipo, int posicion, Jugador duenho, float alquiler) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.posicion = posicion;
-        this.valor = valor;
         this.duenho = duenho;
         this.impuesto = alquiler;
         avatares = new ArrayList<>();
@@ -65,9 +65,6 @@ public abstract class Casilla {
     public String getTipo() {
         return tipo;
     }
-    public float getValor() {
-        return valor;
-    }
     public float getPosicion() {
         return posicion;
     }
@@ -98,7 +95,6 @@ public abstract class Casilla {
     public void setImpuesto(float impuesto) {this.impuesto = impuesto;}
     public void setTipo(String tipo) {this.tipo = tipo;}
     public void setPosicion(int posicion){this.posicion = posicion;}
-    public void setValor(float valor) {this.valor = valor;}
 
     //Método utilizado para añadir un avatar al array de avatares en casilla.
     public void anhadirAvatar(Avatar av) {
@@ -111,16 +107,7 @@ public abstract class Casilla {
         avatares.remove(av);
     }
 
-    /*Método para añadir valor a una casilla. Utilidad:
-     * - Sumar valor a la casilla de parking.
-     * - Sumar valor a las casillas de solar al no comprarlas tras cuatro vueltas de todos los jugadores.
-     * Este método toma como argumento la cantidad a añadir del valor de la casilla.*/
-    public void sumarValor(float suma) {
-        if (nombre.equals("Parking"))
-            impuesto += suma;
-        if (tipo.equals("Solar"))
-            valor += suma;
-    }
+
 
     /*Método para mostrar información sobre una casilla.
      * Devuelve una cadena con información específica de cada tipo de casilla.*/
@@ -138,7 +125,9 @@ public abstract class Casilla {
      * - El valor de la tirada: para determinar impuesto a pagar en casillas de servicios.
      * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
      * en caso de no cumplirlas.*/
-    public abstract boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada);
+    public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
+        return true;
+    }
 
     @Override //Sobreescritura del método equals
     public boolean equals(Object o) {
@@ -149,6 +138,16 @@ public abstract class Casilla {
 
     @Override
     public String toString() {
-        return nombre;
+        String color = RESET;
+
+        if (tipo.equals("Solar"))
+            color = grupo.getColorGrupo();
+
+        StringBuilder avStr = new StringBuilder();
+
+        for (Avatar av : avatares)
+            avStr.append(" ").append(av.toString());
+
+        return color + String.format("%-8s" + RESET + "%12s", nombre, avStr);
     }
 }

@@ -1,6 +1,7 @@
 package casillas;
 
 import partida.Jugador;
+import static monopoly.Juego.consola;
 
 public final class Servicios extends Propiedad {
     public Servicios() {}
@@ -12,26 +13,22 @@ public final class Servicios extends Propiedad {
     @Override
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
         Jugador duenho = getDuenho();
-        float impuesto = getImpuesto();
-
 
         sumarFrecuenciaVisita();
-        if (!duenho.equals(banca) && !duenho.equals(actual)) {
-            int numCasillasServicio = duenho.contarCasillasServicio();
-            int valorImpuesto = tirada * 4 * 50000;
-            if(numCasillasServicio == 2) valorImpuesto = tirada * 10 * 50000;
-            if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto) {
-                actual.sumarGastos(valorImpuesto);
-                actual.sumarFortuna(-valorImpuesto);
-                actual.sumarPagoAlquileres(valorImpuesto);
-                sumarAlquilerAcumulado(valorImpuesto);
-                Jugador propietario = duenho;
-                propietario.sumarFortuna(valorImpuesto);
-                propietario.sumarCobroAlquileres(valorImpuesto);
-                System.out.println("Se han pagado " + valorImpuesto + "€ de servicio a " + propietario.getNombre() + ".");
+        if (!perteneceAJugador(banca) && !perteneceAJugador(actual)) {
+            float alquiler = alquiler() * tirada;
+            if (!actual.enBancarrota(alquiler, duenho) && actual.getFortuna() >= alquiler) {
+                actual.sumarGastos(alquiler);
+                actual.sumarFortuna(-alquiler);
+                actual.sumarPagoAlquileres(alquiler);
+                sumarAlquilerAcumulado(alquiler);
+                duenho.sumarFortuna(alquiler);
+                duenho.sumarCobroAlquileres(alquiler);
+                consola.imprimir("Se han pagado " + alquiler + "€ de servicio a " + duenho.getNombre() + ".");
                 return true;
-            } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto)
-                actual.setDeudaAPagar(impuesto);
+
+            } else if (!actual.getEnBancarrota() && actual.getFortuna() < alquiler)
+                actual.setDeudaAPagar(alquiler);
         }
         return false;
     }
@@ -47,16 +44,23 @@ public final class Servicios extends Propiedad {
 
     @Override
     public String casEnVenta(){
-        return "\n{" +
+        return "{" +
                 "\n\tnombre: " + getNombre() +
-                "\n\ttipo: " + getTipo() +
+                ",\n\ttipo: " + getTipo() +
                 ",\n\tvalor: " + getValor() +
                 "\n}";
     }
+
     @Override
     public float alquiler(){
-        return getImpuesto();
+        float alquiler = 4 * getImpuesto();
+
+        if(getDuenho().contarCasillasServicio() == 2)
+            alquiler = 10 * getImpuesto();
+
+        return alquiler;
     }
+
     @Override
     public float valor(){
         return getValor();

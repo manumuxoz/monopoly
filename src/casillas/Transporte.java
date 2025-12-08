@@ -13,25 +13,24 @@ public final class Transporte extends Propiedad {
 
     @Override
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
-        float impuesto = getImpuesto();
         Jugador duenho = getDuenho();
+        float alquiler = alquiler();
 
         sumarFrecuenciaVisita();
-        if (!duenho.equals(banca) && !duenho.equals(actual)) {
-            int numCasillasTransporte = actual.contarCasillasTransporte();
-            if (!actual.enBancarrota(impuesto, duenho) && actual.getFortuna() >= impuesto * numCasillasTransporte) {
-                actual.sumarGastos(impuesto * numCasillasTransporte);
-                actual.sumarFortuna(-impuesto * numCasillasTransporte);
-                actual.sumarPagoAlquileres(impuesto * numCasillasTransporte);
-                sumarAlquilerAcumulado(impuesto * numCasillasTransporte);
-                Jugador propietario = duenho;
-                propietario.sumarFortuna(impuesto*numCasillasTransporte);
-                propietario.sumarCobroAlquileres(impuesto*numCasillasTransporte);
-                System.out.println("El jugador" + actual.getNombre() + " paga " +  (int)impuesto*numCasillasTransporte + "€ de transporte a " + propietario.getNombre() + ".");
-                return true;
-            } else if (!actual.getEnBancarrota() && actual.getFortuna() < impuesto * numCasillasTransporte) actual.setDeudaAPagar(impuesto);
-        }
+        if (!perteneceAJugador(banca) && !perteneceAJugador(actual)) {
+            if (!actual.enBancarrota(alquiler, duenho) && actual.getFortuna() >= alquiler) {
+                actual.sumarGastos(alquiler);
+                actual.sumarFortuna(-alquiler);
+                actual.sumarPagoAlquileres(alquiler);
+                sumarAlquilerAcumulado(alquiler);
 
+                duenho.sumarFortuna(alquiler);
+                duenho.sumarCobroAlquileres(alquiler);
+                System.out.println("El jugador" + actual.getNombre() + " paga " +  (int)alquiler + "€ de transporte a " + duenho.getNombre() + ".");
+                return true;
+            } else if (!actual.getEnBancarrota() && actual.getFortuna() < alquiler)
+                actual.setDeudaAPagar(alquiler);
+        }
         return false;
     }
 
@@ -54,8 +53,9 @@ public final class Transporte extends Propiedad {
     }
     @Override
     public float alquiler(){
-        return getImpuesto();
+        return getDuenho().contarCasillasTransporte() * getImpuesto();
     }
+
     @Override
     public float valor(){
         return getValor();

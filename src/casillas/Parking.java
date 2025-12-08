@@ -2,12 +2,17 @@ package casillas;
 import partida.*;
 
 public final class Parking extends Accion {
+    private float bote;
+
     public Parking() {}
 
     public Parking(int posicion, Jugador duenho) {
         super("Parking", posicion, duenho);
     }
 
+    public float getBote() {
+        return bote;
+    }
 
     private String jugadoresEnCasilla(){
         StringBuilder sb = new StringBuilder().append("[");
@@ -19,6 +24,10 @@ public final class Parking extends Accion {
         }
 
         return sb.append("]").toString();
+    }
+
+    public void sumarBote(float bote) {
+        this.bote += bote;
     }
 
     @Override

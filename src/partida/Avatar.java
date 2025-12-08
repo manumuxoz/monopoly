@@ -1,9 +1,9 @@
 package partida;
 
 import casillas.Casilla;
-
 import java.util.ArrayList;
 import java.util.Objects;
+import static monopoly.Juego.consola;
 
 public class Avatar {
 
@@ -55,6 +55,7 @@ public class Avatar {
     * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
      */
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
+        Casilla anterior = lugar;
         lugar.eliminarAvatar(this);
 
         float posicionActual = lugar.getPosicion();
@@ -74,10 +75,15 @@ public class Avatar {
         lugar = nuevaCasilla;
         nuevaCasilla.anhadirAvatar(this);
 
+        String str = "";
         if (nuevaPosicion < posicionActual && !getJugador().getEnCarcel()){
             getJugador().sumarFortuna(2000000);
             getJugador().sumarVueltas(1);
+            str = getJugador().getNombre() + " pasa por la casilla de salida y recibe 2000000$.";
         }
+
+        consola.imprimir("El avatar " + id + " avanza " + valorTirada + " posiciones, desde " +
+                anterior.getNombre() + " hasta " + lugar.getNombre() + "." + str);
     }
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
@@ -103,5 +109,10 @@ public class Avatar {
         if (o == null || getClass() != o.getClass()) return false;
         Avatar avatar = (Avatar) o;
         return Objects.equals(id, avatar.id);
+    }
+
+    @Override
+    public String toString() {
+        return "&" + id;
     }
 }
