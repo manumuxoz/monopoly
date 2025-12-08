@@ -191,11 +191,11 @@ public class Jugador {
         for (Propiedad propiedad : propiedades) {
             if (propiedad.getTipo().equals("Solar")) {
                 hipotecaPropiedades += ((Solar) propiedad).getHipoteca();
-                ventaEdificios += (((Solar) propiedad).getNumCasas() * ((Solar) propiedad).getValorCasa());
+                ventaEdificios += (((Solar) propiedad).contarCasas() * ((Solar) propiedad).getValorCasa());
 
-                if (((Solar) propiedad).getHotel()) ventaEdificios += ((Solar) propiedad).getValorHotel();
-                if (((Solar) propiedad).getPiscina()) ventaEdificios += ((Solar) propiedad).getValorPiscina();
-                if (((Solar) propiedad).getPistaDeporte()) ventaEdificios += ((Solar) propiedad).getValorPistaDeporte();
+                if (((Solar) propiedad).existeHotel()) ventaEdificios += ((Solar) propiedad).getValorHotel();
+                if (((Solar) propiedad).existePiscina()) ventaEdificios += ((Solar) propiedad).getValorPiscina();
+                if (((Solar) propiedad).existePistaDeporte()) ventaEdificios += ((Solar) propiedad).getValorPistaDeporte();
             }
         }
 

@@ -471,7 +471,7 @@ public final class Solar extends Propiedad {
     }
 
     //Método para contar las casas de una casilla
-    private int contarCasas() {
+    public int contarCasas() {
         int count = 0;
 
         for (Edificio ed : edificios)
@@ -482,7 +482,7 @@ public final class Solar extends Propiedad {
     }
 
     //Método para saber si hay un hotel en la casilla
-    private boolean existeHotel() {
+    public boolean existeHotel() {
         for (Edificio ed : edificios)
             if (ed.getTipo().equalsIgnoreCase("hotel"))
                 return true;
@@ -491,7 +491,7 @@ public final class Solar extends Propiedad {
     }
 
     //Método para saber si hay una piscina en la casilla
-    private boolean existePiscina() {
+    public boolean existePiscina() {
         for (Edificio ed : edificios)
             if (ed.getTipo().equalsIgnoreCase("piscina"))
                 return true;
@@ -500,7 +500,7 @@ public final class Solar extends Propiedad {
     }
 
     //Método para saber si hay una pista de deporte en la casilla
-    private boolean existePistaDeporte() {
+    public boolean existePistaDeporte() {
         for (Edificio ed : edificios)
             if (ed.getTipo().equalsIgnoreCase("pista"))
                 return true;

@@ -51,57 +51,58 @@ public class Juego implements Comando {
             case "estadisticas" -> estadisticas(partes);
             case "salir" -> salirCarcel();
             case "vender" -> vender(partes[1], partes[2], Integer.parseInt(partes[3]));
+            default -> consola.imprimir("No es un comando válido");
 
         }
 
 
 
-        else if (partes.length == 1 && partes[0].equals("comandos")) leerComandos();
+        //else if (partes.length == 1 && partes[0].equals("comandos")) leerComandos();
 
-        else if (partes.length == 2 && partes[0].equals("listar") && partes[1].equals("jugadores")) listarJugadores();
+        //else if (partes.length == 2 && partes[0].equals("listar") && partes[1].equals("jugadores")) listarJugadores();
 
-        else if (partes.length == 3 && partes[0].equals("describir") && partes[1].equals("jugador")) descJugador(partes);
+        //else if (partes.length == 3 && partes[0].equals("describir") && partes[1].equals("jugador")) descJugador(partes);
 
 
 
-        else if (partes[0].equals("listar") && partes[1].equals("enventa")) listarVenta();
+        //else if (partes[0].equals("listar") && partes[1].equals("enventa")) listarVenta();
 
-        else if (partes.length == 3 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificiosGrupo(partes[2]);
+        //else if (partes.length == 3 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificiosGrupo(partes[2]);
 
-        else if (partes[0].equals("ver") && partes[1].equals("tablero")) System.out.println(tablero.toString());
+       //else if (partes[0].equals("ver") && partes[1].equals("tablero")) System.out.println(tablero.toString());
 
-        else if (jugadores.size() > 1) { //Funcionalidades que requieren más de un jugador
-            if (partes.length == 1 && partes[0].equals("jugador")) indicarTurnoJugador();
+        //else if (jugadores.size() > 1) { //Funcionalidades que requieren más de un jugador
+        //    if (partes.length == 1 && partes[0].equals("jugador")) indicarTurnoJugador();
 
-            else if (partes.length == 2 && partes[0].equals("acabar") && partes[1].equals("turno")) acabarTurno();
+        //    else if (partes.length == 2 && partes[0].equals("acabar") && partes[1].equals("turno")) acabarTurno();
 
-            else if (partes.length == 2 && partes[0].equals("lanzar") && partes[1].equals("dados")) lanzarDados(-1, -2);
+        //    else if (partes.length == 2 && partes[0].equals("lanzar") && partes[1].equals("dados")) lanzarDados(-1, -2);
 
-            else if (partes.length == 4 && partes[0].equals("lanzar") && partes[1].equals("dados"))
-                lanzarDados(Integer.parseInt(partes[2]), Integer.parseInt(partes[3]));
+        //    else if (partes.length == 4 && partes[0].equals("lanzar") && partes[1].equals("dados"))
+        //        lanzarDados(Integer.parseInt(partes[2]), Integer.parseInt(partes[3]));
 
-            else if (partes.length == 2 && partes[0].equals("comprar")) comprar(partes[1]);
+        //    else if (partes.length == 2 && partes[0].equals("comprar")) comprar(partes[1]);
 
-            else if (partes.length == 2 && partes[0].equals("salir") && partes[1].equals("carcel")) salirCarcel();
-
-            else if (partes.length == 2 && partes[0].equals("edificar")) edificar(partes[1]);
-
-            else if (partes.length == 2 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificios();
-
-            else if (partes.length == 2 && partes[0].equals("hipotecar")) hipotecar(partes[1]);
-
-            else if (partes.length == 2 && partes[0].equals("deshipotecar")) deshipotecar(partes[1]);
-
-            else if (partes.length == 4 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
-
-            else if (partes.length == 2 && partes[0].equals("estadisticas")) mostrarEstadisticas(partes);
-
-            else if (partes.length == 1 && partes[0].equals("estadisticas")) mostrarEstadisticasGlobales();
-
-            else
-                System.out.println("Error: comando '" + comando + "' incorrecto.");
-        } else
-            System.out.println("Error: comando '" + comando + "' incorrecto.");
+//            else if (partes.length == 2 && partes[0].equals("salir") && partes[1].equals("carcel")) salirCarcel();
+//
+//            else if (partes.length == 2 && partes[0].equals("edificar")) edificar(partes[1]);
+//
+//            else if (partes.length == 2 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificios();
+//
+//            else if (partes.length == 2 && partes[0].equals("hipotecar")) hipotecar(partes[1]);
+//
+//            else if (partes.length == 2 && partes[0].equals("deshipotecar")) deshipotecar(partes[1]);
+//
+//            else if (partes.length == 4 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
+//
+//            else if (partes.length == 2 && partes[0].equals("estadisticas")) mostrarEstadisticas(partes);
+//
+//            else if (partes.length == 1 && partes[0].equals("estadisticas")) mostrarEstadisticasGlobales();
+//
+//            else
+//                System.out.println("Error: comando '" + comando + "' incorrecto.");
+//        } else
+//            System.out.println("Error: comando '" + comando + "' incorrecto.");
     }
 
     //Método para leer los comandos de un archivo
@@ -334,9 +335,12 @@ public class Juego implements Comando {
     }
 
     //Método para imprimir los IDs de los edificios de un jugador
-    public String imprimirEdificios(Jugador jugador) {
+    public String imprimirEdificios(Jugador jugador) throws Excepcion {
         StringBuilder sb = new StringBuilder().append("[");
         String separador = "\0";
+        if(edificios.isEmpty()){
+            return "]";
+        }
         for (Edificio ed : jugador.getEdificios()) {
             sb.append(separador).append(ed.getID());
             separador = ", ";
@@ -549,11 +553,11 @@ public class Juego implements Comando {
             throw new ExcepcionArgumento("Error: No existe el grupo de color " + color + ".");
         }
         for (Casilla solar : tablero.getGrupos().get(color).getMiembros()) { //Iteramos sobre el arraylist de casillas del grupo
-            System.out.println(solar.infoEdificios());
-            countCasas += solar.getNumCasas();
-            if (solar.getHotel()) countHoteles++;
-            if (solar.getPiscina()) countPiscina++;
-            if (solar.getPistaDeporte()) countPista++;
+            System.out.println(((Solar)solar).infoEdificios());
+            countCasas += ((Solar)solar).contarCasas();
+            if (((Solar)solar).existeHotel()) countHoteles++;
+            if (((Solar)solar).existePiscina()) countPiscina++;
+            if (((Solar)solar).existePistaDeporte()) countPista++;
         }
 
         int numSolares = tablero.getGrupos().get(color).getMiembros().size(); //Número de solares
@@ -793,19 +797,21 @@ public class Juego implements Comando {
 
 
         // USAR evaluarCasilla para TODAS las casillas
-        boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
+        if(!(nuevaCasilla.getTipo().equals("Suerte") && nuevaCasilla.getTipo().equals("Caja"))){
+            boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
+            eliminarEdificiosBanca();
 
-        eliminarEdificiosBanca();
-
-        //Si puede pagar el alquiler realizamos el bucle de venta o impoteca hasta pagarlo
-        if (!solvente && !jugadorActual.getEnBancarrota())
-            ventaOHipoteca(jugadorActual.getDeudaAPagar());
+            //Si puede pagar el alquiler realizamos el bucle de venta o impoteca hasta pagarlo
+            if (!solvente && !jugadorActual.getEnBancarrota())
+                ventaOHipoteca(jugadorActual.getDeudaAPagar());
 
 
-        // Si evaluarCasilla retorna false (para IrCarcel), manejar el encarcelamiento
-        if (!solvente && nuevaCasilla.getNombre().equals("IrCarcel")) {
-            jugadorActual.encarcelar(tablero.getPosiciones());
+            // Si evaluarCasilla retorna false (para IrCarcel), manejar el encarcelamiento
+            if (!solvente && nuevaCasilla.getNombre().equals("IrCarcel")) {
+                jugadorActual.encarcelar(tablero.getPosiciones());
+            }
         }
+
 
         // Repintar tablero
         repintarTablero();
