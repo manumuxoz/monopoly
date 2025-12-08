@@ -29,100 +29,6 @@ public class Juego implements Comando {
     private int countAccionesSuerte; //Método para contar las cartas de suerte
     private int countAccionesCaja; //Método para contar las cartas de caja de comunidad
 
-    /*Método que interpreta el comando introducido y toma la accion correspondiente.
-     * Parámetro: cadena de caracteres (el comando).
-     */
-    private void analizarComando(String comando) throws Excepcion {
-        String[] partes = comando.trim().split("[ +]+"); //Dividimos por partes el comando
-
-
-
-        switch (partes[0]) {
-            case "acabar" -> acabarTurno(partes);
-            case "comprar" -> comprar(partes[1]);
-            case "crear" -> crearJugador(partes);
-            case "describir" -> describir(partes);
-            case "deshipotecar" -> deshipotecar(partes[1]);
-            case "edificar" -> edificar(partes[1]);
-            case "hipotecar" -> hipotecar(partes[1]);
-            case "jugador" -> indicarTurnoJugador();
-            case "lanzar" -> lanzar(partes);
-            case "listar" -> listar(partes);
-            case "estadisticas" -> estadisticas(partes);
-            case "salir" -> salirCarcel();
-            case "vender" -> vender(partes[1], partes[2], Integer.parseInt(partes[3]));
-            default -> consola.imprimir("No es un comando válido");
-
-        }
-
-
-
-        //else if (partes.length == 1 && partes[0].equals("comandos")) leerComandos();
-
-        //else if (partes.length == 2 && partes[0].equals("listar") && partes[1].equals("jugadores")) listarJugadores();
-
-        //else if (partes.length == 3 && partes[0].equals("describir") && partes[1].equals("jugador")) descJugador(partes);
-
-
-
-        //else if (partes[0].equals("listar") && partes[1].equals("enventa")) listarVenta();
-
-        //else if (partes.length == 3 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificiosGrupo(partes[2]);
-
-       //else if (partes[0].equals("ver") && partes[1].equals("tablero")) System.out.println(tablero.toString());
-
-        //else if (jugadores.size() > 1) { //Funcionalidades que requieren más de un jugador
-        //    if (partes.length == 1 && partes[0].equals("jugador")) indicarTurnoJugador();
-
-        //    else if (partes.length == 2 && partes[0].equals("acabar") && partes[1].equals("turno")) acabarTurno();
-
-        //    else if (partes.length == 2 && partes[0].equals("lanzar") && partes[1].equals("dados")) lanzarDados(-1, -2);
-
-        //    else if (partes.length == 4 && partes[0].equals("lanzar") && partes[1].equals("dados"))
-        //        lanzarDados(Integer.parseInt(partes[2]), Integer.parseInt(partes[3]));
-
-        //    else if (partes.length == 2 && partes[0].equals("comprar")) comprar(partes[1]);
-
-//            else if (partes.length == 2 && partes[0].equals("salir") && partes[1].equals("carcel")) salirCarcel();
-//
-//            else if (partes.length == 2 && partes[0].equals("edificar")) edificar(partes[1]);
-//
-//            else if (partes.length == 2 && partes[0].equals("listar") && partes[1].equals("edificios")) listarEdificios();
-//
-//            else if (partes.length == 2 && partes[0].equals("hipotecar")) hipotecar(partes[1]);
-//
-//            else if (partes.length == 2 && partes[0].equals("deshipotecar")) deshipotecar(partes[1]);
-//
-//            else if (partes.length == 4 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
-//
-//            else if (partes.length == 2 && partes[0].equals("estadisticas")) mostrarEstadisticas(partes);
-//
-//            else if (partes.length == 1 && partes[0].equals("estadisticas")) mostrarEstadisticasGlobales();
-//
-//            else
-//                System.out.println("Error: comando '" + comando + "' incorrecto.");
-//        } else
-//            System.out.println("Error: comando '" + comando + "' incorrecto.");
-    }
-
-    //Método para leer los comandos de un archivo
-    private void leerComandos() {
-        String ruta = System.getProperty("user.dir") + "/comandos.txt"; //Buscamos el directorio de trabajo y añadimos el archivo
-        try (BufferedReader br = (new BufferedReader(new FileReader(ruta)))) {
-            String comando;
-            while ((comando = br.readLine()) != null) { //Leemos cada línea y analizamos comando
-                System.out.println("Comando: " + comando);
-                analizarComando(comando);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /*Método que realiza las acciones asociadas al comando 'describir jugador'.
-     * Parámetro: comando introducido
-     */
-
     /*Método que realiza las acciones asociadas al comando 'describir avatar'.
      * Parámetro: id del avatar a describir.
      */
@@ -133,8 +39,6 @@ public class Juego implements Comando {
     private void listarAvatares() {
     }
 
-    //Nuevos métodos:
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     public Juego() {
         iniciarPartida();
@@ -142,12 +46,14 @@ public class Juego implements Comando {
         String comando;
         while (true) {
             comando = consola.leer("Introduce un comando: ");
-            consola.imprimir(comando);
+            consola.imprimir("Comando: " + comando);
 
             try {
                 analizarComando(comando);
             } catch (Excepcion e) {
-                consola.imprimir(e.getMessage());
+                consola.imprimir("Error:" + e.getMessage());
+            } catch (RuntimeException e) {
+                consola.imprimir("Error: " + e.getMessage());
             }
         }
     }
@@ -174,12 +80,84 @@ public class Juego implements Comando {
         banca.setPropiedades(new ArrayList<>());
     }
 
+    /*Método que interpreta el comando introducido y toma la accion correspondiente.
+     * Parámetro: cadena de caracteres (el comando).
+     */
+    private void analizarComando(String comando) throws Excepcion {
+        String[] partes = comando.trim().split("[ +]+"); //Dividimos por partes el comando
+
+        switch (partes[0]) {
+            case "acabar":
+                if (partes.length != 2 || !partes[1].equals("turno"))
+                    throw new ExcepcionArgumento("Uso: acabar turno");
+
+                acabarTurno();
+                break;
+            case "comandos":
+                if (partes.length != 1)
+                    throw new ExcepcionArgumento("Uso: comandos");
+
+                leerComandos();
+                break;
+            case "comprar":
+                comprar(partes[1]);
+                break;
+            case "crear":
+                if (partes.length != 4 || !partes[1].equalsIgnoreCase("jugador"))
+                    throw new ExcepcionArgumento("Uso: crear jugador <nombre> <tipoAvatar>");
+
+                crearJugador(partes);
+                break;
+            case "describir":
+                if (partes.length != 3 || !(partes[1].equalsIgnoreCase("casilla") || partes[1].equalsIgnoreCase("jugador")))
+                    throw new ExcepcionArgumento("Uso: describir casilla/jugador <nombre>");
+
+                switch (partes[1]) {
+                    case "casilla" -> descCasilla(partes[2]);
+                    case "jugador" -> descJugador(partes[2]);
+                }
+                break;
+            case "deshipotecar":
+                deshipotecar(partes[1]);
+                break;
+            case "edificar":
+                edificar(partes[1]);
+                break;
+            case "hipotecar":
+                hipotecar(partes[1]);
+                break;
+            case "jugador":
+                indicarTurnoJugador();
+                break;
+            case "lanzar":
+                lanzar(partes);
+                break;
+            case "listar":
+                listar(partes);
+                break;
+            case "estadisticas":
+                estadisticas(partes);
+                break;
+            case "salir":
+                salirCarcel();
+                break;
+            case "vender":
+                vender(partes[1], partes[2], Integer.parseInt(partes[3]));
+                break;
+            case "ver":
+                if (partes.length != 2 || !partes[1].equals("tablero"))
+                    throw new ExcepcionArgumento("Uso: ver tablero");
+
+                consola.imprimir(verTablero());
+                break;
+            default:
+                throw new ExcepcionArgumento("'" +  comando + "' no es un comando válido.");
+        }
+    }
+
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     @Override
-    public void acabarTurno(String partes[]) throws ExcepcionArgumento {
-        if (partes.length != 2 && !partes[1].equals("turno"))
-            throw new ExcepcionArgumento("Uso: acabar turno");
-
+    public void acabarTurno() {
         turno = (turno + 1) % jugadores.size(); //Aritmética modular
         consola.imprimir("El jugador actual es " + jugadores.get(turno).getNombre() + ".");
         lanzamientos = 0;
@@ -188,9 +166,6 @@ public class Juego implements Comando {
     //Método para crear un jugador
     @Override
     public void crearJugador(String partes[]) throws Excepcion {
-        if (partes.length != 4 && !partes[1].equalsIgnoreCase("jugador"))
-            throw new ExcepcionArgumento("Uso: crear jugador <nombre> <tipoAvatar>");
-
         if (!avatarValido(partes[3]))
             throw new ExcepcionReglas("El avatar '" + partes[3] + "' no válido. Avatares disponible: " + avataresDisponibles() + ".");
 
@@ -217,7 +192,7 @@ public class Juego implements Comando {
             avUsados.add(j.getAvatar().getTipo());
 
         StringBuilder sb = new StringBuilder();
-        String separador = "\0";
+        String separador = "";
 
         if (!avUsados.contains("coche")) {
             sb.append(separador).append("coche");
@@ -247,11 +222,12 @@ public class Juego implements Comando {
      */
     @Override
     public void comprar(String nombre) throws Excepcion {
-        Jugador actual = jugadores.get(turno);
         Casilla casilla = tablero.encontrarCasilla(nombre);
 
         if (casilla == null)
             throw new ExcepcionArgumento("La casilla '" + nombre + "' no existe.");
+
+        Jugador actual = jugadores.get(turno);
 
         if (!casilla.getTipo().equalsIgnoreCase("Solar") ||
         !casilla.getTipo().equalsIgnoreCase("Transporte") ||
@@ -259,19 +235,7 @@ public class Juego implements Comando {
             throw new ExcepcionReglas("La casilla '" + casilla.getNombre() + "' es de tipo " + casilla.getTipo() +
                     ". Solo se peuden comprar casillas de tipo: Solar, Transporte o Servicios.");
 
-
         ((Propiedad) casilla).comprarCasilla(actual, banca);
-    }
-
-    //Método que selecciona uno de los comandos describir casilla o describir jugador
-    private void describir(String partes[]) throws Excepcion {
-        if (!partes[1].equalsIgnoreCase("casilla") || !partes[1].equalsIgnoreCase("jugador"))
-            throw new ExcepcionArgumento("Uso: describir jugador/casilla");
-
-        switch (partes[1]) {
-            case "casilla" -> descCasilla(partes[2]);
-            case "jugador" -> descJugador(partes[2]);
-        }
     }
 
     /* Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
@@ -287,6 +251,9 @@ public class Juego implements Comando {
         consola.imprimir(casilla.infoCasilla());
     }
 
+    /*Método que realiza las acciones asociadas al comando 'describir jugador'.
+     * Parámetro: comando introducido
+     */
     @Override
     public void descJugador(String nombre) throws Excepcion {
         Jugador jugador = null;
@@ -310,7 +277,7 @@ public class Juego implements Comando {
     //Método para imprimir las propiedades de un jugador dado
     private String imprimirPropiedades(Jugador jugador) {
         StringBuilder sb = new StringBuilder().append("[");
-        String separador = "\0";
+        String separador = "";
         for (Propiedad propiedad : jugador.getPropiedades()) {
             if(!((Solar) propiedad).getHipotecado()) {
                 sb.append(separador).append(propiedad.getNombre());
@@ -324,7 +291,7 @@ public class Juego implements Comando {
     //Método que devuelve un String con las hipotecas de un jugador
     private String imprimirHipotecas(Jugador jugador) {
         StringBuilder sb = new StringBuilder().append("[");
-        String separador = "\0";
+        String separador = "";
 
         for (Propiedad propiedad : jugador.getHipotecas()) {
             sb.append(separador).append(propiedad.getNombre());
@@ -335,16 +302,15 @@ public class Juego implements Comando {
     }
 
     //Método para imprimir los IDs de los edificios de un jugador
-    public String imprimirEdificios(Jugador jugador) throws Excepcion {
+    public String imprimirEdificios(Jugador jugador) {
         StringBuilder sb = new StringBuilder().append("[");
-        String separador = "\0";
-        if(edificios.isEmpty()){
-            return "]";
-        }
+        String separador = "";
+
         for (Edificio ed : jugador.getEdificios()) {
             sb.append(separador).append(ed.getID());
             separador = ", ";
         }
+
         return sb.append("]").toString();
     }
 
@@ -514,6 +480,21 @@ public class Juego implements Comando {
         }
         else{
             lanzarDados(Integer.parseInt(partes[2]), Integer.parseInt(partes[3]));
+        }
+    }
+
+    //Método para leer los comandos de un archivo
+    @Override
+    public void leerComandos() throws  RuntimeException{
+        String ruta = System.getProperty("user.dir") + "/comandos.txt"; //Buscamos el directorio de trabajo y añadimos el archivo
+        try (BufferedReader br = (new BufferedReader(new FileReader(ruta)))) {
+            String comando;
+            while ((comando = br.readLine()) != null) { //Leemos cada línea y analizamos comando
+                System.out.println("Comando: " + comando);
+                analizarComando(comando);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -981,16 +962,11 @@ public class Juego implements Comando {
         consola.imprimir(jugadorActual.getNombre() + " ha pagado la deuda: " + cobro + "$.");
 
         jugadorActual.setDeudaAPagar(0); //Reseteamos la deuda
+}
+
+    @Override
+    public String verTablero() {
+        return tablero.toString();
     }
-
-
-
-
-
-
-
-
-
-
 
 }

@@ -3,8 +3,10 @@ package monopoly;
 import excepciones.Excepcion;
 import excepciones.ExcepcionArgumento;
 
+import java.io.IOException;
+
 public interface Comando {
-    void acabarTurno(String partes[]) throws ExcepcionArgumento;
+    void acabarTurno();
 
     void comprar(String nombre) throws Excepcion;
 
@@ -24,6 +26,8 @@ public interface Comando {
 
     void lanzarDados(int tirada1, int tirada2) throws Excepcion;
 
+    void leerComandos() throws RuntimeException;
+
     void listarEdificios() throws Excepcion;
 
     void listarEdificiosGrupo(String colorGrupo) throws Excepcion;
@@ -39,4 +43,6 @@ public interface Comando {
     void salirCarcel() throws Excepcion;
 
     void vender(String tipoEdificio, String nombreCasilla, int cantidad) throws Excepcion;
+
+    String verTablero();
 }

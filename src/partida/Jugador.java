@@ -45,7 +45,7 @@ public class Jugador {
 
         for (Avatar av : avCreados)
             if (av.getJugador().getNombre().equalsIgnoreCase(nombre))
-                throw new ExcepcionArgumento("El nombre '" + nombre + "' ya existe.");
+                throw new ExcepcionArgumento("El jugador '" + nombre + "' ya existe.");
 
         this.nombre = nombre;
         avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
@@ -53,6 +53,7 @@ public class Jugador {
         enCarcel = false;
         propiedades = new ArrayList<>();
         hipotecas = new ArrayList<>();
+        edificios = new ArrayList<>();
     }
 
     //Getters:

@@ -188,7 +188,7 @@ public class Tablero {
             tableroStr.append(formatearCasilla(ladoSur.get(i)));
             if (i > 0) tableroStr.append("|");
         }
-        tableroStr.append("|\n").append(RESET);
+        tableroStr.append("|").append(RESET);
 
         return tableroStr.toString();
     }
