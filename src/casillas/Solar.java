@@ -349,14 +349,23 @@ public final class Solar extends Propiedad {
     }
 
     //nueva funcion para hipotecar
-    public void deshipotecar(Jugador actual){
+    public void deshipotecar(Jugador actual) throws Excepcion{
+        if (!getHipotecado()) //Comprobamos que no esté hipotecada
+            throw new ExcepcionReglas(actual.getNombre() + " no puede deshipotecar " + getNombre() + ". No está hipotecada.");
+
         hipotecado = false; //Indicamos que la propiedad no está hipotecada
         actual.sumarGastos(hipoteca);
         actual.sumarFortuna(-hipoteca); //Restamos la hipoteca
         actual.getHipotecas().remove(this); //Eliminamos de las propiedades hipotecadas del jugador
     }
 
-    public void hipotecar(Jugador actual){
+    public void hipotecar(Jugador actual) throws Excepcion{
+        if (getHipotecado()) //Comprobamos que no esté hipotecada
+            throw new ExcepcionReglas(getNombre() + " no puede hipotecar " + getNombre() + ". Ya está hipotecada.");
+
+        if (getEdificios().isEmpty()) //Comprobamos que no tenga edificios la casilla a hipotecar
+            throw new ExcepcionReglas(getNombre() + " no puede hipotecar " + getNombre() + ". Debe vender todos los edificios del solar.");
+
         hipotecado = true; //Indicamos que la propiedad no está hipotecada
         actual.sumarGastos(-hipoteca);
         actual.sumarFortuna(hipoteca); //Restamos la hipoteca

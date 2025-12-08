@@ -1,5 +1,9 @@
 package casillas;
 
+import excepciones.Excepcion;
+import excepciones.ExcepcionDinero;
+import excepciones.ExcepcionDineroInsuficiente;
+import excepciones.ExcepcionReglas;
 import partida.Jugador;
 
 public abstract class Propiedad extends Casilla {
@@ -17,35 +21,24 @@ public abstract class Propiedad extends Casilla {
     /*Método usado para comprar una casilla determinada. Parámetros:
      * - Jugador que solicita la compra de la casilla.
      * - Banca del monopoly (es el dueño de las casillas no compradas aún).*/
-    public void comprarCasilla(Jugador solicitante, Jugador banca) {
-        if (!getAvatares().contains(solicitante.getAvatar())) {
-            System.out.println("Error: El avatar " + solicitante.getAvatar().getId() + " no se encuentra en " + getNombre() + ".");
-            return;
-        }
+    public void comprarCasilla(Jugador solicitante, Jugador banca) throws Excepcion {
+        if (!getAvatares().contains(solicitante.getAvatar()))
+            throw new ExcepcionReglas("El avatar " + solicitante.getAvatar().getId() + " no se encuentra en " + getNombre() + ".");
 
-        if (!getDuenho().equals(banca) && !getDuenho().equals(solicitante)) {
-            System.out.println("Esta casilla ya tiene dueño: " + getDuenho().getNombre() + ".");
-            return;
-        }
+        if (!getDuenho().equals(banca) && !getDuenho().equals(solicitante))
+            throw new ExcepcionReglas("Esta casilla ya tiene dueño: " + getDuenho().getNombre() + ".");
 
-        if (getTipo().equals("Especiales") || getTipo().equals("Suerte") || getTipo().equals("Caja")) { //Comprobamos tipo
-            System.out.println("Error: Esta casilla es de tipo '" + getTipo() + "'. Solo se pueden comprar casillas de tipo 'Solar', 'Transporte' o 'Servicios'.");
-            return;
-        }
+        if (solicitante.getFortuna() < getValor())
+            throw new ExcepcionDineroInsuficiente("El jugador " + solicitante.getNombre() + " no tiene suficiente dinero para comprar "
+                    + getNombre() + ". Su fortuna actual es de " + solicitante.getFortuna() + "$.");
 
-        if (solicitante.getFortuna() >= getValor()) { //Comprobamos fortuna
-            solicitante.sumarGastos(getValor());
-            solicitante.sumarFortuna(-getValor());
-            banca.eliminarPropiedad(this);
-            banca.sumarPremios(getValor()); //Recauda el dinero de la propiedad (Banca)
-            solicitante.anhadirPropiedad(this);
-            this.setDuenho(solicitante);
-            solicitante.sumarPatrimonio(getValor());
-            System.out.println("El jugador " + solicitante.getNombre() + " compra la casilla " + getNombre() +
-                    " por " + getValor() + "$. Su fortuna actual es " + solicitante.getFortuna() + "$.");
-        } else
-            System.out.println(solicitante.getNombre() + " no dispone de suficiente fortuna para comprar " + getNombre());
-
+        solicitante.sumarGastos(getValor());
+        solicitante.sumarFortuna(-getValor());
+        banca.eliminarPropiedad(this);
+        banca.sumarPremios(getValor()); //Recauda el dinero de la propiedad (Banca)
+        solicitante.anhadirPropiedad(this);
+        this.setDuenho(solicitante);
+        solicitante.sumarPatrimonio(getValor());
     }
 
     /* Método para mostrar información de una casilla en venta.

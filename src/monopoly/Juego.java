@@ -29,15 +29,15 @@ public class Juego implements Comando {
     private int countAccionesSuerte; //Método para contar las cartas de suerte
     private int countAccionesCaja; //Método para contar las cartas de caja de comunidad
 
-    /*Método que realiza las acciones asociadas al comando 'describir avatar'.
-     * Parámetro: id del avatar a describir.
-     */
-    private void descAvatar(String ID) {
-    }
-
-    // Método que realiza las acciones asociadas al comando 'listar avatares'.
-    private void listarAvatares() {
-    }
+//    /*Método que realiza las acciones asociadas al comando 'describir avatar'.
+//     * Parámetro: id del avatar a describir.
+//     */
+//    private void descAvatar(String ID) {
+//    }
+//
+//    // Método que realiza las acciones asociadas al comando 'listar avatares'.
+//    private void listarAvatares() {
+//    }
 
     // Constructor
     public Juego() {
@@ -88,6 +88,9 @@ public class Juego implements Comando {
 
         switch (partes[0]) {
             case "acabar":
+                if (!esPartidaIniciada())
+                    throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
+
                 if (partes.length != 2 || !partes[1].equals("turno"))
                     throw new ExcepcionArgumento("Uso: acabar turno");
 
@@ -100,11 +103,17 @@ public class Juego implements Comando {
                 leerComandos();
                 break;
             case "comprar":
+                if (!esPartidaIniciada())
+                    throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
+
+                if (partes.length != 2)
+                    throw new ExcepcionArgumento("Uso: comprar <nombre>");
+
                 comprar(partes[1]);
                 break;
             case "crear":
-                if (partes.length != 4 || !partes[1].equalsIgnoreCase("jugador"))
-                    throw new ExcepcionArgumento("Uso: crear jugador <nombre> <tipoAvatar>");
+                if (partes.length != 4 || !partes[1].equals("jugador"))
+                    throw new ExcepcionArgumento("Uso: crear jugador <nombre> <tipo>");
 
                 crearJugador(partes);
                 break;
@@ -118,18 +127,42 @@ public class Juego implements Comando {
                 }
                 break;
             case "deshipotecar":
+                if (!esPartidaIniciada())
+                    throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
+
+                if (partes.length != 2)
+                    throw new ExcepcionArgumento("Uso: deshipotecar <nombre>");
+
                 deshipotecar(partes[1]);
                 break;
             case "edificar":
+                if (!esPartidaIniciada())
+                    throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
+
+                if (partes.length != 2)
+                    throw new ExcepcionArgumento("Uso: edificar <tipo>");
+
                 edificar(partes[1]);
                 break;
             case "hipotecar":
+                if (!esPartidaIniciada())
+                    throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
+
+                if (partes.length != 2)
+                    throw new ExcepcionArgumento("Uso: hipotecar <nombre>");
+
                 hipotecar(partes[1]);
                 break;
             case "jugador":
+                if (!esPartidaIniciada())
+                    throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
+
                 indicarTurnoJugador();
                 break;
             case "lanzar":
+                if (!esPartidaIniciada())
+                    throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
+
                 lanzar(partes);
                 break;
             case "listar":
@@ -139,9 +172,15 @@ public class Juego implements Comando {
                 estadisticas(partes);
                 break;
             case "salir":
+                if (!esPartidaIniciada())
+                    throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
+
                 salirCarcel();
                 break;
             case "vender":
+                if (!esPartidaIniciada())
+                    throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
+
                 vender(partes[1], partes[2], Integer.parseInt(partes[3]));
                 break;
             case "ver":
@@ -166,6 +205,9 @@ public class Juego implements Comando {
     //Método para crear un jugador
     @Override
     public void crearJugador(String partes[]) throws Excepcion {
+        if (jugadores.size() == 4)
+            throw new ExcepcionReglas("Número máximo de jugadores alcanzado");
+
         if (!avatarValido(partes[3]))
             throw new ExcepcionReglas("El avatar '" + partes[3] + "' no válido. Avatares disponible: " + avataresDisponibles() + ".");
 
@@ -217,6 +259,11 @@ public class Juego implements Comando {
         return sb.toString();
     }
 
+    //Método que devuelve si hay el número suficiente de jugadores para iniciar la partida (mín. 2)
+    private boolean esPartidaIniciada() {
+        return jugadores.size() >= 2;
+    }
+
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
      * Parámetro: cadena de caracteres con el nombre de la casilla.
      */
@@ -229,13 +276,15 @@ public class Juego implements Comando {
 
         Jugador actual = jugadores.get(turno);
 
-        if (!casilla.getTipo().equalsIgnoreCase("Solar") ||
-        !casilla.getTipo().equalsIgnoreCase("Transporte") ||
-        !casilla.getTipo().equalsIgnoreCase("Servicios"))
+        if (!casilla.getTipo().equalsIgnoreCase("Solar") || !casilla.getTipo().equalsIgnoreCase("Transporte") ||
+            !casilla.getTipo().equalsIgnoreCase("Servicios"))
             throw new ExcepcionReglas("La casilla '" + casilla.getNombre() + "' es de tipo " + casilla.getTipo() +
                     ". Solo se peuden comprar casillas de tipo: Solar, Transporte o Servicios.");
 
         ((Propiedad) casilla).comprarCasilla(actual, banca);
+
+        consola.imprimir("El jugador " + actual.getNombre() + " compra la casilla " + casilla.getNombre() + " por "
+                + casilla.getValor() + "$. Su fortuna actual es " + actual.getFortuna() + "$.");
     }
 
     /* Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
@@ -316,7 +365,7 @@ public class Juego implements Comando {
 
     //Método para deshipotecar una casilla
     @Override
-    public void deshipotecar(String nombre) throws Excepcion{
+    public void deshipotecar(String nombre) throws Excepcion {
         Jugador actual = jugadores.get(turno);
         Casilla hipoteca = tablero.encontrarCasilla(nombre);
 
@@ -327,14 +376,20 @@ public class Juego implements Comando {
             throw new ExcepcionReglas(actual.getNombre() + " no puede deshipotecar " + hipoteca.getNombre() +
                     ". Esta casilla pertenece a " + hipoteca.getDuenho().getNombre() + ".");
 
-        if (!((Solar)hipoteca).getHipotecado()) //Comprobamos que no esté hipotecada
-            throw new ExcepcionReglas(actual.getNombre() + " no puede deshipotecar " + hipoteca.getNombre() + ". No está hipotecada.");
+        if (hipoteca.getTipo().equals("Transporte") || hipoteca.getTipo().equals("Servicios"))
+            throw new ExcepcionReglas(actual.getNombre() + " no puede deshipotecar " + hipoteca.getNombre() + ". Solo se pueden hipotecar propiedades de tipo Solar.");
 
         ((Solar) hipoteca).deshipotecar(actual);
 
         StringBuilder sb = new StringBuilder();
-        if (hipoteca.getTipo().equals("Solar")) //Si es solar añadimos mensaje de aviso
-            sb.append(" Ahora puede recibir alquileres en ").append(hipoteca.getNombre()).append(".");
+        for (Solar s : hipoteca.getGrupo().getMiembros()) {
+            if (s.getHipotecado()) {
+                sb.append("Aún no puede recibir alquileres en el grupo: ").append(s.color()).append(". Quedan solares sin desipotecar.");
+                break;
+            }
+
+            sb.append("Ahora puede recibir alquileres en el grupo: ").append(s.color()).append(".");
+        }
 
         consola.imprimir(actual.getNombre() + " paga " + ((Solar)hipoteca).getHipoteca() + "$ por deshipotecar " +
                 hipoteca.getNombre() + "." + sb);
@@ -373,53 +428,36 @@ public class Juego implements Comando {
                 " se reduce en " + valor + "$.");
     }
 
-
     //Método para hipotecar una casilla
     @Override
-    public void hipotecar(String nombreCasilla) throws Excepcion{
-        Jugador jugadorActual = jugadores.get(turno);
+    public void hipotecar(String nombreCasilla) throws Excepcion {
+        Jugador actual = jugadores.get(turno);
         Casilla hipoteca = tablero.encontrarCasilla(nombreCasilla);
 
-        if (hipoteca == null) { //Si no se ha asignado, es que no existe
+        if (hipoteca == null)  //Si no se ha asignado, es que no existe
             throw new ExcepcionArgumento("Error: No existe la casilla " + nombreCasilla + ".");
-        }
 
-        if (!hipoteca.getDuenho().equals(jugadorActual)) { //Comprobamos que sea el jugador actual el dueño de la casilla
-            throw new ExcepcionReglas(jugadorActual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() +
+        if (!hipoteca.getDuenho().equals(actual)) //Comprobamos que sea el jugador actual el dueño de la casilla
+            throw new ExcepcionReglas(actual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() +
                     ". Esta casilla pertenece a " + hipoteca.getDuenho().getNombre() + ".");
-        }
 
-        if (hipoteca.getTipo().equals("Transporte") || hipoteca.getTipo().equals("Servicios")) {
-            throw new ExcepcionReglas(jugadorActual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() + ". Solo se pueden hipotecar propiedades de tipo 'Solar'.");
-        }
+        if (hipoteca.getTipo().equals("Transporte") || hipoteca.getTipo().equals("Servicios"))
+            throw new ExcepcionReglas(actual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() + ". Solo se pueden hipotecar propiedades de tipo 'Solar'.");
 
-        if (((Solar)hipoteca).getHipotecado()) { //Comprobamos que no esté hipotecada
-            throw new ExcepcionReglas(jugadorActual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() + ". Ya está hipotecada.");
-        }
+        ((Solar) hipoteca).hipotecar(actual);
 
-        if (!((Solar)hipoteca).getEdificios().isEmpty()) { //Comprobamos que no tenga edificios la casilla a hipotecar
-            throw new ExcepcionReglas(jugadorActual.getNombre() + " no puede hipotecar " + hipoteca.getNombre() + ". Debe vender todos los edificios del solar.");
-        }
-
-        ((Solar)hipoteca).hipotecar(jugadorActual);
-
-        StringBuilder sb = new StringBuilder();
-        if (hipoteca.getTipo().equals("Solar")) //Si es solar añadimos mensaje de aviso
-            sb.append(" No puede recibir alquileres ni edificar en el grupo ").append(((Solar)hipoteca).color()).append(".");
-
-        System.out.println(jugadorActual.getNombre() + " recibe " + ((Solar)hipoteca).getHipoteca() + "$ por la hipoteca de " +
-                hipoteca.getNombre() + "." + sb);
+        System.out.println(actual.getNombre() + " recibe " + ((Solar)hipoteca).getHipoteca() + "$ por la hipoteca de " +
+                hipoteca.getNombre() + ". No puede recibir alquileres ni edificar en el grupo: " + ((Solar)hipoteca).color() + ".");
     }
 
     // Muestra el jugador que está en juego en ese momento
     @Override
     public void indicarTurnoJugador() throws Excepcion {
-        if (jugadores.isEmpty()) {
+        if (jugadores.isEmpty())
             throw new ExcepcionReglas("No existe ningún jugador");
-        }
-            Jugador jugadorActual = jugadores.get(turno);
-            Avatar avatarActual = jugadorActual.getAvatar();
-            consola.imprimir("{\n\tnombre: " + jugadorActual.getNombre() + ",\n\tavatar: " + avatarActual.getId() + "\n}");
+
+        Jugador actual = jugadores.get(turno);
+        consola.imprimir("{\n\tnombre: " + actual.getNombre() + ",\n\tavatar: " + actual.getAvatar().getId() + "\n}");
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
