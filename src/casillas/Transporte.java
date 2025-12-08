@@ -1,10 +1,12 @@
 package casillas;
 
 import partida.Jugador;
+import consola.ConsolaNormal;
 
 public final class Transporte extends Propiedad {
 
     public Transporte() {}
+    public static ConsolaNormal consola; //Consola para imprimir/leer por pantalla
 
     public Transporte(String nombre, int posicion, Jugador duenho) {
         super(nombre, "Transporte", posicion, 500000, duenho, 250000);
@@ -26,7 +28,7 @@ public final class Transporte extends Propiedad {
 
                 duenho.sumarFortuna(alquiler);
                 duenho.sumarCobroAlquileres(alquiler);
-                System.out.println("El jugador" + actual.getNombre() + " paga " +  (int)alquiler + "€ de transporte a " + duenho.getNombre() + ".");
+                consola.imprimir("El jugador" + actual.getNombre() + " paga " +  (int)alquiler + "€ de transporte a " + duenho.getNombre() + ".");
                 return true;
             } else if (!actual.getEnBancarrota() && actual.getFortuna() < alquiler)
                 actual.setDeudaAPagar(alquiler);
@@ -45,7 +47,7 @@ public final class Transporte extends Propiedad {
 
     @Override
     public String casEnVenta(){
-        return "\n{" +
+        return "{" +
                 "\n\tnombre: " + getNombre() +
                 "\n\ttipo: " + getTipo() +
                 ",\n\tvalor: " + getValor() +

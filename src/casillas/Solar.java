@@ -6,6 +6,7 @@ import partida.Jugador;
 import java.util.ArrayList;
 import static monopoly.Valor.*;
 import static monopoly.Juego.vueltasTotales;
+import consola.ConsolaNormal;
 
 public final class Solar extends Propiedad {
     private float valorCasa;
@@ -19,6 +20,7 @@ public final class Solar extends Propiedad {
     private ArrayList<Edificio> edificios;
     private boolean hipotecado;
     private float hipoteca; //Valor otorgado por hipotecar una casilla
+    public static ConsolaNormal consola; //Consola para imprimir/leer por pantalla
 
     public Solar() {}
 
@@ -113,78 +115,78 @@ public final class Solar extends Propiedad {
 
     //Método para vender edificios
     public void venderEdificios(String tipoEdificio, int cantidad, ArrayList<Edificio> edificiosCreados) {
+        if (edificios.isEmpty())
+            throw new ExcepcionArgumento("No hay edificios para vender en " + getNombre() + ".");
+
         StringBuilder sb = new StringBuilder();
         float venta = 0;
 
-        if (!edificios.isEmpty()) {
-            switch (tipoEdificio) {
-                case "casa": case "casas":
-                    if (existeHotel()) {
-                        sb.append("No se pueden vender casas en ").append(getNombre()).append(". Antes hay que vender el hotel");
-                        break;
-                    }
-                    if (cantidad > contarCasas()) {
-                        sb.append("Solamente se pueden vender " + contarCasas() + " casas");
-                        cantidad = contarCasas();
-                    } else
-                        sb.append(getDuenho().getNombre()).append(" ha vendido ").append(cantidad).append(" casas en ").append(getNombre());
-
-                    venta = venderCasas(cantidad, edificiosCreados);
-
+        switch (tipoEdificio) {
+            case "casa": case "casas":
+                if (existeHotel()) {
+                    sb.append("No se pueden vender casas en ").append(getNombre()).append(". Antes hay que vender el hotel");
                     break;
+                }
+                if (cantidad > contarCasas()) {
+                    sb.append("Solamente se pueden vender " + contarCasas() + " casas");
+                    cantidad = contarCasas();
+                } else
+                    sb.append(getDuenho().getNombre()).append(" ha vendido ").append(cantidad).append(" casas en ").append(getNombre());
 
-                case "hotel":
-                    if (!existeHotel()) {
-                        sb.append(getNombre()).append(" no tiene ningún hotel construido");
-                        break;
-                    }
-                    if (existePiscina()) {
-                        sb.append("No se puede vender el hotel en ").append(getNombre()).append(". Antes hay que vender la piscina");
-                        break;
-                    }
-                    if (cantidad > 1)
-                        sb.append("Solamente se puede vender 1 hotel");
-                    else
-                        sb.append(getDuenho().getNombre()).append(" ha vendido 1 hotel en ").append(getNombre());
-
-                    venta = venderHotel(edificiosCreados);
+                venta = venderCasas(cantidad, edificiosCreados);
+                break;
+            case "hotel":
+                if (!existeHotel()) {
+                    sb.append(getNombre()).append(" no tiene ningún hotel construido");
                     break;
-
-                case "piscina":
-                    if (!existePiscina()) {
-                        sb.append(getNombre()).append(" no tiene ninguna piscina construida");
-                        break;
-                    }
-                    if (existePistaDeporte()) {
-                        sb.append("No se puede vender la piscina en ").append(getNombre()).append(". Antes hay que vender la pista de deporte");
-                        break;
-                    }
-                    if (cantidad > 1)
-                        sb.append("Solamente se puede vender 1 piscina");
-                    else
-                        sb.append(getDuenho().getNombre()).append(" ha vendido 1 piscina en ").append(getNombre());
-
-                    venta = venderPiscina(edificiosCreados);
+                }
+                if (existePiscina()) {
+                    sb.append("No se puede vender el hotel en ").append(getNombre()).append(". Antes hay que vender la piscina");
                     break;
+                }
+                if (cantidad > 1)
+                    sb.append("Solamente se puede vender 1 hotel");
+                else
+                    sb.append(getDuenho().getNombre()).append(" ha vendido 1 hotel en ").append(getNombre());
 
-                case "pista":
-                    if (!existePistaDeporte()) {
-                        sb.append(getNombre()).append(" no tiene ninguna pista de deporte construida");
-                        break;
-                    }
-                    if (cantidad > 1)
-                        sb.append("Solamente se puede vender 1 pita de deporte");
-                    else
-                        sb.append(getDuenho().getNombre()).append(" ha vendido 1 pista de deporte en ").append(getNombre());
+                venta = venderHotel(edificiosCreados);
+                break;
+           case "piscina":
+               if (!existePiscina()) {
+                   sb.append(getNombre()).append(" no tiene ninguna piscina construida");
+                   break;
+               }
+               if (existePistaDeporte()) {
+                   sb.append("No se puede vender la piscina en ").append(getNombre()).append(". Antes hay que vender la pista de deporte");
+                   break;
+               }
+               if (cantidad > 1)
+                   sb.append("Solamente se puede vender 1 piscina");
+               else
+                   sb.append(getDuenho().getNombre()).append(" ha vendido 1 piscina en ").append(getNombre());
 
-                    venta = venderPista(edificiosCreados);
-                    break;
+               venta = venderPiscina(edificiosCreados);
+               break;
 
-                case "default": break;
-            }
-            System.out.println(sb + ", recibiendo " + venta + "$. En la propiedad quedan " + imprimirEdificiosRestantes() + ".");
-        } else
-            System.out.println("No hay edificios para vender en " + getNombre() + ".");
+           case "pista":
+               if (!existePistaDeporte()) {
+                   sb.append(getNombre()).append(" no tiene ninguna pista de deporte construida");
+                   break;
+               }
+               if (cantidad > 1)
+                   sb.append("Solamente se puede vender 1 pita de deporte");
+               else
+                   sb.append(getDuenho().getNombre()).append(" ha vendido 1 pista de deporte en ").append(getNombre());
+
+               venta = venderPista(edificiosCreados);
+               break;
+
+           case "default": break;
+        }
+        if (venta == 0)
+            throw  new ExcepcionReglas(sb + ". En la En la propiedad quedan " + imprimirEdificiosRestantes() + ".");
+
+        consola.imprimir(sb + ", recibiendo " + venta + "$. En la propiedad quedan " + imprimirEdificiosRestantes() + ".");
     }
 
     //Método para vender casas
@@ -194,9 +196,9 @@ public final class Solar extends Propiedad {
         getDuenho().sumarFortuna(venta);
         eliminarCasas(edificiosCreados);
         getDuenho().sumarPatrimonio(-(cantidad * valorCasa));
-        for (int i = 0; i < (numCasasInicial - cantidad); i++) {
+        for (int i = 0; i < (numCasasInicial - cantidad); i++)
             edificios.add(new Casa(getDuenho(),this, edificiosCreados));
-        }
+
         return venta;
     }
 
@@ -277,7 +279,7 @@ public final class Solar extends Propiedad {
                 sumarAlquilerAcumulado(alquiler);
                 duenho.sumarFortuna(alquiler);
                 duenho.sumarCobroAlquileres(alquiler);
-                System.out.println("Se han pagado " + alquiler + "€ de alquiler a " + duenho.getNombre() + ".");
+                consola.imprimir("Se han pagado " + alquiler + "€ de alquiler a " + duenho.getNombre() + ".");
                 return true;
             } else if (!actual.getEnBancarrota() && actual.getFortuna() < alquiler)
                 actual.setDeudaAPagar(alquiler);
@@ -334,9 +336,9 @@ public final class Solar extends Propiedad {
 
     @Override
     public String casEnVenta(){
-        return "\n{" +
+        return "{" +
                 "\n\tnombre: " + getNombre() +
-                "\n\ttipo: " + getTipo() +
+                ",\n\ttipo: " + getTipo() +
                 ",\n\tgrupo: " + color() +
                 ",\n\tvalor: " + getValor() +
                 "\n}";

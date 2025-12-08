@@ -51,8 +51,10 @@ public class Juego implements Comando {
             } catch (ExcepcionArgumento | ExcepcionReglas | ExcepcionBancarrota e) {
                 consola.imprimir(e.getMessage());
             } catch (ExcepcionDineroInsuficiente e) {
-                consola.imprimir(e.getMessage());
-                ventaOHipoteca(e.getCobro());
+                if (e.getCobro() > 0) {
+                    consola.imprimir(e.getMessage());
+                    ventaOHipoteca(e.getCobro());
+                }
             } catch (RuntimeException e) {
             consola.imprimir("Error: " + e.getMessage());
             }
@@ -119,6 +121,7 @@ public class Juego implements Comando {
                 acabarTurno();
                 break;
             case "aceptar":
+                aceptarTrato(partes[1]);
                 break;
             case "comandos":
                 if (partes.length != 1)
@@ -169,6 +172,10 @@ public class Juego implements Comando {
                 edificar(partes[1]);
                 break;
             case "eliminar":
+                if (!(partes.length == 2)){
+                    throw new ExcepcionArgumento("Uso: eliminar <trato>");
+                }
+                eliminarTrato(partes[1]);
                 break;
             case "hipotecar":
                 if (!esPartidaIniciada())
@@ -198,11 +205,22 @@ public class Juego implements Comando {
                     lanzarDados(Integer.parseInt(partes[2]), Integer.parseInt(partes[3]));
                 break;
             case "listar":
+                if (!(partes.length == 2 || partes.length == 3) || !(partes[1].equalsIgnoreCase("jugadores") ||
+                        partes[1].equalsIgnoreCase("edificios") || partes[1].equalsIgnoreCase("enventa")))
+                    throw new ExcepcionArgumento("Uso: listar edificios (<grupo>)/enventa/jugadores");
+
                 listar(partes);
                 break;
             case "estadisticas":
-                estadisticas(partes);
+                if (!(partes.length == 1 || partes.length == 2))
+                    throw new ExcepcionArgumento("Uso: estadisticas (<nombre>)");
+
+                if (partes.length == 1)
+                    mostrarEstadisticasGlobales();
+                else
+                    mostrarEstadisticas(partes[1]);
                 break;
+
             case "salir":
                 if (!esPartidaIniciada())
                     throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
@@ -216,10 +234,18 @@ public class Juego implements Comando {
                     proponerTrato(partes);
                 }
                 break;
-
+            case "tratos":
+                if (!esPartidaIniciada())
+                    throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
+                if(partes.length == 1){
+                    verTratos();
+                }
             case "vender":
                 if (!esPartidaIniciada())
                     throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
+
+                if (partes.length != 4)
+                    throw  new ExcepcionArgumento("Uso: vender <tipo> <solar> <cantidad>");
 
                 vender(partes[1], partes[2], Integer.parseInt(partes[3]));
                 break;
@@ -291,10 +317,9 @@ public class Juego implements Comando {
             separador = ", ";
         }
         
-        if (!avUsados.contains("sombrero")) {
+        if (!avUsados.contains("sombrero"))
             sb.append(separador).append("sombrero");
-            separador = ", ";
-        }
+
         
         return sb.toString();
     }
@@ -482,7 +507,7 @@ public class Juego implements Comando {
 
         ((Solar) hipoteca).hipotecar(actual);
 
-        System.out.println(actual.getNombre() + " recibe " + ((Solar)hipoteca).getHipoteca() + "$ por la hipoteca de " +
+        consola.imprimir(actual.getNombre() + " recibe " + ((Solar)hipoteca).getHipoteca() + "$ por la hipoteca de " +
                 hipoteca.getNombre() + ". No puede recibir alquileres ni edificar en el grupo: " + ((Solar)hipoteca).color() + ".");
     }
 
@@ -606,55 +631,66 @@ public class Juego implements Comando {
         try (BufferedReader br = (new BufferedReader(new FileReader(ruta)))) {
             String comando;
             while ((comando = br.readLine()) != null) { //Leemos cada línea y analizamos comando
-                System.out.println("Comando: " + comando);
-                analizarComando(comando);
+                consola.imprimir("Comando: " + comando);
+                try {
+                    analizarComando(comando);
+                } catch (ExcepcionArgumento | ExcepcionReglas | ExcepcionBancarrota e) {
+                    consola.imprimir(e.getMessage());
+                } catch (ExcepcionDineroInsuficiente e) {
+                    if (e.getCobro() > 0) {
+                        consola.imprimir(e.getMessage());
+                        ventaOHipoteca(e.getCobro());
+                    }
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void listar(String partes[]) throws Excepcion{
-        if(partes.length == 2){
-            if (!(partes[1].equalsIgnoreCase("jugadores") || partes[1].equalsIgnoreCase("edificios") || partes[1].equalsIgnoreCase("enventa")))
-                throw new ExcepcionArgumento("Uso: listar grupo <color> /jugadores/edificios/enventa");
-            else {
-                if (partes[1].equalsIgnoreCase("jugadores")) listarJugadores();
-                else if (partes[1].equalsIgnoreCase("enventa")) listarVenta();
-                else if (partes[1].equalsIgnoreCase("edificios")) listarEdificios();
+    private void listar(String partes[]) {
+        if (partes.length == 2){
+            switch (partes[1]) {
+                case "edificios" -> listarEdificios();
+                case "enventa" -> listarEnVenta();
+                case "jugadores" -> listarJugadores();
             }
-        }
-        else if (!(partes.length ==  3 || partes[1].equalsIgnoreCase("grupo"))) {
-            throw new ExcepcionArgumento("Uso: listar grupo <color> /jugadores/edificios/enventa");
-        }
+        } else
+            listarEdificiosGrupo(partes[2]);
+
     }
 
     //Método para listar todos los edificios construidos
     @Override
-    public void listarEdificios() throws Excepcion{
-        if (edificios.isEmpty()) {
-            throw new ExcepcionReglas("No hay edificios para listar.");
-        }
-            for (Edificio edificio : edificios) {
-                consola.imprimir(edificio.infoEdificio());
-        }
+    public void listarEdificios() {
+        for (Edificio edificio : edificios)
+            consola.imprimir(edificio.infoEdificio());
     }
+
+    // Método que realiza las acciones asociadas al comando 'listar enventa'.
+    @Override
+    public void listarEnVenta(){  //Imprime las casillas que están en venta
+        for (ArrayList<Casilla> lado : tablero.getPosiciones())
+            for (Casilla casilla : lado)
+                consola.imprimir(((Solar) casilla).casEnVenta());  //print y no println porque si no al hacer un return vacio ocupa una línea
+    }
+
 
     //Método para listar los métodos de un grupo y saber qué edificios se pueden construir
     @Override
-    public void listarEdificiosGrupo(String colorGrupo) throws Excepcion{
+    public void listarEdificiosGrupo(String colorGrupo) {
         int countCasas = 0, countHoteles = 0, countPiscina = 0, countPista = 0; //Variables para llevar cuenta de los edificios construidos
         String color = Character.toUpperCase(colorGrupo.charAt(0)) + colorGrupo.substring(1); //Formatemamos el color pasado por comando
 
-        if (tablero.getGrupos().get(color) == null) { //Comprobamos que exista el color
-            throw new ExcepcionArgumento("Error: No existe el grupo de color " + color + ".");
-        }
-        for (Casilla solar : tablero.getGrupos().get(color).getMiembros()) { //Iteramos sobre el arraylist de casillas del grupo
-            System.out.println(((Solar)solar).infoEdificios());
-            countCasas += ((Solar)solar).contarCasas();
-            if (((Solar)solar).existeHotel()) countHoteles++;
-            if (((Solar)solar).existePiscina()) countPiscina++;
-            if (((Solar)solar).existePistaDeporte()) countPista++;
+        if (tablero.getGrupos().get(color) == null)//Comprobamos que exista el color
+            throw new ExcepcionArgumento("No existe el grupo de color " + color + ".");
+
+        for (Solar solar : tablero.getGrupos().get(color).getMiembros()) { //Iteramos sobre el arraylist de casillas del grupo
+            consola.imprimir(solar.infoEdificios());
+            countCasas += solar.contarCasas();
+            if (solar.existeHotel()) countHoteles++;
+            if (solar.existePiscina()) countPiscina++;
+            if (solar.existePistaDeporte()) countPista++;
         }
 
         int numSolares = tablero.getGrupos().get(color).getMiembros().size(); //Número de solares
@@ -667,54 +703,33 @@ public class Juego implements Comando {
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
     @Override
     public void listarJugadores() throws Excepcion{
-        if (jugadores.isEmpty()) {
-            throw new ExcepcionArgumento("No hay jugadores en la partida");
-        }
         for (Jugador jugador : jugadores) {
             consola.imprimir("{\n\tnombre: " + jugador.getNombre() +
                     ",\n\tavatar: " + jugador.getAvatar().getId() +
                     ",\n\tfortuna: " + jugador.getFortuna() +
-                    ",\n\tpropiedades: [");
-
-            imprimirPropiedades(jugador); //Imprimimos las propiedades
-
-            consola.imprimir("],\n\thipotecas: [],\n\tedificios: [");
-
-            imprimirEdificios(jugador); //Imprimimos los edificios
-
-            consola.imprimir("]\n}\n");
+                    ",\n\tpropiedades: " + imprimirPropiedades(jugador) +
+                    ",\n\thipotecas: " + imprimirHipotecas(jugador) +
+                    ",\n\tedificios: " + imprimirEdificios(jugador) +
+                    "\n}");
         }
-
     }
-
-    // Método que realiza las acciones asociadas al comando 'listar enventa'.
-    @Override
-    public void listarVenta(){  //Imprime las casillas que están en venta
-        for (ArrayList<Casilla> lado : tablero.getPosiciones())
-            for (Casilla casilla : lado)
-                consola.imprimir(((Solar) casilla).casEnVenta());  //print y no println porque si no al hacer un return vacio ocupa una línea
-    }
-
-
 
     //Método para mostrar las estadísticas de un jugador
     @Override
-    public void mostrarEstadisticas(String[] string) throws Excepcion{
+    public void mostrarEstadisticas(String nombre) throws ExcepcionArgumento{
         Jugador jugador = null;
-        for (Jugador j: jugadores){
-            if(j.getNombre().equals(string[1])){
+        for (Jugador j: jugadores)
+            if(j.getNombre().equals(nombre))
                 jugador = j;
-            }
-        }
-        if (jugador == null){
-            throw new ExcepcionArgumento("No existe el jugador" + string[1] + ".");
-        }
 
-        System.out.println("{\n\tdineroInvertido: " + jugador.getGastos() + "," +
+        if (jugador == null)
+            throw new ExcepcionArgumento("No existe el jugador '" + nombre + "'.");
+
+        consola.imprimir("{\n\tdineroInvertido: " + jugador.getGastos() + "," +
                 "\n\tpagoTasasEImpuestos: " + jugador.getTasasImpuestos() + "," +
                 "\n\tpagoDeAlquileres: " + jugador.getPagoAlquileres() + "," +
                 "\n\tcobroDeAlquileres: " + jugador.getCobroAlquileres() + "," +
-                "\n\tpasarPorCasillaDeSalida: " + jugador.getVueltas()*2000000 + "," +
+                "\n\tpasarPorCasillaDeSalida: " + jugador.getVueltas() * 2000000 + "," +
                 "\n\tpremiosInversionesOBote: " + jugador.getPremios() +"," +
                 "\n\tvecesEnLaCarcel: " + jugador.getVecesCarcel() +
                 "\n}");
@@ -722,7 +737,7 @@ public class Juego implements Comando {
 
     //Método para mostrar las estadísticas globales de la partida
     @Override
-    public void mostrarEstadisticasGlobales(){
+    public void mostrarEstadisticasGlobales() throws ExcepcionArgumento{
         String casillaMasRentable = "";
         String grupoMasRentable = "";
         String casillaMasFrecuentada = "";
@@ -750,7 +765,7 @@ public class Juego implements Comando {
         jugadorConMasVueltas = buscarJugadorConMasVueltas().getNombre();
         jugadorEnCabeza = buscarJugadorEnCabeza().getNombre();
 
-        System.out.println("{\n\tcasillaMasRentable: " + casillaMasRentable + "," +
+        consola.imprimir("{\n\tcasillaMasRentable: " + casillaMasRentable + "," +
                 "\n\tgrupoMasRentable: " + grupoMasRentable + "," +
                 "\n\tcasillaMasFrecuentada: " + casillaMasFrecuentada + "," +
                 "\n\tjugadorMasVueltas: " + jugadorConMasVueltas + "," +
@@ -758,63 +773,46 @@ public class Juego implements Comando {
                 "\n}");
     }
 
-    private void estadisticas(String partes[]){
-        if (!((partes[1].equalsIgnoreCase("jugadores")) || (partes[1].equalsIgnoreCase("enventa") || partes[1].equalsIgnoreCase("edificios")) || (partes[2].equalsIgnoreCase("jugadores"))) && !(partes[2].equalsIgnoreCase("grupo"))) {
-            throw new ExcepcionArgumento("Uso: listar jugadores/edificios/enventa");
-        }
-        if(partes.length == 2){
-            if(partes[1].equalsIgnoreCase("jugadores")) listarJugadores();
-            else if (partes[1].equalsIgnoreCase("enventa")) listarVenta();
-            else if (partes[1].equalsIgnoreCase("edificios")) listarEdificios();
-        }
-        else listarEdificiosGrupo(partes[3]);
-    }
-
-
-
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'.
     @Override
-    public void salirCarcel() throws Excepcion {
-        Jugador jugadorActual = jugadores.get(turno);
-        if (!(jugadorActual.getFortuna() >= 500000))
-            throw new ExcepcionDineroInsuficiente("El jugador " + jugadorActual.getNombre() + " no tiene suficiente dinero", 0);
-        if (!jugadorActual.getEnCarcel())
+    public void salirCarcel() throws ExcepcionDineroInsuficiente, ExcepcionReglas {
+        Jugador actual = jugadores.get(turno);
+
+        if (!(actual.getFortuna() >= 500000))
+            throw new ExcepcionDineroInsuficiente("El jugador " + actual.getNombre() + " no tiene suficiente dinero", 0);
+
+        if (!actual.getEnCarcel())
             throw new ExcepcionReglas("El jugador no está en la carcel");
 
-        jugadorActual.setenCarcel(false);
-        jugadorActual.sumarGastos(500000);
-        jugadorActual.sumarFortuna(-500000);
-        jugadorActual.sumarTasasImpuestos(500000);
+        actual.setenCarcel(false);
+        actual.sumarGastos(500000);
+        actual.sumarFortuna(-500000);
+        actual.sumarTasasImpuestos(500000);
         ((Parking) tablero.encontrarCasilla("Parking")).sumarBote(500000);
-        System.out.println(jugadorActual.getNombre() + " paga 500.000$ y sale de la carcel. Puede lanzar los dados.");
+        consola.imprimir(actual.getNombre() + " paga 500.000$ y sale de la carcel. Puede lanzar los dados.");
     }
-
 
     //Método para vender edificios de una casilla
     @Override
-    public void vender(String tipoEdificio, String nombreCasilla, int cantidad) throws Excepcion{
-        Jugador jugadorActual = jugadores.get(turno);
+    public void vender(String tipoEdificio, String nombreCasilla, int cantidad) throws ExcepcionArgumento, ExcepcionReglas {
+        Jugador actual = jugadores.get(turno);
         Casilla casilla = tablero.encontrarCasilla(nombreCasilla);
 
         if (casilla == null)
             throw new ExcepcionArgumento("Error: No existe la casilla " + nombreCasilla + ".");
 
         if (!(tipoEdificio.equals("casa") || tipoEdificio.equals("casas") || tipoEdificio.equals("hotel") || tipoEdificio.equals("piscina") || tipoEdificio.equals("pista")))
-            throw new ExcepcionArgumento("Error: No existe el tipo de edificio '" + tipoEdificio + "'.");
+            throw new ExcepcionArgumento("No existe el tipo de edificio '" + tipoEdificio + "'.");
 
-        if (!((Propiedad) casilla).perteneceAJugador(jugadorActual)) { //Comprobamos que sea el jugador actual el dueño de la casilla
+        if (!((Propiedad) casilla).perteneceAJugador(actual)) //Comprobamos que sea el jugador actual el dueño de la casilla
             throw new ExcepcionReglas("No se pueden vender " + tipoEdificio + " en " + casilla.getNombre() +
                     ". Esta casilla pertenece a " + casilla.getDuenho().getNombre() + ".");
-        }
 
-        if (cantidad < 1) {
+        if (cantidad < 1)
             throw new ExcepcionArgumento("Error: no se pueden vender " + cantidad + " edificaciones.");
-        }
 
         ((Solar)casilla).venderEdificios(tipoEdificio, cantidad, edificios);
     }
-
-
 
     private Grupo buscarGrupoRentable(){
         float alquilerGrupo = 0;
@@ -917,30 +915,41 @@ public class Juego implements Comando {
             Casilla casillaReceptor = tablero.encontrarCasilla(partes[4]);
 
             if (casillaSolicitante == null && esNumero(partes[4])) {
-                if (((Propiedad) casillaReceptor).perteneceAJugador(receptor) && solicitante.getFortuna() >= Integer.parseInt(partes[4])) {
-                    //dinero por propiedad
-                    tratos.add(new Trato(solicitante, receptor, null, (Propiedad)casillaReceptor, Integer.parseInt(partes[4]), 0, tratos));
-                    consola.imprimir(receptor.getNombre() + ", ¿te doy " +  Integer.parseInt(partes[4])   + "$ y tu me das " + casillaReceptor.getNombre() + "?");
-
+                if (!((Propiedad) casillaReceptor).perteneceAJugador(receptor)) {
+                    throw new ExcepcionReglas("La casilla " + casillaReceptor.getNombre() + " no pertenece a " + receptor.getNombre());
                 }
+                if(!(solicitante.getFortuna() >= Integer.parseInt(partes[4]))) {
+                    throw new ExcepcionReglas(solicitante.getNombre() + " no tiene suficiente dinero");
+                }
+                //dinero por propiedad
+                tratos.add(new Trato(solicitante, receptor, null, (Propiedad)casillaReceptor, Integer.parseInt(partes[4]), 0, tratos));
+                consola.imprimir(receptor.getNombre() + ", ¿te doy " +  Integer.parseInt(partes[4])   + "$ y tu me das " + casillaReceptor.getNombre() + "?");
             }
 
             if (casillaReceptor == null && esNumero(partes[4]) && casillaSolicitante!=null){
-                if (((Propiedad) casillaSolicitante).perteneceAJugador(solicitante) && receptor.getFortuna() >= Integer.parseInt(partes[4])) {
-                    //propiedad por dinero
-                    tratos.add(new Trato(solicitante, receptor, (Propiedad)casillaSolicitante, null, 0, Integer.parseInt(partes[4]), tratos));
-                    consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre()  + " y tu me das " +  Integer.parseInt(partes[4]) + "$?");
-
+                if (!((Propiedad) casillaSolicitante).perteneceAJugador(solicitante)){
+                    throw new ExcepcionReglas("La casilla " + casillaSolicitante.getNombre() + " no pertenece a " + solicitante.getNombre());
                 }
+                if(!(receptor.getFortuna() >= Integer.parseInt(partes[4]))) {
+                    throw new ExcepcionReglas(receptor.getNombre() + " no tiene suficiente dinero");
+                }
+                //propiedad por dinero
+                tratos.add(new Trato(solicitante, receptor, (Propiedad)casillaSolicitante, null, 0, Integer.parseInt(partes[4]), tratos));
+                consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre()  + " y tu me das " +  Integer.parseInt(partes[4]) + "$?");
+
             }
 
 
             if (casillaReceptor!=null && casillaSolicitante!=null) {
-                if (((Propiedad) casillaSolicitante).perteneceAJugador(solicitante) && ((Propiedad) casillaReceptor).perteneceAJugador(receptor)) {
-                    //propiedad por propiedad
-                    tratos.add(new Trato(solicitante, receptor, (Propiedad) casillaSolicitante, (Propiedad) casillaReceptor, 0, 0, tratos));
-                    consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre() + " y tu me das " + casillaReceptor.getNombre() + "?");
+                if (!((Propiedad) casillaSolicitante).perteneceAJugador(solicitante)){
+                    throw new ExcepcionReglas("La casilla " + casillaSolicitante.getNombre() + " no pertenece a " + solicitante.getNombre());
                 }
+                if (!((Propiedad) casillaReceptor).perteneceAJugador(receptor)){
+                    throw new ExcepcionReglas("La casilla " + casillaReceptor.getNombre() + " no pertenece a " + receptor.getNombre());
+                }
+                //propiedad por propiedad
+                tratos.add(new Trato(solicitante, receptor, (Propiedad) casillaSolicitante, (Propiedad) casillaReceptor, 0, 0, tratos));
+                consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre() + " y tu me das " + casillaReceptor.getNombre() + "?");
             }
 
 
@@ -952,19 +961,33 @@ public class Juego implements Comando {
             Casilla casillaReceptor2 = tablero.encontrarCasilla(partes[6]);
 
             if (casillaReceptor2 == null && casillaReceptor !=null && esNumero(partes[6])){
-                if(((Propiedad)casillaSolicitante).perteneceAJugador(solicitante) && ((Propiedad)casillaReceptor).perteneceAJugador(receptor) && receptor.getFortuna()>=Integer.parseInt(partes[5])){
-                    //sabemos que es propiedad por propiedad y dinero
-                    tratos.add(new Trato(solicitante, receptor, (Propiedad)casillaSolicitante, (Propiedad)casillaReceptor, 0, Integer.parseInt(partes[6]), tratos));
-                    consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre()  + " y tu me das " +  Integer.parseInt(partes[4]) + "$ y" + casillaReceptor.getNombre() + "?");
+                if(!((Propiedad)casillaSolicitante).perteneceAJugador(solicitante)){
+                    throw new ExcepcionReglas("La casilla " + casillaSolicitante.getNombre() + " no pertenece a " + solicitante.getNombre());
                 }
+                if(!((Propiedad)casillaReceptor).perteneceAJugador(receptor)){
+                    throw new ExcepcionReglas("La casilla " + casillaReceptor.getNombre() + " no pertenece a " + receptor.getNombre());
+                }
+                if(!(receptor.getFortuna()>=Integer.parseInt(partes[6]))) {
+                    throw new ExcepcionReglas(receptor.getNombre() + " no tiene suficiente dinero");
+                }
+                //sabemos que es propiedad por propiedad y dinero
+                tratos.add(new Trato(solicitante, receptor, (Propiedad)casillaSolicitante, (Propiedad)casillaReceptor, 0, Integer.parseInt(partes[6]), tratos));
+                consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre()  + " y tu me das " +  Integer.parseInt(partes[4]) + "$ y" + casillaReceptor.getNombre() + "?");
             }
 
             if(casillaReceptor == null && casillaReceptor2 !=null && esNumero(partes[4])) {
-                if (((Propiedad) casillaSolicitante).perteneceAJugador(solicitante) && ((Propiedad) casillaReceptor2).perteneceAJugador(receptor) && receptor.getFortuna() >= Integer.parseInt(partes[4])) {
-                    //sabemos que es propiedad por dinero y propiedad
-                    tratos.add(new Trato(solicitante, receptor, (Propiedad) casillaSolicitante, (Propiedad) casillaReceptor2, 0, Integer.parseInt(partes[4]), tratos));
-                    consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre()  + " y tu me das " +  Integer.parseInt(partes[4]) + "$ y" + casillaReceptor2.getNombre() + "?");
+                if(!((Propiedad)casillaSolicitante).perteneceAJugador(solicitante)){
+                    throw new ExcepcionReglas("La casilla " + casillaSolicitante.getNombre() + " no pertenece a " + solicitante.getNombre());
                 }
+                if(!((Propiedad)casillaReceptor2).perteneceAJugador(receptor)){
+                    throw new ExcepcionReglas("La casilla " + casillaReceptor2.getNombre() + " no pertenece a " + receptor.getNombre());
+                }
+                if(!(receptor.getFortuna()>=Integer.parseInt(partes[4]))) {
+                    throw new ExcepcionReglas(receptor.getNombre() + " no tiene suficiente dinero");
+                }
+                //sabemos que es propiedad por dinero y propiedad
+                tratos.add(new Trato(solicitante, receptor, (Propiedad) casillaSolicitante, (Propiedad) casillaReceptor2, 0, Integer.parseInt(partes[4]), tratos));
+                consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre()  + " y tu me das " +  Integer.parseInt(partes[4]) + "$ y" + casillaReceptor2.getNombre() + "?");
             }
         }
     }
@@ -981,5 +1004,30 @@ public class Juego implements Comando {
         }
 
         return true; // Todos los caracteres son dígitos
+    }
+
+    private void aceptarTrato(String id){
+        for (Trato t : tratos){
+            if(t.getId().equals(id)){
+                t.aceptarTrato(id, tratos);
+            }
+        }
+    }
+
+    private void verTratos(){
+        for (Trato t: tratos){
+            consola.imprimir(t.infoTrato());
+        }
+    }
+    private void eliminarTrato(String id) {
+        int tamano = tratos.size();
+        for (Trato t : tratos)
+            if (t.getId().equals(id)) {
+                consola.imprimir("Se ha eliminado el " + t.getId());
+                tratos.remove(t);
+            }
+        if (tamano == tratos.size()){
+            consola.imprimir("No se ha eliminado ningun trato");
+        }
     }
 }

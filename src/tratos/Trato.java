@@ -1,9 +1,12 @@
 package tratos;
 
 import casillas.Propiedad;
+import excepciones.Excepcion;
 import excepciones.ExcepcionArgumento;
 import excepciones.ExcepcionReglas;
 import partida.Jugador;
+import consola.ConsolaNormal;
+
 
 import java.util.ArrayList;
 
@@ -15,6 +18,7 @@ public class Trato {
     Propiedad propiedadReceptor;
     float cantidadSolicitante;
     float cantidadReceptor;
+    public static ConsolaNormal consola; //Consola para imprimir/leer por pantalla
 
     public Trato() {
     }
@@ -36,8 +40,12 @@ public class Trato {
         id = String.format("trato" + tratosCreados.size()); //Creamos ID con el formato tipo-número
         tratosCreados.add(this); //Añadimos al arraylist global
     }
+    public String getId(){
+        return id;
+    }
 
-    public void aceptarTrato(String id) throws Excepcion{
+
+    public void aceptarTrato(String id, ArrayList<Trato> tratosCreados) throws Excepcion {
         if (!this.id.equals(id))
             throw new ExcepcionArgumento("Este trato no existe");
 
@@ -53,7 +61,8 @@ public class Trato {
             receptor.anhadirPropiedad(propiedadSolicitante);
             receptor.eliminarPropiedad(propiedadReceptor);
             solicitante.anhadirPropiedad(propiedadReceptor);
-            System.out.println("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + propiedadReceptor.getNombre() + " y " + solicitante.getNombre() + " me da " + propiedadSolicitante.getNombre() + ".");
+            consola.imprimir("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + propiedadReceptor.getNombre() + " y " + solicitante.getNombre() + " me da " + propiedadSolicitante.getNombre() + ".");
+            tratosCreados.remove(this);
 
         }
         if(propiedadSolicitante != null && propiedadReceptor==null && cantidadReceptor!=0 && cantidadSolicitante == 0){
@@ -69,7 +78,8 @@ public class Trato {
             solicitante.sumarFortuna(cantidadReceptor);
             receptor.sumarFortuna(-cantidadReceptor);
             receptor.sumarGastos(cantidadReceptor);
-            System.out.println("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + propiedadReceptor.getNombre() + " y " + solicitante.getNombre() + " me da " + cantidadSolicitante + "$.");
+            tratosCreados.remove(this);
+            consola.imprimir("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + propiedadReceptor.getNombre() + " y " + solicitante.getNombre() + " me da " + cantidadSolicitante + "$.");
 
         }
         if(propiedadSolicitante == null && propiedadReceptor !=null && cantidadReceptor == 0 && cantidadSolicitante!=0){
@@ -85,7 +95,8 @@ public class Trato {
             solicitante.sumarFortuna(-cantidadSolicitante);
             solicitante.sumarGastos(cantidadSolicitante);
             receptor.sumarFortuna(cantidadSolicitante);
-            System.out.println("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + cantidadReceptor + "$ y " + solicitante.getNombre() + " me da " + propiedadSolicitante + ".");
+            tratosCreados.remove(this);
+            consola.imprimir("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + cantidadReceptor + "$ y " + solicitante.getNombre() + " me da " + propiedadSolicitante + ".");
 
         }
         if((propiedadSolicitante!=null && propiedadReceptor !=null && cantidadReceptor!=0 && cantidadSolicitante==0)){
@@ -106,9 +117,42 @@ public class Trato {
             solicitante.sumarFortuna(cantidadReceptor);
             receptor.sumarFortuna(-cantidadReceptor);
             receptor.sumarGastos(cantidadReceptor);
-            System.out.println("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + propiedadReceptor.getNombre() + " y " + cantidadReceptor + "$ y "+ solicitante.getNombre() + " me da " + propiedadSolicitante.getNombre() + "$");
+            tratosCreados.remove(this);
+            consola.imprimir("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + propiedadReceptor.getNombre() + " y " + cantidadReceptor + "$ y "+ solicitante.getNombre() + " me da " + propiedadSolicitante.getNombre() + "$");
 
         }
+    }
+    public String infoTrato() {
+        if (propiedadSolicitante != null && propiedadReceptor != null && cantidadReceptor == 0 && cantidadSolicitante == 0) {
+            //PROPIEDAD POR PROPIEDAD
+            return "{" +
+                    "\nid: " + id +
+                    "\n\tjugadorPropone: " + solicitante.getNombre() + "," +
+                    "\n\ttrato: cambiar (" + propiedadSolicitante.getNombre() + ", " + propiedadReceptor.getNombre() + ")" +
+                    "\n},";
+        } else if (propiedadSolicitante != null && propiedadReceptor == null && cantidadReceptor != 0 && cantidadSolicitante == 0) {
+            //PROPIEDAD POR DINERO
+            return "{" +
+                    "\nid: " + id +
+                    "\n\tjugadorPropone: " + solicitante.getNombre() + "," +
+                    "\n\ttrato: cambiar (" + propiedadSolicitante.getNombre() + ", " + cantidadReceptor + ")" +
+                    "\n},";
+        } else if(propiedadSolicitante == null && propiedadReceptor !=null && cantidadReceptor == 0 && cantidadSolicitante!=0){
+            //DINERO POR PROPIEDAD
+            return "{" +
+                    "\nid: " + id +
+                    "\n\tjugadorPropone: " + solicitante.getNombre() + "," +
+                    "\n\ttrato: cambiar (" + cantidadSolicitante + ", " + propiedadReceptor.getNombre() + ")" +
+                    "\n},";
+        }else if(propiedadSolicitante!=null && propiedadReceptor !=null && cantidadReceptor!=0 && cantidadSolicitante==0){
+            //PROPIEDAD POR DINERO Y PROPIEDAD O PROPIEDAD POR PROPIEDAD Y DINERO
+            return "{" +
+                    "\nid: " + id +
+                    "\n\tjugadorPropone: " + solicitante.getNombre() + "," +
+                    "\n\ttrato: cambiar (" + propiedadSolicitante + ", " + propiedadReceptor.getNombre() + ", " + cantidadReceptor + ")" +
+                    "\n},";
+        }
+        return"";
     }
 }
 

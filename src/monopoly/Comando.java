@@ -1,9 +1,6 @@
 package monopoly;
 
-import excepciones.Excepcion;
-import excepciones.ExcepcionArgumento;
-
-import java.io.IOException;
+import excepciones.*;
 
 public interface Comando {
     void acabarTurno();
@@ -28,19 +25,19 @@ public interface Comando {
 
     void leerComandos() throws RuntimeException;
 
-    void listarEdificios() throws Excepcion;
+    void listarEdificios();
 
-    void listarEdificiosGrupo(String colorGrupo) throws Excepcion;
+    void listarEdificiosGrupo(String colorGrupo) throws ExcepcionArgumento;
 
-    void listarJugadores() throws Excepcion;
+    void listarJugadores();
 
-    void listarVenta() throws Excepcion;
+    void listarEnVenta();
 
-    void mostrarEstadisticas(String[] string) throws Excepcion;
+    void mostrarEstadisticas(String nombre) throws ExcepcionArgumento;
 
-    void mostrarEstadisticasGlobales() throws Excepcion;
+    void mostrarEstadisticasGlobales() throws ExcepcionArgumento;
 
-    void salirCarcel() throws Excepcion;
+    void salirCarcel() throws ExcepcionDineroInsuficiente, ExcepcionReglas;
 
     void vender(String tipoEdificio, String nombreCasilla, int cantidad) throws Excepcion;
 
