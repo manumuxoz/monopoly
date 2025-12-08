@@ -49,6 +49,8 @@ public class Juego implements Comando {
             case "lanzar" -> lanzar(partes);
             case "listar" -> listar(partes);
             case "estadisticas" -> estadisticas(partes);
+            case "salir" -> salirCarcel();
+            case "vender" -> vender(partes[1], partes[2], Integer.parseInt(partes[3]));
 
         }
 
@@ -126,339 +128,12 @@ public class Juego implements Comando {
     private void descAvatar(String ID) {
     }
 
-
-
-
-
-    //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'.
-    @Override
-    public void salirCarcel() {
-        Jugador jugadorActual = jugadores.get(turno);
-        if (jugadorActual.getFortuna() >= 500000 && jugadorActual.getEnCarcel()) {
-            jugadorActual.setenCarcel(false);
-            jugadorActual.sumarGastos(500000);
-            jugadorActual.sumarFortuna(-500000);
-            jugadorActual.sumarTasasImpuestos(500000);
-            tablero.encontrar_casilla("Parking").sumarValor(500000);
-            System.out.println(jugadorActual.getNombre() + " paga 500.000$ y sale de la carcel. Puede lanzar los dados.");
-        }
-    }
-
-
-
-
     // Método que realiza las acciones asociadas al comando 'listar avatares'.
     private void listarAvatares() {
     }
 
-
-
-
     //Nuevos métodos:
-
-
-
-
-
-    // Método para mostrar por pantalla información de la posición de cada jugador
-    private void repintarTablero() {
-        // Imprimimos las posiciones actuales para facilitar el control de los jugadores
-        System.out.println("=== POSICIONES ACTUALES ===");
-        for (Jugador jugador : jugadores) {
-            Avatar avatar = jugador.getAvatar();
-            System.out.println(jugador.getNombre() + " (" + avatar.getId() + ") en: " +
-                    avatar.getLugar().getNombre());
-        }
-        System.out.println("===========================");
-    }
-
-    /*
-    * Método para manejar situaciones cuando un jugador está en la cárcel.
-    * Parámetro: jugador que está en la cárcel.
-    * */
-    private void manejarCarcel(Jugador jugador, boolean dobles) {
-        jugador.setTiradasCarcel(jugador.getTiradasCarcel() + 1);
-        lanzamientos = -1;
-        if (jugador.getTiradasCarcel() >= 3 || dobles) {
-            jugador.setenCarcel(false);
-            jugador.setTiradasCarcel(0);
-            System.out.println(jugador.getNombre() + " sale de la cárcel.");
-            if(dobles) lanzamientos = 0;
-
-        } else {
-            System.out.println(jugador.getNombre() + " está en la cárcel. Turno " +
-                    jugador.getTiradasCarcel() + "/3. Use 'salir carcel' para pagar fianza.");
-        }
-    }
-
-    //Método para saber si un jugador puede tirar
-    private boolean puedeTirar() {
-        if (lanzamientos == -1) {
-            System.out.println("Ya tiraste este turno. Usa 'acabar turno' para continuar.");
-            return false;
-        }
-        return true;
-    }
-
-    //Método para manejar las situaciones en que la tirada ha sido dobles
-    private void manejarDobles(boolean sonDobles) {
-        Jugador jugadorActual = jugadores.get(turno);
-
-        if (sonDobles) {
-            lanzamientos++; // Aumentar contador de dobles consecutivos
-            System.out.println("¡Dobles! Llevas " + lanzamientos + " dobles consecutivos.");
-
-            // Si son 3 dobles consecutivos, ir a la cárcel
-            if (lanzamientos == 3) {
-                System.out.println("¡3 dobles consecutivos! " + jugadorActual.getNombre() + " va a la cárcel.");
-                jugadorActual.encarcelar(tablero.getPosiciones());
-                lanzamientos = -1; // Resetear contador
-            }
-        } else
-            lanzamientos = -1; // Resetear contador si no son dobles
-    }
-
-    //Método para manejar las acciones del avatar
-    private void manejarAvatar(int valorTirada) {
-        Jugador jugadorActual = jugadores.get(turno);
-        Avatar avatarActual = jugadorActual.getAvatar();
-
-        avatarActual.moverAvatar(tablero.getPosiciones(), valorTirada);
-
-        Casilla nuevaCasilla = avatarActual.getLugar();
-
-        //Sumamos bote al parking en caso de caer en una casilla de tipo 'Impuesto'
-        if (nuevaCasilla.getTipo().equals("Impuesto"))
-            tablero.encontrar_casilla("Parking").sumarValor(nuevaCasilla.getImpuesto());
-
-        if (nuevaCasilla.getTipo().equals("Suerte") || nuevaCasilla.getTipo().equals("Caja"))
-            manejarAcciones(nuevaCasilla.getTipo());
-
-
-        // USAR evaluarCasilla para TODAS las casillas
-        boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
-
-        eliminarEdificiosBanca();
-
-        //Si puede pagar el alquiler realizamos el bucle de venta o impoteca hasta pagarlo
-        if (!solvente && !jugadorActual.getEnBancarrota())
-            ventaOHipoteca(jugadorActual.getDeudaAPagar());
-
-
-        // Si evaluarCasilla retorna false (para IrCarcel), manejar el encarcelamiento
-        if (!solvente && nuevaCasilla.getNombre().equals("IrCarcel")) {
-            jugadorActual.encarcelar(tablero.getPosiciones());
-        }
-
-        // Repintar tablero
-        repintarTablero();
-    }
-
-    private Grupo buscarGrupoRentable(){
-                float alquilerGrupo = 0;
-                float alquilerGrupoMaximo = 0;
-                Grupo grupoRentable = null;
-                for (String color : tablero.getGrupos().keySet()){
-                    for (Casilla casilla : tablero.getGrupos().get(color).getMiembros()) {
-                        alquilerGrupo += casilla.getAlquilerAcumulado();
-                    }
-                    if (alquilerGrupo > alquilerGrupoMaximo){
-                        alquilerGrupoMaximo = alquilerGrupo;
-                        grupoRentable = tablero.getGrupos().get(color);
-
-                    }
-                }
-                return grupoRentable;
-    }
-
-    private Casilla buscarCasillaRentable(){
-        float alquilerMaximo= 0;
-        Casilla casillaRentable = null;
-        for (ArrayList<Casilla> lado : tablero.getPosiciones()){
-            for(Casilla casilla : lado){
-                if (casilla.getAlquilerAcumulado() > alquilerMaximo){
-                    alquilerMaximo = casilla.getAlquilerAcumulado();
-                    casillaRentable = casilla;
-                }
-            }
-        }
-        return casillaRentable;
-    }
-
-    private Casilla buscarCasillaMasFrecuentada(){
-        Casilla casillaMasFrecuentada = null;
-        int vecesEnCasilla = 0;
-        for (ArrayList<Casilla> lado : tablero.getPosiciones()){
-            for(Casilla casilla : lado){
-                if (casilla.getVecesEnCasilla() > vecesEnCasilla){
-                    vecesEnCasilla = casilla.getVecesEnCasilla();
-                    casillaMasFrecuentada = casilla;
-                }
-            }
-        }
-        return casillaMasFrecuentada;
-    }
-
-    private Jugador buscarJugadorConMasVueltas(){
-        int vueltas = 0;
-        Jugador jugadorConMasVueltas = null;
-        for (Jugador jugador: jugadores){
-            if (jugador.getVueltas() > vueltas){
-                vueltas = jugador.getVueltas();
-                jugadorConMasVueltas = jugador;
-            }
-        }
-        return jugadorConMasVueltas;
-    }
-
-    private Jugador buscarJugadorEnCabeza(){
-        float valorJugadorMaximo = 0;
-        float valorJugador;
-        Jugador  jugadorEnCabeza = null;
-
-        for (Jugador jugador: jugadores){
-            valorJugador = jugador.getPatrimonio() + jugador.getFortuna();
-            if (valorJugador > valorJugadorMaximo){
-                valorJugadorMaximo = valorJugador;
-                jugadorEnCabeza = jugador;
-            }
-        }
-        return jugadorEnCabeza;
-    }
-
-
-
-    //Método para manejar las acciones de las casillas de Suerte o Caja de Comunidad
-    private void manejarAcciones(String tipo) {
-        Jugador jugadorActual = jugadores.get(turno);
-
-        if (tipo.equals("Suerte")){ //Acciones para Suerte
-            Acciones suerte = new Acciones(tipo);
-            System.out.println(jugadorActual.getNombre() + " elige una carta: " + (countAccionesSuerte + 1) + ".");
-            switch (countAccionesSuerte) { //Elegimos acción
-                case 0: suerte.avanzaSolar(jugadorActual, tablero.encontrar_casilla("Solar19")); break;
-                case 1: suerte.veCarcel(jugadorActual, tablero.getPosiciones()); break;
-                case 2: suerte.boteLoteria(jugadorActual); break;
-                case 3:
-                    System.out.println("Has sido elegido presidente de la junta directiva. Paga a cada jugador 250.000€.");
-
-                    float cobro = 250000 * jugadores.size() - 1;
-
-                    if (jugadorActual.enBancarrota(cobro, banca)) return;
-
-                    ventaOHipoteca(cobro);
-
-                    suerte.elegidoPresidente(jugadorActual, jugadores); break;
-                case 4: suerte.retrocedeTres(jugadorActual, tablero.getPosiciones()); break;
-                case 5:
-                    System.out.println("Te multan por usar el móvil mientras conduces. Paga 150.000€.");
-
-                    if (jugadorActual.enBancarrota(150000, banca)) return;
-
-                    ventaOHipoteca(150000);
-
-                    tablero.encontrar_casilla("Parking").setImpuesto(tablero.encontrar_casilla("Parking").getImpuesto() + 150000);
-
-                    suerte.multa(jugadorActual); break;
-                case 6:
-                    suerte.avanzaTransporte(jugadorActual, tablero.getPosiciones());
-
-                    jugadorActual.getAvatar().getLugar().evaluarCasilla(jugadorActual, banca, 0);break;
-                default: break;
-            }
-            countAccionesSuerte = (countAccionesSuerte + 1)%6; //Llevamos cuenta de las cartas
-        } else { //Acciones para Caja
-            Acciones caja = new Acciones(tipo);
-            System.out.println(jugadorActual.getNombre() + " elige una carta: " + (countAccionesCaja + 1) + ".");
-            switch (countAccionesCaja) { //Elegimos acción
-                case 0:
-                    System.out.println("Paga 500.000€ por un fin de semana en un balneario de 5 estrellas.");
-
-                    if (jugadorActual.enBancarrota(50000, banca)) return;
-
-                    ventaOHipoteca(50000);
-
-                    caja.balneario(jugadorActual); break;
-                case 1:
-                    caja.veCarcel(jugadorActual, tablero.getPosiciones()); break;
-                case 2:
-                    caja.colocateSalida(jugadorActual, tablero.encontrar_casilla("Salida")); break;
-                case 3:
-                    caja.devolucionHacienda(jugadorActual); break;
-                case 4: caja.retrocedeSolar1(jugadorActual, tablero.encontrar_casilla("Solar1")); break;
-                case 5: caja.avanzaSolar(jugadorActual, tablero.encontrar_casilla("Solar20")); break;
-                default: break;
-            }
-            countAccionesCaja = (countAccionesCaja + 1)%5;
-        }
-        eliminarEdificiosBanca();
-    }
-
-    //Método para eliminar los edificios retirados a un jugador en bancarrota
-    private void eliminarEdificiosBanca() {
-        edificios.removeIf(edificio -> edificio.getDuenho().equals(banca));
-    }
-
-    private void ventaOHipoteca(float cobro) {
-        Jugador jugadorActual = jugadores.get(turno);
-
-        while (jugadorActual.getFortuna() < cobro) {
-            System.out.println(jugadorActual.getNombre() + " debe vender edificios y/o hipotecar propiedades para realizar el pago.\n");
-            System.out.print("Propiedades disponibles: ");
-            imprimirPropiedades(jugadorActual);
-            System.out.println(".\n");
-
-            Scanner sc = new Scanner(System.in);
-            String comando = sc.nextLine();
-            String[] partes = comando.trim().split("[ +]+"); //Dividimos por partes el comando
-
-            if (partes.length == 2 && partes[0].equals("hipotecar")) hipotecar(partes[1]);
-            else if (partes.length == 4 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
-        }
-
-        System.out.println(jugadorActual.getNombre() + " ha pagado la deuda: " + cobro + "$.");
-
-        jugadorActual.setDeudaAPagar(0); //Reseteamos la deuda
-    }
-
-
-
-
-
-
-
-
-    //Método para vender edificios de una casilla
-    @Override
-    public void vender(String tipoEdificio, String nombreCasilla, int cantidad) {
-        Jugador jugadorActual = jugadores.get(turno);
-        Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
-
-        if (casilla == null) {
-            System.out.println("Error: No existe la casilla " + nombreCasilla + ".");
-            return;
-        }
-
-        if (!(tipoEdificio.equals("casa") || tipoEdificio.equals("casas") || tipoEdificio.equals("hotel") || tipoEdificio.equals("piscina") || tipoEdificio.equals("pista"))) {
-            System.out.println("Error: No existe el tipo de edificio '" + tipoEdificio + "'.");
-            return;
-        }
-
-        if (!casilla.getDuenho().equals(jugadorActual)) { //Comprobamos que sea el jugador actual el dueño de la casilla
-            System.out.println("No se pueden vender " + tipoEdificio + " en " + casilla.getNombre() +
-                    ". Esta casilla pertenece a " + casilla.getDuenho().getNombre() + ".");
-            return;
-        }
-
-        if (cantidad < 1) {
-            System.out.println("Error: no se pueden vender " + cantidad + " edificaciones.");
-            return;
-        }
-
-        casilla.venderEdificios(tipoEdificio, cantidad, edificios);
-    }
-
-    ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     public Juego() {
         iniciarPartida();
@@ -841,15 +516,15 @@ public class Juego implements Comando {
     private void listar(String partes[]) throws Excepcion{
         if(partes.length == 2){
             if (!(partes[1].equalsIgnoreCase("jugadores") || partes[1].equalsIgnoreCase("edificios") || partes[1].equalsIgnoreCase("enventa")))
-                throw new ExcepcionArgumento("Uso: listar jugadores/edificios/enventa");
+                throw new ExcepcionArgumento("Uso: listar grupo <color> /jugadores/edificios/enventa");
             else {
                 if (partes[1].equalsIgnoreCase("jugadores")) listarJugadores();
                 else if (partes[1].equalsIgnoreCase("enventa")) listarVenta();
                 else if (partes[1].equalsIgnoreCase("edificios")) listarEdificios();
             }
         }
-        else if () {
-            listarEdificiosGrupo(partes[2]);
+        else if (!(partes.length ==  3 || partes[1].equalsIgnoreCase("grupo"))) {
+            throw new ExcepcionArgumento("Uso: listar grupo <color> /jugadores/edificios/enventa");
         }
     }
 
@@ -994,7 +669,315 @@ public class Juego implements Comando {
         else listarEdificiosGrupo(partes[3]);
     }
 
+
+
+    //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'.
+    @Override
+    public void salirCarcel() throws Excepcion {
+        Jugador jugadorActual = jugadores.get(turno);
+        if (!(jugadorActual.getFortuna() >= 500000))
+            throw new ExcepcionJugador("El jugador " + jugadorActual.getNombre() + " no tiene suficiente dinero");
+        if (!jugadorActual.getEnCarcel())
+            throw new ExcepcionReglas("El jugador no está en la carcel");
+
+        jugadorActual.setenCarcel(false);
+        jugadorActual.sumarGastos(500000);
+        jugadorActual.sumarFortuna(-500000);
+        jugadorActual.sumarTasasImpuestos(500000);
+        tablero.encontrarCasilla("Parking").sumarValor(500000);
+        System.out.println(jugadorActual.getNombre() + " paga 500.000$ y sale de la carcel. Puede lanzar los dados.");
     }
+
+
+    //Método para vender edificios de una casilla
+    @Override
+    public void vender(String tipoEdificio, String nombreCasilla, int cantidad) throws Excepcion{
+        Jugador jugadorActual = jugadores.get(turno);
+        Casilla casilla = tablero.encontrarCasilla(nombreCasilla);
+
+        if (casilla == null)
+            throw new ExcepcionArgumento("Error: No existe la casilla " + nombreCasilla + ".");
+
+        if (!(tipoEdificio.equals("casa") || tipoEdificio.equals("casas") || tipoEdificio.equals("hotel") || tipoEdificio.equals("piscina") || tipoEdificio.equals("pista")))
+            throw new ExcepcionArgumento("Error: No existe el tipo de edificio '" + tipoEdificio + "'.");
+
+        if (!casilla.getDuenho().equals(jugadorActual)) { //Comprobamos que sea el jugador actual el dueño de la casilla
+            throw new ExcepcionReglas("No se pueden vender " + tipoEdificio + " en " + casilla.getNombre() +
+                    ". Esta casilla pertenece a " + casilla.getDuenho().getNombre() + ".");
+        }
+
+        if (cantidad < 1) {
+            throw new ExcepcionArgumento("Error: no se pueden vender " + cantidad + " edificaciones.");
+        }
+
+        ((Solar)casilla).venderEdificios(tipoEdificio, cantidad, edificios);
+    }
+
+    // Método para mostrar por pantalla información de la posición de cada jugador
+    private void repintarTablero() {
+        // Imprimimos las posiciones actuales para facilitar el control de los jugadores
+        consola.imprimir("=== POSICIONES ACTUALES ===");
+        for (Jugador jugador : jugadores) {
+            Avatar avatar = jugador.getAvatar();
+            consola.imprimir(jugador.getNombre() + " (" + avatar.getId() + ") en: " +
+                    avatar.getLugar().getNombre());
+        }
+        consola.imprimir("===========================");
+    }
+
+    /*
+     * Método para manejar situaciones cuando un jugador está en la cárcel.
+     * Parámetro: jugador que está en la cárcel.
+     * */
+    private void manejarCarcel(Jugador jugador, boolean dobles) {
+        jugador.setTiradasCarcel(jugador.getTiradasCarcel() + 1);
+        lanzamientos = -1;
+        if (jugador.getTiradasCarcel() >= 3 || dobles) {
+            jugador.setenCarcel(false);
+            jugador.setTiradasCarcel(0);
+            consola.imprimir(jugador.getNombre() + " sale de la cárcel.");
+            if(dobles) lanzamientos = 0;
+
+        } else {
+            consola.imprimir(jugador.getNombre() + " está en la cárcel. Turno " +
+                    jugador.getTiradasCarcel() + "/3. Use 'salir carcel' para pagar fianza.");
+        }
+    }
+
+
+    //Método para saber si un jugador puede tirar
+    private boolean puedeTirar() {
+        if (lanzamientos == -1) {
+            consola.imprimir("Ya tiraste este turno. Usa 'acabar turno' para continuar.");
+            return false;
+        }
+        return true;
+    }
+
+
+    //Método para manejar las situaciones en que la tirada ha sido dobles
+    private void manejarDobles(boolean sonDobles) {
+        Jugador jugadorActual = jugadores.get(turno);
+
+        if (sonDobles) {
+            lanzamientos++; // Aumentar contador de dobles consecutivos
+            consola.imprimir("¡Dobles! Llevas " + lanzamientos + " dobles consecutivos.");
+
+            // Si son 3 dobles consecutivos, ir a la cárcel
+            if (lanzamientos == 3) {
+                consola.imprimir("¡3 dobles consecutivos! " + jugadorActual.getNombre() + " va a la cárcel.");
+                jugadorActual.encarcelar(tablero.getPosiciones());
+                lanzamientos = -1; // Resetear contador
+            }
+        } else
+            lanzamientos = -1; // Resetear contador si no son dobles
+    }
+
+
+
+    //Método para manejar las acciones del avatar
+    private void manejarAvatar(int valorTirada) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Avatar avatarActual = jugadorActual.getAvatar();
+
+        avatarActual.moverAvatar(tablero.getPosiciones(), valorTirada);
+
+        Casilla nuevaCasilla = avatarActual.getLugar();
+
+        //Sumamos bote al parking en caso de caer en una casilla de tipo 'Impuesto'
+        if (nuevaCasilla.getTipo().equals("Impuesto"))
+            tablero.encontrarCasilla("Parking").sumarValor(nuevaCasilla.getImpuesto());
+
+        if (nuevaCasilla.getTipo().equals("Suerte") || nuevaCasilla.getTipo().equals("Caja"))
+            manejarAcciones(nuevaCasilla.getTipo());
+
+
+        // USAR evaluarCasilla para TODAS las casillas
+        boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
+
+        eliminarEdificiosBanca();
+
+        //Si puede pagar el alquiler realizamos el bucle de venta o impoteca hasta pagarlo
+        if (!solvente && !jugadorActual.getEnBancarrota())
+            ventaOHipoteca(jugadorActual.getDeudaAPagar());
+
+
+        // Si evaluarCasilla retorna false (para IrCarcel), manejar el encarcelamiento
+        if (!solvente && nuevaCasilla.getNombre().equals("IrCarcel")) {
+            jugadorActual.encarcelar(tablero.getPosiciones());
+        }
+
+        // Repintar tablero
+        repintarTablero();
+    }
+
+    private Grupo buscarGrupoRentable(){
+        float alquilerGrupo = 0;
+        float alquilerGrupoMaximo = 0;
+        Grupo grupoRentable = null;
+        for (String color : tablero.getGrupos().keySet()){
+            for (Casilla casilla : tablero.getGrupos().get(color).getMiembros()) {
+                alquilerGrupo += ((Propiedad)casilla).getAlquilerAcumulado();
+            }
+            if (alquilerGrupo > alquilerGrupoMaximo){
+                alquilerGrupoMaximo = alquilerGrupo;
+                grupoRentable = tablero.getGrupos().get(color);
+
+            }
+        }
+        return grupoRentable;
+    }
+
+
+    private Casilla buscarCasillaRentable(){
+        float alquilerMaximo= 0;
+        Casilla casillaRentable = null;
+        for (ArrayList<Casilla> lado : tablero.getPosiciones()){
+            for(Casilla casilla : lado){
+                if (((Propiedad)casilla).getAlquilerAcumulado() > alquilerMaximo){
+                    alquilerMaximo = ((Propiedad)casilla).getAlquilerAcumulado();
+                    casillaRentable = casilla;
+                }
+            }
+        }
+        return casillaRentable;
+    }
+
+    private Casilla buscarCasillaMasFrecuentada(){
+        Casilla casillaMasFrecuentada = null;
+        int vecesEnCasilla = 0;
+        for (ArrayList<Casilla> lado : tablero.getPosiciones()){
+            for(Casilla casilla : lado){
+                if (casilla.getFrecuenciaVisita() > vecesEnCasilla){
+                    vecesEnCasilla = casilla.getFrecuenciaVisita();
+                    casillaMasFrecuentada = casilla;
+                }
+            }
+        }
+        return casillaMasFrecuentada;
+    }
+
+    private Jugador buscarJugadorConMasVueltas(){
+        int vueltas = 0;
+        Jugador jugadorConMasVueltas = null;
+        for (Jugador jugador: jugadores){
+            if (jugador.getVueltas() > vueltas){
+                vueltas = jugador.getVueltas();
+                jugadorConMasVueltas = jugador;
+            }
+        }
+        return jugadorConMasVueltas;
+    }
+
+    private Jugador buscarJugadorEnCabeza(){
+        float valorJugadorMaximo = 0;
+        float valorJugador;
+        Jugador  jugadorEnCabeza = null;
+
+        for (Jugador jugador: jugadores){
+            valorJugador = jugador.getPatrimonio() + jugador.getFortuna();
+            if (valorJugador > valorJugadorMaximo){
+                valorJugadorMaximo = valorJugador;
+                jugadorEnCabeza = jugador;
+            }
+        }
+        return jugadorEnCabeza;
+    }
+
+    //Método para manejar las acciones de las casillas de Suerte o Caja de Comunidad
+    private void manejarAcciones(String tipo) {
+        Jugador jugadorActual = jugadores.get(turno);
+
+        if (tipo.equals("Suerte")){ //Acciones para Suerte
+            cartas.Suerte suerte = new cartas.Suerte();
+            consola.imprimir(jugadorActual.getNombre() + " elige una carta: " + (countAccionesSuerte + 1) + ".");
+            switch (countAccionesSuerte) { //Elegimos acción
+                case 0: suerte.avanzaSolar(jugadorActual, (Solar)tablero.encontrarCasilla("Solar19")); break;
+                case 1: suerte.veCarcel(jugadorActual, tablero.getPosiciones()); break;
+                case 2: suerte.boteLoteria(jugadorActual); break;
+                case 3:
+                    consola.imprimir("Has sido elegido presidente de la junta directiva. Paga a cada jugador 250.000€.");
+
+                    float cobro = 250000 * jugadores.size() - 1;
+
+                    if (jugadorActual.enBancarrota(cobro, banca)) return;
+
+                    ventaOHipoteca(cobro);
+
+                    suerte.elegidoPresidente(jugadorActual, jugadores); break;
+                case 4: suerte.retrocedeTres(jugadorActual, tablero.getPosiciones()); break;
+                case 5:
+                    consola.imprimir("Te multan por usar el móvil mientras conduces. Paga 150.000€.");
+
+                    if (jugadorActual.enBancarrota(150000, banca)) return;
+
+                    ventaOHipoteca(150000);
+
+                    tablero.encontrarCasilla("Parking").setImpuesto(tablero.encontrarCasilla("Parking").getImpuesto() + 150000);
+
+                    suerte.multa(jugadorActual); break;
+                case 6:
+                    suerte.avanzaTransporte(jugadorActual, tablero.getPosiciones());
+
+                    jugadorActual.getAvatar().getLugar().evaluarCasilla(jugadorActual, banca, 0);break;
+                default: break;
+            }
+            countAccionesSuerte = (countAccionesSuerte + 1)%6; //Llevamos cuenta de las cartas
+        } else { //Acciones para Caja
+            cartas.CajaComunidad caja = new cartas.CajaComunidad();
+            consola.imprimir(jugadorActual.getNombre() + " elige una carta: " + (countAccionesCaja + 1) + ".");
+            switch (countAccionesCaja) { //Elegimos acción
+                case 0:
+                    consola.imprimir("Paga 500.000€ por un fin de semana en un balneario de 5 estrellas.");
+
+                    if (jugadorActual.enBancarrota(50000, banca)) return;
+
+                    ventaOHipoteca(50000);
+
+                    caja.balneario(jugadorActual); break;
+                case 1:
+                    caja.veCarcel(jugadorActual, tablero.getPosiciones()); break;
+                case 2:
+                    caja.colocateSalida(jugadorActual, tablero.encontrarCasilla("Salida")); break;
+                case 3:
+                    caja.devolucionHacienda(jugadorActual); break;
+                case 4: caja.retrocedeSolar1(jugadorActual, (Solar)tablero.encontrarCasilla("Solar1")); break;
+                case 5: caja.avanzaSolar(jugadorActual, (Solar)tablero.encontrarCasilla("Solar20")); break;
+                default: break;
+            }
+            countAccionesCaja = (countAccionesCaja + 1)%5;
+        }
+        eliminarEdificiosBanca();
+    }
+
+
+    //Método para eliminar los edificios retirados a un jugador en bancarrota
+    private void eliminarEdificiosBanca() {
+        edificios.removeIf(edificio -> edificio.getDuenho().equals(banca));
+    }
+
+    private void ventaOHipoteca(float cobro) {
+        Jugador jugadorActual = jugadores.get(turno);
+
+        while (jugadorActual.getFortuna() < cobro) {
+            consola.imprimir(jugadorActual.getNombre() + " debe vender edificios y/o hipotecar propiedades para realizar el pago.\n");
+            consola.imprimir("Propiedades disponibles: ");
+            imprimirPropiedades(jugadorActual);
+            consola.imprimir(".\n");
+
+            String comando = consola.leer("Quiere hipotecar o vender");
+            String[] partes = comando.trim().split("[ +]+"); //Dividimos por partes el comando
+
+            if (partes.length == 2 && partes[0].equals("hipotecar")) hipotecar(partes[1]);
+            else if (partes.length == 4 && partes[0].equals("vender")) vender(partes[1], partes[2], Integer.parseInt(partes[3]));
+        }
+
+        consola.imprimir(jugadorActual.getNombre() + " ha pagado la deuda: " + cobro + "$.");
+
+        jugadorActual.setDeudaAPagar(0); //Reseteamos la deuda
+    }
+
+
 
 
 
