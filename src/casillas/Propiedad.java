@@ -22,7 +22,7 @@ public abstract class Propiedad extends Casilla {
      * - Jugador que solicita la compra de la casilla.
      * - Banca del monopoly (es el dueño de las casillas no compradas aún).*/
     public void comprarCasilla(Jugador solicitante, Jugador banca) throws Excepcion {
-        if (!getAvatares().contains(solicitante.getAvatar()))
+        if (!estaAvatar(solicitante.getAvatar()))
             throw new ExcepcionReglas("El avatar " + solicitante.getAvatar().getId() + " no se encuentra en " + getNombre() + ".");
 
         if (!getDuenho().equals(banca) && !getDuenho().equals(solicitante))

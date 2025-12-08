@@ -51,7 +51,7 @@ public class Juego implements Comando {
             try {
                 analizarComando(comando);
             } catch (Excepcion e) {
-                consola.imprimir("Error:" + e.getMessage());
+                consola.imprimir(e.getMessage());
             } catch (RuntimeException e) {
                 consola.imprimir("Error: " + e.getMessage());
             }
@@ -163,7 +163,13 @@ public class Juego implements Comando {
                 if (!esPartidaIniciada())
                     throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
 
-                lanzar(partes);
+                if (!(partes.length == 2 || partes.length == 4) || !partes[1].equals("dados"))
+                    throw new ExcepcionArgumento("Uso: lanzar  (x+y");
+
+                if (partes.length == 2)
+                    lanzarDados(-1,-1);
+                else
+                    lanzarDados(Integer.parseInt(partes[2]), Integer.parseInt(partes[3]));
                 break;
             case "listar":
                 listar(partes);
@@ -351,7 +357,7 @@ public class Juego implements Comando {
     }
 
     //Método para imprimir los IDs de los edificios de un jugador
-    public String imprimirEdificios(Jugador jugador) {
+    private String imprimirEdificios(Jugador jugador) {
         StringBuilder sb = new StringBuilder().append("[");
         String separador = "";
 
@@ -410,10 +416,6 @@ public class Juego implements Comando {
             throw new ExcepcionReglas("La casilla " + casilla.getNombre() + " es de tipo " + casilla.getTipo() +
                     ". Solo se pueden hipotecar propiedades de tipo Solar.");
 
-        for (Solar solar : casilla.getGrupo().getMiembros()) //Comprobamos que ningún miembro del grupo esté hipotecado
-            if (solar.getHipotecado())
-                throw new ExcepcionReglas("No se puede edificar en " + casilla.getNombre() + ". " + solar.getNombre() + " está hipotecado.");
-
         ((Solar) casilla).edificar(actual, tipo, edificios);
 
         float valor = 0;
@@ -452,73 +454,118 @@ public class Juego implements Comando {
 
     // Muestra el jugador que está en juego en ese momento
     @Override
-    public void indicarTurnoJugador() throws Excepcion {
-        if (jugadores.isEmpty())
-            throw new ExcepcionReglas("No existe ningún jugador");
-
+    public void indicarTurnoJugador() {
         Jugador actual = jugadores.get(turno);
         consola.imprimir("{\n\tnombre: " + actual.getNombre() + ",\n\tavatar: " + actual.getAvatar().getId() + "\n}");
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
     @Override
-    public void lanzarDados(int tirada1, int tirada2) throws Excepcion{
-        Jugador jugadorActual = jugadores.get(turno);
+    public void lanzarDados(int tirada1, int tirada2) throws Excepcion {
+        Jugador actual = jugadores.get(turno);
 
-        if (jugadorActual.getEnBancarrota()) {
-            throw new ExcepcionJugador(jugadorActual.getNombre() + " está en banccarrota. No puede realizar la tirada.");
-        } //Si el jugador está en bancarrota o ya ha tirado, no puede tirar
+        if (actual.getEnBancarrota())
+            throw new ExcepcionBancarrota(actual.getNombre() + " está en banccarrota. No puede realizar la tirada.");
 
-        if (!puedeTirar()){
-            throw new ExcepcionReglas("El jugador " + jugadorActual.getNombre() + " no puede realizar la tirada.");
+        if (!puedeTirar())
+            throw new ExcepcionReglas("Ya tiraste este turno. Usa 'acabar turno' para continuar.");
+
+        if (tirada1 == -1 && tirada2 == -1) { //Tirada aleatoria
+            tirada1 = dado1.hacerTirada();
+            tirada2 = dado2.hacerTirada();
         }
 
-        //Realizar tirada
-        int valorTirada, dado1Valor, dado2Valor;
-        boolean sonDobles;
+        if ((tirada1 < 0 || tirada1 > 6) && (tirada2 < 0 || tirada2 > 6)) //Tirada manual
+            throw new ExcepcionReglas("Tirada no válida. Valores entre 1 y 6");
 
-        if (tirada1 == -1 && tirada2 == -2) { //Tirada aleatoria
-            dado1Valor = dado1.hacerTirada();
-            dado2Valor = dado2.hacerTirada();
-            valorTirada = dado1Valor + dado2Valor;
-            consola.imprimir("Tirada: " + dado1Valor + " + " + dado2Valor + " = " + valorTirada);
-
-            sonDobles = (dado1Valor == dado2Valor); //Comprobamos que sean dobles
-        } else { //Tirada manual
-            valorTirada = tirada1 + tirada2;
-
-            if (tirada1 < 0 || tirada1 > 6 || tirada2 < 0 || tirada2 > 6) {
-                throw new ExcepcionReglas("Error: tirada no válida.");
-            }
-            consola.imprimir("Tirada manual: " + tirada1 + " + " + tirada2 + " = " + valorTirada);
-
-            sonDobles = (tirada1 == tirada2); //Comprobamos que sean dobles
-        }
+        int valorTirada = tirada1 + tirada2;
+        consola.imprimir("Tirada: " + tirada1 + " + " + tirada2 + " = " + valorTirada);
 
         // Verificar si el jugador está en la cárcel
-
-
-        if (jugadorActual.getEnCarcel()) {
-            manejarCarcel(jugadorActual, sonDobles);
-            return;
+        if (actual.getEnCarcel())
+            manejarCarcel(actual, tirada1 == tirada2);
+        else {
+            manejarDobles(actual,tirada1 == tirada2);
+            manejarAvatar(actual.getAvatar(), valorTirada);
         }
-
-        manejarDobles(sonDobles);
-
-        if(!jugadorActual.getEnCarcel())
-            manejarAvatar(valorTirada);
     }
 
-    private void lanzar(String partes[]) throws Excepcion{
-        if (!partes[1].equalsIgnoreCase("dados"))
-            throw new ExcepcionArgumento("Uso: lanzar dados");
+    //Método para saber si un jugador puede tirar
+    private boolean puedeTirar() {
+        return !(lanzamientos == -1);
+    }
 
-        if(partes.length == 2){
-            lanzarDados(-1,-2);
+    /*
+     * Método para manejar situaciones cuando un jugador está en la cárcel.
+     * Parámetro: jugador que está en la cárcel.
+     * */
+    private void manejarCarcel(Jugador jugador, boolean dobles) {
+        jugador.setTiradasCarcel(jugador.getTiradasCarcel() + 1);
+        lanzamientos = -1;
+
+        if (jugador.getTiradasCarcel() == 3 || dobles) {
+            jugador.setenCarcel(false);
+            jugador.setTiradasCarcel(0);
+            consola.imprimir(jugador.getNombre() + " sale de la cárcel.");
+
+            if (dobles) //Si sacó doble puede volver a tirar
+                lanzamientos = 0;
+        } else {
+            consola.imprimir(jugador.getNombre() + " está en la cárcel. Turno " +
+                    jugador.getTiradasCarcel() + "/3. Use 'salir carcel' para pagar fianza.");
         }
-        else{
-            lanzarDados(Integer.parseInt(partes[2]), Integer.parseInt(partes[3]));
+    }
+
+    //Método para manejar las situaciones en que la tirada ha sido dobles
+    private void manejarDobles(Jugador actual, boolean sonDobles) {
+        if (sonDobles) {
+            lanzamientos++; // Aumentar contador de dobles consecutivos
+            consola.imprimir("¡Dobles! Llevas " + lanzamientos + " dobles consecutivos.");
+
+            // Si son 3 dobles consecutivos, ir a la cárcel
+            if (lanzamientos == 3) {
+                consola.imprimir("¡3 dobles consecutivos! " + actual.getNombre() + " va a la cárcel.");
+                actual.encarcelar(tablero.getPosiciones());
+                lanzamientos = -1; // Resetear contador
+                consola.imprimir(actual.getNombre() + " ha sido enviado a la carcel.");
+            }
+        } else
+            lanzamientos = -1; // Resetear contador si no son dobles
+    }
+
+    //Método para manejar las acciones del avatar
+    private void manejarAvatar(Avatar avActual, int valorTirada) {
+        avActual.moverAvatar(tablero.getPosiciones(), valorTirada);
+
+        Casilla nuevaCasilla = avActual.getLugar();
+
+        //Sumamos bote al parking en caso de caer en una casilla de tipo 'Impuesto'
+        if (nuevaCasilla.getTipo().equals("Impuesto"))
+            tablero.encontrarCasilla("Parking").sumarValor(nuevaCasilla.getImpuesto());
+
+        if (nuevaCasilla.getTipo().equals("Suerte") || nuevaCasilla.getTipo().equals("Caja"))
+            manejarAcciones(nuevaCasilla.getTipo());
+
+
+        // USAR evaluarCasilla para TODAS las casillas
+        if(!(nuevaCasilla.getTipo().equals("Suerte") && nuevaCasilla.getTipo().equals("Caja"))){
+            boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
+            eliminarEdificiosBanca();
+
+            //Si puede pagar el alquiler realizamos el bucle de venta o impoteca hasta pagarlo
+            if (!solvente && !jugadorActual.getEnBancarrota())
+                ventaOHipoteca(jugadorActual.getDeudaAPagar());
+
+
+            // Si evaluarCasilla retorna false (para IrCarcel), manejar el encarcelamiento
+            if (!solvente && nuevaCasilla.getNombre().equals("IrCarcel")) {
+                jugadorActual.encarcelar(tablero.getPosiciones());
+            }
         }
+
+
+        // Repintar tablero
+        repintarTablero();
     }
 
     //Método para leer los comandos de un archivo
@@ -629,7 +676,7 @@ public class Juego implements Comando {
             }
         }
         if (jugador == null){
-            throw new ExcepcionJugador("No existe el jugador" + string[1] + ".");
+            throw new ExcepcionArgumento("No existe el jugador" + string[1] + ".");
         }
 
         System.out.println("{\n\tdineroInvertido: " + jugador.getGastos() + "," +
@@ -699,7 +746,7 @@ public class Juego implements Comando {
     public void salirCarcel() throws Excepcion {
         Jugador jugadorActual = jugadores.get(turno);
         if (!(jugadorActual.getFortuna() >= 500000))
-            throw new ExcepcionJugador("El jugador " + jugadorActual.getNombre() + " no tiene suficiente dinero");
+            throw new ExcepcionDineroInsuficiente("El jugador " + jugadorActual.getNombre() + " no tiene suficiente dinero");
         if (!jugadorActual.getEnCarcel())
             throw new ExcepcionReglas("El jugador no está en la carcel");
 
@@ -748,93 +795,11 @@ public class Juego implements Comando {
         consola.imprimir("===========================");
     }
 
-    /*
-     * Método para manejar situaciones cuando un jugador está en la cárcel.
-     * Parámetro: jugador que está en la cárcel.
-     * */
-    private void manejarCarcel(Jugador jugador, boolean dobles) {
-        jugador.setTiradasCarcel(jugador.getTiradasCarcel() + 1);
-        lanzamientos = -1;
-        if (jugador.getTiradasCarcel() >= 3 || dobles) {
-            jugador.setenCarcel(false);
-            jugador.setTiradasCarcel(0);
-            consola.imprimir(jugador.getNombre() + " sale de la cárcel.");
-            if(dobles) lanzamientos = 0;
-
-        } else {
-            consola.imprimir(jugador.getNombre() + " está en la cárcel. Turno " +
-                    jugador.getTiradasCarcel() + "/3. Use 'salir carcel' para pagar fianza.");
-        }
-    }
-
-
-    //Método para saber si un jugador puede tirar
-    private boolean puedeTirar() {
-        if (lanzamientos == -1) {
-            consola.imprimir("Ya tiraste este turno. Usa 'acabar turno' para continuar.");
-            return false;
-        }
-        return true;
-    }
-
-
-    //Método para manejar las situaciones en que la tirada ha sido dobles
-    private void manejarDobles(boolean sonDobles) {
-        Jugador jugadorActual = jugadores.get(turno);
-
-        if (sonDobles) {
-            lanzamientos++; // Aumentar contador de dobles consecutivos
-            consola.imprimir("¡Dobles! Llevas " + lanzamientos + " dobles consecutivos.");
-
-            // Si son 3 dobles consecutivos, ir a la cárcel
-            if (lanzamientos == 3) {
-                consola.imprimir("¡3 dobles consecutivos! " + jugadorActual.getNombre() + " va a la cárcel.");
-                jugadorActual.encarcelar(tablero.getPosiciones());
-                lanzamientos = -1; // Resetear contador
-            }
-        } else
-            lanzamientos = -1; // Resetear contador si no son dobles
-    }
 
 
 
-    //Método para manejar las acciones del avatar
-    private void manejarAvatar(int valorTirada) {
-        Jugador jugadorActual = jugadores.get(turno);
-        Avatar avatarActual = jugadorActual.getAvatar();
-
-        avatarActual.moverAvatar(tablero.getPosiciones(), valorTirada);
-
-        Casilla nuevaCasilla = avatarActual.getLugar();
-
-        //Sumamos bote al parking en caso de caer en una casilla de tipo 'Impuesto'
-        if (nuevaCasilla.getTipo().equals("Impuesto"))
-            tablero.encontrarCasilla("Parking").sumarValor(nuevaCasilla.getImpuesto());
-
-        if (nuevaCasilla.getTipo().equals("Suerte") || nuevaCasilla.getTipo().equals("Caja"))
-            manejarAcciones(nuevaCasilla.getTipo());
 
 
-        // USAR evaluarCasilla para TODAS las casillas
-        if(!(nuevaCasilla.getTipo().equals("Suerte") && nuevaCasilla.getTipo().equals("Caja"))){
-            boolean solvente = nuevaCasilla.evaluarCasilla(jugadorActual, banca, valorTirada);
-            eliminarEdificiosBanca();
-
-            //Si puede pagar el alquiler realizamos el bucle de venta o impoteca hasta pagarlo
-            if (!solvente && !jugadorActual.getEnBancarrota())
-                ventaOHipoteca(jugadorActual.getDeudaAPagar());
-
-
-            // Si evaluarCasilla retorna false (para IrCarcel), manejar el encarcelamiento
-            if (!solvente && nuevaCasilla.getNombre().equals("IrCarcel")) {
-                jugadorActual.encarcelar(tablero.getPosiciones());
-            }
-        }
-
-
-        // Repintar tablero
-        repintarTablero();
-    }
 
     private Grupo buscarGrupoRentable(){
         float alquilerGrupo = 0;

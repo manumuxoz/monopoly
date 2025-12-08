@@ -1,6 +1,5 @@
 package partida;
 
-
 public class Dado {
     public Dado() {
     }
@@ -14,7 +13,7 @@ public class Dado {
 
     //Metodo para simular lanzamiento de un dado: devolverá un valor aleatorio entre 1 y 6.
     public int hacerTirada() {
-        valor = (int) (Math.random()*7);
+        valor = (int)(Math.random() * 6) + 1;
         return  valor;
     }
 }

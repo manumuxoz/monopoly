@@ -167,7 +167,6 @@ public class Jugador {
         carcel.anhadirAvatar(avatar);
         enCarcel = true;
         tiradasCarcel = 0;
-        System.out.println(nombre + " ha sido enviado a la carcel.");
         sumarVecesCarcel(1);
     }
 

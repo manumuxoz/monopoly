@@ -398,6 +398,10 @@ public final class Solar extends Propiedad {
     public void edificar(Jugador solicitante, String tipo, ArrayList<Edificio> edCreados) throws ExcepcionReglas {
         Jugador duenho = getDuenho();
 
+        for (Solar solar : getGrupo().getMiembros()) //Comprobamos que ningún miembro del grupo esté hipotecado
+            if (solar.getHipotecado())
+                throw new ExcepcionReglas("No se puede edificar en " + getNombre() + ". " + solar.getNombre() + " está hipotecado.");
+
         if (!solicitante.equals(duenho))
             throw new ExcepcionReglas("Esta casilla pertenece a " + getDuenho().getNombre() + ".");
 

@@ -22,7 +22,7 @@ public interface Comando {
 
     void hipotecar(String nombreCasilla) throws Excepcion;
 
-    void indicarTurnoJugador() throws Excepcion;
+    void indicarTurnoJugador();
 
     void lanzarDados(int tirada1, int tirada2) throws Excepcion;
 

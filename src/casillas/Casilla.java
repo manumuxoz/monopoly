@@ -128,8 +128,8 @@ public abstract class Casilla {
 
     public void sumarFrecuenciaVisita(){frecuenciaVisita++;}
 
-    public boolean estaAvatar() {
-        return !avatares.isEmpty();
+    public boolean estaAvatar(Avatar av) {
+        return avatares.contains(av);
     }
 
     /*Método para evaluar qué hacer en una casilla concreta. Parámetros:
