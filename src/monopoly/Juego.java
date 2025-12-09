@@ -25,8 +25,6 @@ public class Juego implements Comando {
     private Jugador banca; //El jugador banca.
     private ArrayList<Edificio> edificios; //Edificios creados
     private ArrayList<Trato> tratos;
-    public static int vueltasTotales;
-
     public static ConsolaNormal consola; //Consola para imprimir/leer por pantalla
     public static int countCajaComunidad; //Llevar cuenta de las cartas de comunidad
     public static int countSuerte; //Llevar cuenta de las cartas de suerte
