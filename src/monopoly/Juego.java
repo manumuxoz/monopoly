@@ -58,8 +58,8 @@ public class Juego implements Comando {
                 }
 
             } catch (ExcepcionBancarrota e) {
-                if (e.getReceptor().equals(banca))
-                    eliminarEdificiosBanca();
+                consola.imprimir(e.getMessage());
+                eliminarEdificiosBanca();
 
             } catch (RuntimeException e) {
                 consola.imprimir("Error: " + e.getMessage());
@@ -655,8 +655,8 @@ public class Juego implements Comando {
                     }
 
                 } catch (ExcepcionBancarrota e) {
-                    if (e.getReceptor().equals(banca))
-                        eliminarEdificiosBanca();
+                    consola.imprimir(e.getMessage());
+                    eliminarEdificiosBanca();
                 }
             }
         } catch (IOException e) {

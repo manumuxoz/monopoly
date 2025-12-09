@@ -130,9 +130,10 @@ public class Jugador {
 
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
     public void anhadirPropiedad(Propiedad propiedad) {
-        if (!this.propiedades.contains(propiedad))
+        if (!this.propiedades.contains(propiedad)) {
             this.propiedades.add(propiedad);
             sumarPatrimonio(propiedad.valor());
+        }
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
