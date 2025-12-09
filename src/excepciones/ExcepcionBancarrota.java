@@ -12,4 +12,9 @@ public class ExcepcionBancarrota extends ExcepcionDinero {
     public ExcepcionBancarrota(String message) {
         super(message);
     }
+
+    public ExcepcionBancarrota(String message, Jugador receptor) {
+        super(message);
+        this.receptor = receptor;
+    }
 }
