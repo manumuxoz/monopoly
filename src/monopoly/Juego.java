@@ -46,7 +46,7 @@ public class Juego implements Comando {
         while (true) {
             try {
                 analizarComando(consola.leer("Introduce un comando: "));
-            } catch (ExcepcionReglas e) {
+            } catch (ExcepcionReglas | ExcepcionArgumento e) {
                 consola.imprimir(e.getMessage());
 
             } catch (ExcepcionDineroInsuficiente e) {
@@ -643,7 +643,7 @@ public class Juego implements Comando {
                 consola.imprimir("Comando: " + comando);
                 try {
                     analizarComando(comando);
-                } catch (ExcepcionReglas e) {
+                } catch (ExcepcionReglas | ExcepcionArgumento e) {
                     consola.imprimir(e.getMessage());
 
                 } catch (ExcepcionDineroInsuficiente e) {

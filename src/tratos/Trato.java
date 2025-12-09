@@ -38,6 +38,7 @@ public class Trato {
     private void generarID( ArrayList<Trato> tratosCreados) {
         id = String.format("trato" + tratosCreados.size()); //Creamos ID con el formato tipo-número
     }
+
     public String getId(){return id;}
     public Jugador getSolicitante(){return solicitante;}
     public Jugador getReceptor(){return receptor;}
