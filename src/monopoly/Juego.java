@@ -704,7 +704,10 @@ public class Juego implements Comando {
         for (Solar solar : tablero.getGrupos().get(color).getMiembros()) { //Iteramos sobre el arraylist de casillas del grupo
             consola.imprimir(solar.infoEdificios());
             countCasas += solar.contarCasas();
-            if (solar.existeHotel()) countHoteles++;
+            if (solar.existeHotel()) {
+                countHoteles++;
+                countCasas += 4;
+            }
             if (solar.existePiscina()) countPiscina++;
             if (solar.existePistaDeporte()) countPista++;
         }
