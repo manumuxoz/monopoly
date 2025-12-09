@@ -77,3 +77,6 @@ hipotecar Solar20
 hipotecar Solar19
 deshipotecar Solar18
 deshipotecar Solar19
+trato Maria: cambiar (Solar19, Solar3)
+acabar turno
+trato Pedro: cambiar (Solar4, 30000 y Solar18)

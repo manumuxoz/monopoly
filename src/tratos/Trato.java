@@ -5,8 +5,7 @@ import excepciones.Excepcion;
 import excepciones.ExcepcionArgumento;
 import excepciones.ExcepcionReglas;
 import partida.Jugador;
-import consola.ConsolaNormal;
-
+import static monopoly.Juego.consola;
 
 import java.util.ArrayList;
 
@@ -18,7 +17,7 @@ public class Trato {
     Propiedad propiedadReceptor;
     float cantidadSolicitante;
     float cantidadReceptor;
-    public static ConsolaNormal consola; //Consola para imprimir/leer por pantalla
+
 
     public Trato() {
     }
@@ -38,11 +37,10 @@ public class Trato {
     //Método para generar un ID a cada nuevo edificio
     private void generarID( ArrayList<Trato> tratosCreados) {
         id = String.format("trato" + tratosCreados.size()); //Creamos ID con el formato tipo-número
-        tratosCreados.add(this); //Añadimos al arraylist global
     }
-    public String getId(){
-        return id;
-    }
+    public String getId(){return id;}
+    public Jugador getSolicitante(){return solicitante;}
+    public Jugador getReceptor(){return receptor;}
 
 
     public void aceptarTrato(String id, ArrayList<Trato> tratosCreados) throws Excepcion {
@@ -51,10 +49,10 @@ public class Trato {
 
         if(propiedadSolicitante !=null && propiedadReceptor !=null && cantidadReceptor==0 && cantidadSolicitante == 0){
             //PROPIEDAD POR PROPIEDAD
-            if(!propiedadReceptor.perteneceAJugador(receptor)){
+            if(!receptor.getPropiedades().contains(propiedadReceptor)){
                 throw new ExcepcionReglas(receptor.getNombre() + " no tiene la casilla " + propiedadReceptor.getNombre());
             }
-            if(!propiedadSolicitante.perteneceAJugador(solicitante)){
+            if(!solicitante.getPropiedades().contains(propiedadSolicitante)){
                 throw new ExcepcionReglas(solicitante.getNombre() + " no tiene la casilla " + propiedadSolicitante.getNombre());
             }
             solicitante.eliminarPropiedad(propiedadSolicitante);
@@ -67,11 +65,11 @@ public class Trato {
         }
         if(propiedadSolicitante != null && propiedadReceptor==null && cantidadReceptor!=0 && cantidadSolicitante == 0){
             //PROPIEDAD POR DINERO
-            if(!propiedadSolicitante.perteneceAJugador(solicitante)){
+            if(!solicitante.getPropiedades().contains(propiedadSolicitante)){
                 throw new ExcepcionReglas(solicitante.getNombre() + " no tiene la casilla " + propiedadSolicitante.getNombre());
             }
-            if(!(cantidadReceptor >= receptor.getFortuna())){
-                throw new ExcepcionReglas("El jugador " + receptor.getNombre() + "no tiene suficiente dinero");
+            if(cantidadReceptor >= receptor.getFortuna()){
+                throw new ExcepcionReglas("El jugador " + receptor.getNombre() + " no tiene suficiente dinero");
             }
             solicitante.eliminarPropiedad(propiedadSolicitante);
             receptor.anhadirPropiedad(propiedadSolicitante);
@@ -79,16 +77,16 @@ public class Trato {
             receptor.sumarFortuna(-cantidadReceptor);
             receptor.sumarGastos(cantidadReceptor);
             tratosCreados.remove(this);
-            consola.imprimir("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + propiedadReceptor.getNombre() + " y " + solicitante.getNombre() + " me da " + cantidadSolicitante + "$.");
+            consola.imprimir("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + cantidadReceptor + " y " + solicitante.getNombre() + " me da " + propiedadSolicitante.getNombre() + "$.");
 
         }
         if(propiedadSolicitante == null && propiedadReceptor !=null && cantidadReceptor == 0 && cantidadSolicitante!=0){
             //DINERO POR PROPIEDAD
-            if(!propiedadReceptor.perteneceAJugador(receptor)){
+            if(!receptor.getPropiedades().contains(propiedadReceptor)){
                 throw new ExcepcionReglas(receptor.getNombre() + " no tiene la casilla " + propiedadReceptor.getNombre());
             }
-            if(!(cantidadSolicitante >= solicitante.getFortuna())){
-                throw new ExcepcionReglas("El jugador " + solicitante.getNombre() + "no tiene suficiente dinero");
+            if(cantidadSolicitante >= solicitante.getFortuna()){
+                throw new ExcepcionReglas("El jugador " + solicitante.getNombre() + " no tiene suficiente dinero");
             }
             receptor.eliminarPropiedad(propiedadReceptor);
             solicitante.anhadirPropiedad(propiedadReceptor);
@@ -96,18 +94,18 @@ public class Trato {
             solicitante.sumarGastos(cantidadSolicitante);
             receptor.sumarFortuna(cantidadSolicitante);
             tratosCreados.remove(this);
-            consola.imprimir("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + cantidadReceptor + "$ y " + solicitante.getNombre() + " me da " + propiedadSolicitante + ".");
+            consola.imprimir("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + propiedadReceptor.getNombre() + " y " + solicitante.getNombre() + " me da " + cantidadSolicitante + "$.");
 
         }
         if((propiedadSolicitante!=null && propiedadReceptor !=null && cantidadReceptor!=0 && cantidadSolicitante==0)){
             //PROPIEDAD POR DINERO Y PROPIEDAD O PROPIEDAD POR PROPIEDAD Y DINERO
-            if(!propiedadSolicitante.perteneceAJugador(solicitante)){
+            if(!solicitante.getPropiedades().contains(propiedadSolicitante)){
                 throw new ExcepcionReglas(solicitante.getNombre() + " no tiene la casilla " + propiedadSolicitante.getNombre());
             }
-            if(!propiedadReceptor.perteneceAJugador(receptor)){
+            if(!receptor.getPropiedades().contains(propiedadReceptor)){
                 throw new ExcepcionReglas(receptor.getNombre() + " no tiene la casilla " + propiedadReceptor.getNombre());
             }
-            if(!(cantidadReceptor >= receptor.getFortuna())){
+            if(cantidadReceptor >= receptor.getFortuna()){
                 throw new ExcepcionReglas("El jugador " + receptor.getNombre() + "no tiene suficiente dinero");
             }
             solicitante.eliminarPropiedad(propiedadSolicitante);
@@ -118,7 +116,7 @@ public class Trato {
             receptor.sumarFortuna(-cantidadReceptor);
             receptor.sumarGastos(cantidadReceptor);
             tratosCreados.remove(this);
-            consola.imprimir("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + propiedadReceptor.getNombre() + " y " + cantidadReceptor + "$ y "+ solicitante.getNombre() + " me da " + propiedadSolicitante.getNombre() + "$");
+            consola.imprimir("Se ha aceptado el siguiente trato con " + solicitante.getNombre() + ": le doy " + propiedadReceptor.getNombre() + " y " + cantidadReceptor + "$ y "+ solicitante.getNombre() + " me da " + propiedadSolicitante.getNombre());
 
         }
     }
@@ -149,7 +147,7 @@ public class Trato {
             return "{" +
                     "\nid: " + id +
                     "\n\tjugadorPropone: " + solicitante.getNombre() + "," +
-                    "\n\ttrato: cambiar (" + propiedadSolicitante + ", " + propiedadReceptor.getNombre() + ", " + cantidadReceptor + ")" +
+                    "\n\ttrato: cambiar (" + propiedadSolicitante.getNombre() + ", " + propiedadReceptor.getNombre() + ", " + cantidadReceptor + ")" +
                     "\n},";
         }
         return"";

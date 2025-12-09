@@ -1,12 +1,11 @@
 package casillas;
 
 import partida.Jugador;
-import consola.ConsolaNormal;
+import static monopoly.Juego.consola;
 
 public final class Transporte extends Propiedad {
 
     public Transporte() {}
-    public static ConsolaNormal consola; //Consola para imprimir/leer por pantalla
 
     public Transporte(String nombre, int posicion, Jugador duenho) {
         super(nombre, "Transporte", posicion, 500000, duenho, 250000);

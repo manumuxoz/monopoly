@@ -6,7 +6,7 @@ import partida.Jugador;
 import java.util.ArrayList;
 import static monopoly.Valor.*;
 import static monopoly.Juego.vueltasTotales;
-import consola.ConsolaNormal;
+import static monopoly.Juego.consola;
 
 public final class Solar extends Propiedad {
     private float valorCasa;
@@ -20,7 +20,6 @@ public final class Solar extends Propiedad {
     private ArrayList<Edificio> edificios;
     private boolean hipotecado;
     private float hipoteca; //Valor otorgado por hipotecar una casilla
-    public static ConsolaNormal consola; //Consola para imprimir/leer por pantalla
 
     public Solar() {}
 
@@ -321,7 +320,7 @@ public final class Solar extends Propiedad {
         if (hipotecado) //Comprobamos que no esté hipotecada
             throw new ExcepcionReglas(getNombre() + " no puede hipotecar " + getNombre() + ". Ya está hipotecada.");
 
-        if (edificios.isEmpty()) //Comprobamos que no tenga edificios la casilla a hipotecar
+        if (!(edificios.isEmpty())) //Comprobamos que no tenga edificios la casilla a hipotecar
             throw new ExcepcionReglas(getNombre() + " no puede hipotecar " + getNombre() + ". Debe vender todos los edificios del solar.");
 
         hipotecado = true; //Indicamos que la propiedad no está hipotecada

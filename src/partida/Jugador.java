@@ -132,11 +132,13 @@ public class Jugador {
     public void anhadirPropiedad(Propiedad propiedad) {
         if (!this.propiedades.contains(propiedad))
             this.propiedades.add(propiedad);
+            sumarPatrimonio(propiedad.valor());
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
     public void eliminarPropiedad(Propiedad propiedad) {
         propiedades.remove(propiedad);
+        sumarPatrimonio(-propiedad.valor());
     }
 
     //Método para añadir fortuna a un jugador
