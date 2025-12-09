@@ -686,7 +686,8 @@ public class Juego implements Comando {
     public void listarEnVenta(){  //Imprime las casillas que están en venta
         for (ArrayList<Casilla> lado : tablero.getPosiciones())
             for (Casilla casilla : lado)
-                consola.imprimir(((Solar) casilla).casEnVenta());  //print y no println porque si no al hacer un return vacio ocupa una línea
+                if (casilla instanceof Propiedad)
+                    consola.imprimir(((Propiedad) casilla).casEnVenta());  //print y no println porque si no al hacer un return vacio ocupa una línea
     }
 
 
