@@ -124,28 +124,28 @@ public class Trato {
         if (propiedadSolicitante != null && propiedadReceptor != null && cantidadReceptor == 0 && cantidadSolicitante == 0) {
             //PROPIEDAD POR PROPIEDAD
             return "{" +
-                    "\nid: " + id +
+                    "\n\tid: " + id +
                     ",\n\tjugadorPropone: " + solicitante.getNombre() +
                     ",\n\ttrato: cambiar (" + propiedadSolicitante.getNombre() + ", " + propiedadReceptor.getNombre() + ")" +
                     "\n}";
         } else if (propiedadSolicitante != null && propiedadReceptor == null && cantidadReceptor != 0 && cantidadSolicitante == 0) {
             //PROPIEDAD POR DINERO
             return "{" +
-                    "\nid: " + id +
+                    "\n\tid: " + id +
                     ",\n\tjugadorPropone: " + solicitante.getNombre() +
                     ",\n\ttrato: cambiar (" + propiedadSolicitante.getNombre() + ", " + cantidadReceptor + ")" +
                     "\n}";
         } else if(propiedadSolicitante == null && propiedadReceptor !=null && cantidadReceptor == 0 && cantidadSolicitante!=0){
             //DINERO POR PROPIEDAD
             return "{" +
-                    "\nid: " + id +
+                    "\n\tid: " + id +
                     ",\n\tjugadorPropone: " + solicitante.getNombre() +
                     ",\n\ttrato: cambiar (" + cantidadSolicitante + ", " + propiedadReceptor.getNombre() + ")" +
                     "\n}";
         }else if(propiedadSolicitante!=null && propiedadReceptor !=null && cantidadReceptor!=0 && cantidadSolicitante==0){
             //PROPIEDAD POR DINERO Y PROPIEDAD O PROPIEDAD POR PROPIEDAD Y DINERO
             return "{" +
-                    "\nid: " + id +
+                    "\n\t: " + id +
                     ",\n\tjugadorPropone: " + solicitante.getNombre() +
                     ",\n\ttrato: cambiar (" + propiedadSolicitante.getNombre() + ", " + propiedadReceptor.getNombre() + ", " + cantidadReceptor + ")" +
                     "\n}";

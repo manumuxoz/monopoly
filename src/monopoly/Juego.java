@@ -72,7 +72,7 @@ public class Juego implements Comando {
         Jugador actual = jugadores.get(turno);
 
         while (actual.getFortuna() < cobro) {
-            consola.imprimir("Edificios: " + imprimirPropiedades(actual));
+            consola.imprimir("Edificios: " + imprimirEdificios(actual));
             consola.imprimir("Propiedades: " + imprimirPropiedades(actual));
 
             String[] partes = consola.leer("Vender/Hipotecar: ").trim().split("[ +]+"); //Dividimos por partes el comando
@@ -637,7 +637,7 @@ public class Juego implements Comando {
 
     //Método para leer los comandos de un archivo
     @Override
-    public void leerComandos() throws  RuntimeException{
+    public void leerComandos() throws  RuntimeException {
         String ruta = System.getProperty("user.dir") + "/comandos.txt"; //Buscamos el directorio de trabajo y añadimos el archivo
         try (BufferedReader br = (new BufferedReader(new FileReader(ruta)))) {
             String comando;
@@ -721,7 +721,7 @@ public class Juego implements Comando {
 
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
     @Override
-    public void listarJugadores() throws Excepcion{
+    public void listarJugadores() throws Excepcion {
         for (Jugador jugador : jugadores) {
             consola.imprimir("{\n\tnombre: " + jugador.getNombre() +
                     ",\n\tavatar: " + jugador.getAvatar().getId() +
@@ -735,7 +735,7 @@ public class Juego implements Comando {
 
     //Método para mostrar las estadísticas de un jugador
     @Override
-    public void mostrarEstadisticas(String nombre) throws ExcepcionArgumento{
+    public void mostrarEstadisticas(String nombre) throws Excepcion {
         Jugador jugador = null;
         for (Jugador j: jugadores)
             if(j.getNombre().equals(nombre))
@@ -756,7 +756,7 @@ public class Juego implements Comando {
 
     //Método para mostrar las estadísticas globales de la partida
     @Override
-    public void mostrarEstadisticasGlobales() throws ExcepcionArgumento{
+    public void mostrarEstadisticasGlobales() throws Excepcion {
         String casillaMasRentable = "";
         String grupoMasRentable = "";
         String casillaMasFrecuentada = "";
@@ -794,7 +794,7 @@ public class Juego implements Comando {
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'.
     @Override
-    public void salirCarcel() throws ExcepcionDineroInsuficiente, ExcepcionReglas {
+    public void salirCarcel() throws Excepcion {
         Jugador actual = jugadores.get(turno);
 
         if (!(actual.getFortuna() >= 500000))
@@ -813,7 +813,7 @@ public class Juego implements Comando {
 
     //Método para vender edificios de una casilla
     @Override
-    public void vender(String tipoEdificio, String nombreCasilla, int cantidad) throws ExcepcionArgumento, ExcepcionReglas {
+    public void vender(String tipoEdificio, String nombreCasilla, int cantidad) throws Excepcion {
         Jugador actual = jugadores.get(turno);
         Casilla casilla = tablero.encontrarCasilla(nombreCasilla);
 

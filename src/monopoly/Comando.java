@@ -27,17 +27,17 @@ public interface Comando {
 
     void listarEdificios();
 
-    void listarEdificiosGrupo(String colorGrupo) throws ExcepcionArgumento;
+    void listarEdificiosGrupo(String colorGrupo) throws Excepcion;
 
     void listarJugadores();
 
     void listarEnVenta();
 
-    void mostrarEstadisticas(String nombre) throws ExcepcionArgumento;
+    void mostrarEstadisticas(String nombre) throws Excepcion;
 
-    void mostrarEstadisticasGlobales() throws ExcepcionArgumento;
+    void mostrarEstadisticasGlobales() throws Excepcion;
 
-    void salirCarcel() throws ExcepcionDineroInsuficiente, ExcepcionReglas;
+    void salirCarcel() throws Excepcion;
 
     void vender(String tipoEdificio, String nombreCasilla, int cantidad) throws Excepcion;
 
