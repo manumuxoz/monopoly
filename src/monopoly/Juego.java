@@ -48,15 +48,21 @@ public class Juego implements Comando {
         while (true) {
             try {
                 analizarComando(consola.leer("Introduce un comando: "));
-            } catch (ExcepcionArgumento | ExcepcionReglas | ExcepcionBancarrota e) {
+            } catch (ExcepcionReglas e) {
                 consola.imprimir(e.getMessage());
+
             } catch (ExcepcionDineroInsuficiente e) {
                 if (e.getCobro() > 0) {
                     consola.imprimir(e.getMessage());
                     ventaOHipoteca(e.getCobro());
                 }
+
+            } catch (ExcepcionBancarrota e) {
+                if (e.getReceptor().equals(banca))
+                    eliminarEdificiosBanca();
+
             } catch (RuntimeException e) {
-            consola.imprimir("Error: " + e.getMessage());
+                consola.imprimir("Error: " + e.getMessage());
             }
         }
     }
@@ -121,6 +127,12 @@ public class Juego implements Comando {
                 acabarTurno();
                 break;
             case "aceptar":
+                if (!esPartidaIniciada())
+                    throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
+
+                if (partes.length != 2)
+                    throw  new ExcepcionArgumento(("Uso: aceptar <trato>"));
+
                 aceptarTrato(partes[1]);
                 break;
             case "comandos":
@@ -230,16 +242,19 @@ public class Juego implements Comando {
             case "trato":
                 if (!esPartidaIniciada())
                     throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
-                if(partes.length==5 || partes.length==7){
-                    proponerTrato(partes);
-                }
+
+                if(!(partes.length==5 || partes.length==7))
+                    throw new ExcepcionArgumento("Uso: trato <nombre>: cambiar (<propiedad_1 y <cantidad>) , <propiedad2> y <cantidad2>)");
+
+                proponerTrato(partes);
                 break;
             case "tratos":
                 if (!esPartidaIniciada())
                     throw new ExcepcionReglas("La partida no está iniciada. Número de jugadores: " + jugadores.size());
-                if(!(partes.length == 1)){
+
+                if(!(partes.length == 1))
                     throw new ExcepcionArgumento("Uso: tratos");
-                }
+
                 verTratos();
                 break;
             case "vender":
@@ -575,8 +590,6 @@ public class Juego implements Comando {
             ((Parking) tablero.encontrarCasilla("Parking")).sumarBote(cas.getImpuesto());
         else if (cas.equals(tablero.encontrarCasilla("IrCarcel")))
             actual.encarcelar(tablero.getPosiciones());
-
-        consola.imprimir(imprimirPosiciones());
     }
 
     //Método para saber si un jugador puede tirar
@@ -622,19 +635,6 @@ public class Juego implements Comando {
             lanzamientos = -1; // Resetear contador si no son dobles
     }
 
-    // Método para mostrar por pantalla información de la posición de cada jugador
-    private String imprimirPosiciones() {
-        StringBuilder sb = new StringBuilder().append("=== POSICIONES ACTUALES ===\n");
-        // Imprimimos las posiciones actuales para facilitar el control de los jugadores
-        for (Jugador jugador : jugadores) {
-            Avatar avatar = jugador.getAvatar();
-            sb.append(jugador.getNombre()).append(" (").append(avatar.getId()).append(") en: ").append(avatar.getLugar().getNombre()).append("\n");
-        }
-        sb.append("===========================");
-
-        return sb.toString();
-    }
-
     //Método para leer los comandos de un archivo
     @Override
     public void leerComandos() throws  RuntimeException{
@@ -645,13 +645,18 @@ public class Juego implements Comando {
                 consola.imprimir("Comando: " + comando);
                 try {
                     analizarComando(comando);
-                } catch (ExcepcionArgumento | ExcepcionReglas | ExcepcionBancarrota e) {
+                } catch (ExcepcionReglas e) {
                     consola.imprimir(e.getMessage());
+
                 } catch (ExcepcionDineroInsuficiente e) {
                     if (e.getCobro() > 0) {
                         consola.imprimir(e.getMessage());
                         ventaOHipoteca(e.getCobro());
                     }
+
+                } catch (ExcepcionBancarrota e) {
+                    if (e.getReceptor().equals(banca))
+                        eliminarEdificiosBanca();
                 }
             }
         } catch (IOException e) {
@@ -905,8 +910,6 @@ public class Juego implements Comando {
         edificios.removeIf(edificio -> edificio.getDuenho().equals(banca));
     }
 
-
-
     @Override
     public String verTablero() {
         return tablero.toString();
@@ -922,33 +925,33 @@ public class Juego implements Comando {
 
         if(receptor == null)
             throw new ExcepcionArgumento("Este jugador no existe");
-        if(receptor ==  solicitante){
-            throw new ExcepcionArgumento("No puedes hacer un trato con tu propio jugador");
-        }
+
+        if(receptor ==  solicitante)
+            throw new ExcepcionReglas("No puedes hacer un trato con tu propio jugador");
 
         if(partes.length==5) {
             Casilla casillaSolicitante = tablero.encontrarCasilla(partes[3]);
             Casilla casillaReceptor = tablero.encontrarCasilla(partes[4]);
 
             if (casillaSolicitante == null && esNumero(partes[3])) {
-                if (!(receptor.getPropiedades().contains((Propiedad) casillaReceptor))) {
+                if (!(receptor.getPropiedades().contains((Propiedad) casillaReceptor)))
                     throw new ExcepcionReglas("La casilla " + casillaReceptor.getNombre() + " no pertenece a " + receptor.getNombre());
-                }
-                if(!(solicitante.getFortuna() >= Integer.parseInt(partes[3]))) {
+
+                if(!(solicitante.getFortuna() >= Integer.parseInt(partes[3])))
                     throw new ExcepcionReglas(solicitante.getNombre() + " no tiene suficiente dinero");
-                }
+
                 //dinero por propiedad
                 tratos.add(new Trato(solicitante, receptor, null, (Propiedad)casillaReceptor, Integer.parseInt(partes[3]), 0, tratos));
                 consola.imprimir(receptor.getNombre() + ", ¿te doy " +  Integer.parseInt(partes[3])   + "$ y tu me das " + casillaReceptor.getNombre() + "?");
             }
 
             if (casillaReceptor == null && esNumero(partes[4]) && casillaSolicitante!=null){
-                if (!(solicitante.getPropiedades().contains((Propiedad)casillaSolicitante))){
+                if (!(solicitante.getPropiedades().contains((Propiedad)casillaSolicitante)))
                     throw new ExcepcionReglas("La casilla " + casillaSolicitante.getNombre() + " no pertenece a " + solicitante.getNombre());
-                }
-                if(!(receptor.getFortuna() >= Integer.parseInt(partes[4]))) {
+
+                if(!(receptor.getFortuna() >= Integer.parseInt(partes[4])))
                     throw new ExcepcionReglas(receptor.getNombre() + " no tiene suficiente dinero");
-                }
+
                 //propiedad por dinero
                 tratos.add(new Trato(solicitante, receptor, (Propiedad)casillaSolicitante, null, 0, Integer.parseInt(partes[4]), tratos));
                 consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre()  + " y tu me das " +  Integer.parseInt(partes[4]) + "$?");
@@ -957,12 +960,12 @@ public class Juego implements Comando {
 
 
             if (casillaReceptor!=null && casillaSolicitante!=null) {
-                if (!solicitante.getPropiedades().contains((Propiedad) casillaSolicitante)){
+                if (!solicitante.getPropiedades().contains((Propiedad) casillaSolicitante))
                     throw new ExcepcionReglas("La casilla " + casillaSolicitante.getNombre() + " no pertenece a " + solicitante.getNombre());
-                }
-                if (!(receptor.getPropiedades().contains((Propiedad) casillaReceptor))){
+
+                if (!(receptor.getPropiedades().contains((Propiedad) casillaReceptor)))
                     throw new ExcepcionReglas("La casilla " + casillaReceptor.getNombre() + " no pertenece a " + receptor.getNombre());
-                }
+
                 //propiedad por propiedad
                 tratos.add(new Trato(solicitante, receptor, (Propiedad) casillaSolicitante, (Propiedad) casillaReceptor, 0, 0, tratos));
                 consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre() + " y tu me das " + casillaReceptor.getNombre() + "?");
@@ -977,30 +980,30 @@ public class Juego implements Comando {
             Casilla casillaReceptor2 = tablero.encontrarCasilla(partes[6]);
 
             if (casillaReceptor2 == null && casillaReceptor !=null && esNumero(partes[6])){
-                if(!(solicitante.getPropiedades().contains((Propiedad) casillaSolicitante))){
+                if(!(solicitante.getPropiedades().contains((Propiedad) casillaSolicitante)))
                     throw new ExcepcionReglas("La casilla " + casillaSolicitante.getNombre() + " no pertenece a " + solicitante.getNombre());
-                }
-                if(!(receptor.getPropiedades().contains((Propiedad) casillaReceptor))){
+
+                if(!(receptor.getPropiedades().contains((Propiedad) casillaReceptor)))
                     throw new ExcepcionReglas("La casilla " + casillaReceptor.getNombre() + " no pertenece a " + receptor.getNombre());
-                }
-                if(!(receptor.getFortuna()>=Integer.parseInt(partes[6]))) {
+
+                if(!(receptor.getFortuna()>=Integer.parseInt(partes[6])))
                     throw new ExcepcionReglas(receptor.getNombre() + " no tiene suficiente dinero");
-                }
+
                 //sabemos que es propiedad por propiedad y dinero
                 tratos.add(new Trato(solicitante, receptor, (Propiedad)casillaSolicitante, (Propiedad)casillaReceptor, 0, Integer.parseInt(partes[6]), tratos));
                 consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre()  + " y tu me das " +  Integer.parseInt(partes[6]) + "$ y " + casillaReceptor.getNombre() + "?");
             }
 
             if(casillaSolicitante != null && casillaReceptor2 !=null && esNumero(partes[4])) {
-                if(!(solicitante.getPropiedades().contains((Propiedad) casillaSolicitante))){
+                if(!(solicitante.getPropiedades().contains((Propiedad) casillaSolicitante)))
                     throw new ExcepcionReglas("La casilla " + casillaSolicitante.getNombre() + " no pertenece a " + solicitante.getNombre());
-                }
-                if(!(receptor.getPropiedades().contains((Propiedad) casillaReceptor2))){
+
+                if(!(receptor.getPropiedades().contains((Propiedad) casillaReceptor2)))
                     throw new ExcepcionReglas("La casilla " + casillaReceptor2.getNombre() + " no pertenece a " + receptor.getNombre());
-                }
-                if(!(receptor.getFortuna()>=Integer.parseInt(partes[4]))) {
+
+                if(!(receptor.getFortuna()>=Integer.parseInt(partes[4])))
                     throw new ExcepcionReglas(receptor.getNombre() + " no tiene suficiente dinero");
-                }
+
                 //sabemos que es propiedad por dinero y propiedad
                 tratos.add(new Trato(solicitante, receptor, (Propiedad) casillaSolicitante, (Propiedad) casillaReceptor2, 0, Integer.parseInt(partes[4]), tratos));
                 consola.imprimir(receptor.getNombre() + ", ¿te doy " + casillaSolicitante.getNombre()  + " y tu me das " +  Integer.parseInt(partes[4]) + "$ y " + casillaReceptor2.getNombre() + "?");
@@ -1042,21 +1045,22 @@ public class Juego implements Comando {
                 consola.imprimir(t.infoTrato());
         }
     }
+
     private void eliminarTrato(String id) {
         Jugador actual = jugadores.get(turno);
         int tamano = tratos.size();
         for (Trato t : tratos) {
             if (t.getId().equals(id)) {
-                if (!(actual == t.getSolicitante())) {
+                if (!(actual == t.getSolicitante()))
                     throw new ExcepcionReglas("No puedes eliminar un trato que no es tuyo");
-                }
-                consola.imprimir("Se ha eliminado el " + t.getId());
+
+                consola.imprimir("Se ha eliminado el " + t.getId() + ".");
                 tratos.remove(t);
                 break;
             }
         }
         if (tamano == tratos.size()){
-            consola.imprimir("No se ha eliminado ningún trato");
+            consola.imprimir("No se ha eliminado ningún trato.");
         }
     }
 }

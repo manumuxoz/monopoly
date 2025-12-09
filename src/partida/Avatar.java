@@ -83,7 +83,7 @@ public class Avatar {
         }
 
         consola.imprimir("El avatar " + id + " avanza " + valorTirada + " posiciones, desde " +
-                anterior.getNombre() + " hasta " + lugar.getNombre() + "." + str);
+                anterior.getNombre() + " hasta " + lugar.getNombre() + ". " + str);
     }
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
