@@ -5,7 +5,6 @@ import excepciones.*;
 import partida.Jugador;
 import java.util.ArrayList;
 import static monopoly.Valor.*;
-import static monopoly.Juego.vueltasTotales;
 import static monopoly.Juego.consola;
 
 public final class Solar extends Propiedad {
@@ -491,21 +490,5 @@ public final class Solar extends Propiedad {
                 return true;
 
         return false;
-    }
-
-    /*Método para añadir valor a una casilla. Utilidad:
-     * - Sumar valor a las casillas de solar al no comprarlas tras cuatro vueltas de todos los jugadores.
-     * Este método toma como argumento la cantidad a añadir del valor de la casilla.*/
-    public void sumarValor(float suma) {
-        setValor(getValor() + suma);
-    }
-
-    @Override
-    public float valor() {
-
-        for (int i = 0; i < vueltasTotales/4; i++)
-            sumarValor(getValor());
-
-        return getValor();
     }
 }

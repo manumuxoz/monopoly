@@ -60,9 +60,4 @@ public final class Servicios extends Propiedad {
 
         return alquiler;
     }
-
-    @Override
-    public float valor(){
-        return getValor();
-    }
 }

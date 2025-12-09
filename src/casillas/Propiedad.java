@@ -62,5 +62,7 @@ public abstract class Propiedad extends Casilla {
 
     abstract float alquiler();
 
-    public abstract float valor();
+    public float valor() {
+        return valor;
+    }
 }

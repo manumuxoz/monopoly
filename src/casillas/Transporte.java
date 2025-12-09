@@ -56,9 +56,4 @@ public final class Transporte extends Propiedad {
     public float alquiler(){
         return getDuenho().contarCasillasTransporte() * getImpuesto();
     }
-
-    @Override
-    public float valor(){
-        return getValor();
-    }
 }
