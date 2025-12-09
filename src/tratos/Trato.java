@@ -145,7 +145,7 @@ public class Trato {
         }else if(propiedadSolicitante!=null && propiedadReceptor !=null && cantidadReceptor!=0 && cantidadSolicitante==0){
             //PROPIEDAD POR DINERO Y PROPIEDAD O PROPIEDAD POR PROPIEDAD Y DINERO
             return "{" +
-                    "\n\t: " + id +
+                    "\n\tid: " + id +
                     ",\n\tjugadorPropone: " + solicitante.getNombre() +
                     ",\n\ttrato: cambiar (" + propiedadSolicitante.getNombre() + ", " + propiedadReceptor.getNombre() + ", " + cantidadReceptor + ")" +
                     "\n}";
